@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberAgiesX - Cognitive Attack Simulation & Testing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0F0F23;
+            color: #FFFFFF;
+            overflow-x: hidden;
+        }
+
+        .simulator-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .sim-header {
+            background: linear-gradient(135deg, #1A1D23 0%, #0A1628 100%);
+            padding: 20px 40px;
+            border-bottom: 2px solid #FF5757;
+            box-shadow: 0 4px 20px rgba(255, 87, 87, 0.2);
+        }
+
+        .sim-logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .sim-icon {
+            font-size: 32px;
+            color: #FF5757;
+            text-shadow: 0 0 20px rgba(255, 87, 87, 0.5);
+        }
+
+        .sim-title {
+            background: linear-gradient(135deg, #FF5757, #FFAA00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Control Panel */
+        .control-panel {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 30px 40px;
+            border-bottom: 1px solid rgba(255, 87, 87, 0.2);
+        }
+
+        .scenario-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .scenario-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 87, 87, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .scenario-card:hover {
+            background: rgba(255, 87, 87, 0.1);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255, 87, 87, 0.3);
+        }
+
+        .scenario-card.active {
+            background: rgba(255, 87, 87, 0.2);
+            border-color: #FF5757;
+        }
+
+        .scenario-icon {
+            font-size: 36px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .scenario-title {
+            color: #FF5757;
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .scenario-desc {
+            color: #A1A8B0;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .difficulty-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .difficulty-low { background: rgba(0, 255, 136, 0.2); color: #00FF88; }
+        .difficulty-medium { background: rgba(255, 170, 0, 0.2); color: #FFAA00; }
+        .difficulty-high { background: rgba(255, 87, 87, 0.2); color: #FF5757; }
+
+        .simulation-controls {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .sim-button {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+
+        .btn-start {
+            background: linear-gradient(135deg, #FF5757, #FFAA00);
+            color: #FFFFFF;
+        }
+
+        .btn-stop {
+            background: rgba(255, 87, 87, 0.1);
+            border: 2px solid #FF5757;
+            color: #FF5757;
+        }
+
+        .btn-reset {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: #FFFFFF;
+        }
+
+        .sim-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 87, 87, 0.3);
+        }
+
+        /* Main Simulation Area */
+        .main-sim {
+            flex: 1;
+            display: flex;
+            gap: 30px;
+            padding: 30px 40px;
+        }
+
+        .simulation-display {
+            flex: 2;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 30px;
+            border: 1px solid rgba(255, 87, 87, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .analysis-panel {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 30px;
+            border: 1px solid rgba(0, 217, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        /* Video Call Simulation */
+        .video-call-sim {
+            background: #000;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            position: relative;
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(255, 87, 87, 0.3);
+        }
+
+        .video-placeholder {
+            text-align: center;
+            color: #A1A8B0;
+        }
+
+        .video-overlay {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .caller-info {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px 15px;
+            border-radius: 8px;
+            color: #FFFFFF;
+        }
+
+        .trust-indicator-live {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .trust-meter {
+            width: 100px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .trust-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FF5757 0%, #FFAA00 50%, #00FF88 100%);
+            transition: width 1s ease;
+            border-radius: 4px;
+        }
+
+        /* Email Simulation */
+        .email-sim {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(255, 87, 87, 0.2);
+        }
+
+        .email-header {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+
+        .email-field {
+            display: flex;
+            margin-bottom: 8px;
+        }
+
+        .email-label {
+            color: #A1A8B0;
+            width: 80px;
+            flex-shrink: 0;
+        }
+
+        .email-value {
+            color: #FFFFFF;
+        }
+
+        .email-content {
+            color: #FFFFFF;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        /* Analysis Indicators */
+        .analysis-section {
+            margin-bottom: 25px;
+        }
+
+        .analysis-title {
+            color: #00D9FF;
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .metric-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+        }
+
+        .metric-label {
+            color: #A1A8B0;
+            font-size: 14px;
+        }
+
+        .metric-value {
+            font-weight: bold;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 13px;
+        }
+
+        .metric-safe { background: rgba(0, 255, 136, 0.2); color: #00FF88; }
+        .metric-warning { background: rgba(255, 170, 0, 0.2); color: #FFAA00; }
+        .metric-danger { background: rgba(255, 87, 87, 0.2); color: #FF5757; }
+
+        /* Threat Timeline */
+        .threat-timeline {
+            border-left: 3px solid #FF5757;
+            padding-left: 20px;
+            margin-top: 20px;
+        }
+
+        .timeline-item {
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -26px;
+            top: 5px;
+            width: 8px;
+            height: 8px;
+            background: #FF5757;
+            border-radius: 50%;
+        }
+
+        .timeline-time {
+            color: #A1A8B0;
+            font-size: 12px;
+            margin-bottom: 3px;
+        }
+
+        .timeline-event {
+            color: #FFFFFF;
+            font-size: 14px;
+        }
+
+        /* Response Actions */
+        .response-actions {
+            background: rgba(255, 87, 87, 0.1);
+            border: 2px solid #FF5757;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .action-title {
+            color: #FF5757;
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .action-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .action-btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .action-primary {
+            background: #FF5757;
+            color: #FFFFFF;
+        }
+
+        .action-secondary {
+            background: rgba(255, 170, 0, 0.2);
+            border: 1px solid #FFAA00;
+            color: #FFAA00;
+        }
+
+        .action-tertiary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #FFFFFF;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 87, 87, 0.3);
+        }
+
+        /* Progress Indicators */
+        .progress-container {
+            margin: 20px 0;
+        }
+
+        .progress-label {
+            color: #A1A8B0;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FF5757, #FFAA00);
+            transition: width 2s ease;
+            border-radius: 4px;
+        }
+
+        /* Status Indicators */
+        .status-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .status-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .status-value {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .status-label {
+            color: #A1A8B0;
+            font-size: 12px;
+        }
+
+        /* Animations */
+        .pulse-danger {
+            animation: pulseDanger 2s infinite;
+        }
+
+        @keyframes pulseDanger {
+            0% { box-shadow: 0 0 0 0 rgba(255, 87, 87, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 87, 87, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 87, 87, 0); }
+        }
+
+        .scan-line {
+            animation: scanLine 3s infinite;
+        }
+
+        @keyframes scanLine {
+            0% { transform: translateY(-100%); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(300px); opacity: 0; }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-sim {
+                flex-direction: column;
+                padding: 20px;
+            }
+            
+            .scenario-selector {
+                grid-template-columns: 1fr;
+            }
+            
+            .simulation-controls {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .sim-button {
+                width: 100%;
+            }
+        }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+    <div class="simulator-container">
+        <!-- Header -->
+        <div class="sim-header">
+            <div class="sim-logo">
+                <span class="sim-icon">🎭</span>
+                <span class="sim-title">Cognitive Attack Simulator</span>
+            </div>
+            <p style="color: #A1A8B0; margin-top: 10px; font-size: 14px;">
+                Test and validate CyberAgiesX's detection capabilities against advanced AI-generated threats
+            </p>
+        </div>
+
+        <!-- Control Panel -->
+        <div class="control-panel">
+            <h3 style="color: #FF5757; margin-bottom: 20px;">Select Attack Scenario</h3>
+            
+            <div class="scenario-selector">
+                <div class="scenario-card" data-scenario="deepfake-ceo">
+                    <div class="difficulty-badge difficulty-high">HIGH</div>
+                    <span class="scenario-icon">👨‍💼</span>
+                    <div class="scenario-title">Deepfake CEO Call</div>
+                    <div class="scenario-desc">
+                        AI-generated video call impersonating company CEO requesting urgent wire transfer authorization
+                    </div>
+                </div>
+
+                <div class="scenario-card" data-scenario="voice-clone">
+                    <div class="difficulty-badge difficulty-medium">MEDIUM</div>
+                    <span class="scenario-icon">🎤</span>
+                    <div class="scenario-title">Voice Clone Attack</div>
+                    <div class="scenario-desc">
+                        Synthetic voice replication of trusted colleague requesting sensitive information over phone
+                    </div>
+                </div>
+
+                <div class="scenario-card" data-scenario="ai-phishing">
+                    <div class="difficulty-badge difficulty-medium">MEDIUM</div>
+                    <span class="scenario-icon">📧</span>
+                    <div class="scenario-title">AI-Generated Phishing</div>
+                    <div class="scenario-desc">
+                        Sophisticated AI-written email mimicking executive communication style for credential theft
+                    </div>
+                </div>
+
+                <div class="scenario-card" data-scenario="behavioral-manipulation">
+                    <div class="difficulty-badge difficulty-high">HIGH</div>
+                    <span class="scenario-icon">🧠</span>
+                    <div class="scenario-title">Behavioral Manipulation</div>
+                    <div class="scenario-desc">
+                        Multi-modal attack combining fake video, voice, and learned behavioral patterns
+                    </div>
+                </div>
+            </div>
+
+            <div class="simulation-controls">
+                <button class="sim-button btn-start" onclick="startSimulation()">🚀 Start Simulation</button>
+                <button class="sim-button btn-stop" onclick="stopSimulation()" disabled>⏹️ Stop</button>
+                <button class="sim-button btn-reset" onclick="resetSimulation()">🔄 Reset</button>
+                
+                <div style="margin-left: auto; color: #A1A8B0;">
+                    <span>Simulation Status: </span>
+                    <span id="simStatus" style="color: #FFAA00;">Ready</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Simulation Area -->
+        <div class="main-sim">
+            <!-- Simulation Display -->
+            <div class="simulation-display">
+                <h3 style="color: #FF5757; margin-bottom: 20px;">Live Attack Simulation</h3>
+                
+                <!-- Video Call Scenario -->
+                <div id="videoCallSim" class="video-call-sim hidden">
+                    <div class="video-overlay">
+                        <div class="caller-info">
+                            <div style="font-weight: bold;">📞 Incoming Call</div>
+                            <div>CEO John Davidson</div>
+                            <div style="font-size: 12px; color: #A1A8B0;">+1 (555) 123-4567</div>
+                        </div>
+                        <div class="trust-indicator-live">
+                            <span style="color: #FF5757;">⚠️</span>
+                            <div>
+                                <div style="font-size: 12px; color: #A1A8B0;">Trust Score</div>
+                                <div class="trust-meter">
+                                    <div class="trust-fill" id="trustFill" style="width: 23%;"></div>
+                                </div>
+                                <div style="font-size: 12px; font-weight: bold; color: #FF5757;">23/100</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="video-placeholder">
+                        <div style="font-size: 48px; margin-bottom: 15px;">🎭</div>
+                        <div>Deepfake Video Stream</div>
+                        <div style="color: #FF5757; margin-top: 10px; font-size: 14px;">
+                            AI-generated facial reconstruction detected
+                        </div>
+                    </div>
+                    <div class="scan-line" style="position: absolute; width: 100%; height: 2px; background: #FF5757; top: 0;"></div>
+                </div>
+
+                <!-- Email Scenario -->
+                <div id="emailSim" class="email-sim hidden">
+                    <div class="email-header">
+                        <div class="email-field">
+                            <div class="email-label">From:</div>
+                            <div class="email-value">CEO John Davidson &lt;j.davidson@company-secure.com&gt;</div>
+                        </div>
+                        <div class="email-field">
+                            <div class="email-label">To:</div>
+                            <div class="email-value">Finance Team &lt;finance@company.com&gt;</div>
+                        </div>
+                        <div class="email-field">
+                            <div class="email-label">Subject:</div>
+                            <div class="email-value">URGENT: Immediate Wire Transfer Required - Confidential</div>
+                        </div>
+                        <div class="email-field">
+                            <div class="email-label">Time:</div>
+                            <div class="email-value">Today, 3:47 PM</div>
+                        </div>
+                    </div>
+                    <div class="email-content">
+                        <p>Team,</p><br>
+                        
+                        <p>I need you to process an urgent wire transfer immediately. Due to a time-sensitive acquisition opportunity, we need to transfer <strong>$125,000</strong> to our legal firm's escrow account today before 5 PM.</p><br>
+                        
+                        <p><strong>Transfer Details:</strong><br>
+                        Account: International Legal Associates LLC<br>
+                        Routing: 021000021<br>
+                        Account #: 4472891034<br>
+                        Reference: Project Thunderbolt - Confidential</p><br>
+                        
+                        <p>This is part of the acquisition we discussed in last week's board meeting. Please process this immediately and confirm once complete. Do not discuss this transfer with anyone outside the finance team for confidentiality reasons.</p><br>
+                        
+                        <p>Thanks for your prompt attention to this matter.</p><br>
+                        
+                        <p>Best regards,<br>
+                        John Davidson<br>
+                        Chief Executive Officer<br>
+                        <em>Sent from my iPhone</em></p>
+                    </div>
+                </div>
+
+                <!-- Default State -->
+                <div id="defaultSim" class="video-placeholder">
+                    <div style="font-size: 64px; margin-bottom: 20px; color: #A1A8B0;">🎯</div>
+                    <div style="color: #A1A8B0; font-size: 18px;">Select a scenario above to begin simulation</div>
+                    <div style="color: #666; font-size: 14px; margin-top: 10px;">
+                        CyberAgiesX will analyze the threat in real-time
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analysis Panel -->
+            <div class="analysis-panel">
+                <h3 style="color: #00D9FF; margin-bottom: 20px;">Real-Time Analysis</h3>
+                
+                <div class="status-grid">
+                    <div class="status-item">
+                        <div class="status-value" style="color: #FF5757;" id="threatLevel">HIGH</div>
+                        <div class="status-label">Threat Level</div>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-value" style="color: #FF5757;" id="trustScore">23</div>
+                        <div class="status-label">Trust Score</div>
+                    </div>
+                </div>
+
+                <div class="analysis-section">
+                    <div class="analysis-title">
+                        🎤 Voice Analysis
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">Synthesis Detection</span>
+                        <span class="metric-value metric-danger" id="voiceSynthesis">82% Synthetic</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">Vocal Biometrics</span>
+                        <span class="metric-value metric-danger" id="vocalBiometrics">34% Match</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">Emotional Consistency</span>
+                        <span class="metric-value metric-warning" id="emotionalConsistency">67% Consistent</span>
+                    </div>
+                </div>
+
+                <div class="analysis-section">
+                    <div class="analysis-title">
+                        📹 Video Analysis
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">Deepfake Detection</span>
+                        <span class="metric-value metric-danger" id="deepfakeDetection">91% Fake</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">Temporal Artifacts</span>
+                        <span class="metric-value metric-danger" id="temporalArtifacts">15 Detected</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">Facial Consistency</span>
+                        <span class="metric-value metric-warning" id="facialConsistency">72% Match</span>
+                    </div>
+                </div>
+
+                <div class="analysis-section">
+                    <div class="analysis-title">
+                        📝 Content Analysis
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">AI Text Detection</span>
+                        <span class="metric-value metric-warning" id="aiTextDetection">78% AI-Generated</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">Style Consistency</span>
+                        <span class="metric-value metric-danger" id="styleConsistency">45% Match</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">Urgency Manipulation</span>
+                        <span class="metric-value metric-danger" id="urgencyManipulation">High Risk</span>
+                    </div>
+                </div>
+
+                <div class="analysis-section">
+                    <div class="analysis-title">
+                        🖱️ Behavioral Analysis
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">Communication Pattern</span>
+                        <span class="metric-value metric-danger" id="commPattern">Anomalous</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">Request Legitimacy</span>
+                        <span class="metric-value metric-danger" id="requestLegitimacy">12% Legitimate</span>
+                    </div>
+                </div>
+
+                <div class="threat-timeline">
+                    <h4 style="color: #FF5757; margin-bottom: 15px;">🚨 Threat Timeline</h4>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-time">15:47:12</div>
+                        <div class="timeline-event">Incoming communication detected</div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-time">15:47:13</div>
+                        <div class="timeline-event">Voice synthesis patterns identified</div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-time">15:47:15</div>
+                        <div class="timeline-event">Facial reconstruction artifacts found</div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-time">15:47:18</div>
+                        <div class="timeline-event">⚠️ CRITICAL: High-risk cognitive attack detected</div>
+                    </div>
+                </div>
+
+                <div class="response-actions">
+                    <div class="action-title">
+                        🛡️ Recommended Actions
+                    </div>
+                    <div class="action-options">
+                        <button class="action-btn action-primary" onclick="blockThreat()">
+                            🚨 Block Immediately - High Confidence Detection
+                        </button>
+                        <button class="action-btn action-secondary" onclick="requestVerification()">
+                            🔍 Request Alternative Verification Channel
+                        </button>
+                        <button class="action-btn action-tertiary" onclick="escalateToSecurity()">
+                            📞 Escalate to Security Team
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentScenario = null;
+        let simulationActive = false;
+        let simulationTimer = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Scenario selection
+            document.querySelectorAll('.scenario-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    selectScenario(this.dataset.scenario);
+                });
+            });
+        });
+
+        function selectScenario(scenarioId) {
+            // Remove active class from all cards
+            document.querySelectorAll('.scenario-card').forEach(card => {
+                card.classList.remove('active');
+            });
+
+            // Add active class to selected card
+            document.querySelector(`[data-scenario="${scenarioId}"]`).classList.add('active');
+            
+            currentScenario = scenarioId;
+            resetSimulation();
+            updateScenarioData(scenarioId);
+        }
+
+        function updateScenarioData(scenarioId) {
+            const scenarios = {
+                'deepfake-ceo': {
+                    threatLevel: 'CRITICAL',
+                    trustScore: 23,
+                    voiceSynthesis: '82% Synthetic',
+                    vocalBiometrics: '34% Match',
+                    emotionalConsistency: '67% Consistent',
+                    deepfakeDetection: '91% Fake',
+                    temporalArtifacts: '15 Detected',
+                    facialConsistency: '72% Match',
+                    aiTextDetection: '45% AI-Generated',
+                    styleConsistency: '45% Match',
+                    urgencyManipulation: 'High Risk',
+                    commPattern: 'Anomalous',
+                    requestLegitimacy: '12% Legitimate'
+                },
+                'voice-clone': {
+                    threatLevel: 'HIGH',
+                    trustScore: 34,
+                    voiceSynthesis: '75% Synthetic',
+                    vocalBiometrics: '42% Match',
+                    emotionalConsistency: '78% Consistent',
+                    deepfakeDetection: 'N/A',
+                    temporalArtifacts: 'N/A',
+                    facialConsistency: 'N/A',
+                    aiTextDetection: 'N/A',
+                    styleConsistency: 'N/A',
+                    urgencyManipulation: 'Medium Risk',
+                    commPattern: 'Suspicious',
+                    requestLegitimacy: '23% Legitimate'
+                },
+                'ai-phishing': {
+                    threatLevel: 'MEDIUM',
+                    trustScore: 45,
+                    voiceSynthesis: 'N/A',
+                    vocalBiometrics: 'N/A',
+                    emotionalConsistency: 'N/A',
+                    deepfakeDetection: 'N/A',
+                    temporalArtifacts: 'N/A',
+                    facialConsistency: 'N/A',
+                    aiTextDetection: '89% AI-Generated',
+                    styleConsistency: '67% Match',
+                    urgencyManipulation: 'Very High Risk',
+                    commPattern: 'Highly Suspicious',
+                    requestLegitimacy: '8% Legitimate'
+                },
+                'behavioral-manipulation': {
+                    threatLevel: 'CRITICAL',
+                    trustScore: 18,
+                    voiceSynthesis: '94% Synthetic',
+                    vocalBiometrics: '28% Match',
+                    emotionalConsistency: '89% Consistent',
+                    deepfakeDetection: '96% Fake',
+                    temporalArtifacts: '23 Detected',
+                    facialConsistency: '91% Match',
+                    aiTextDetection: '92% AI-Generated',
+                    styleConsistency: '85% Match',
+                    urgencyManipulation: 'Critical Risk',
+                    commPattern: 'Sophisticated Attack',
+                    requestLegitimacy: '3% Legitimate'
+                }
+            };
+
+            const data = scenarios[scenarioId];
+            if (data) {
+                updateAnalysisDisplay(data);
+            }
+        }
+
+        function updateAnalysisDisplay(data) {
+            // Update status indicators
+            document.getElementById('threatLevel').textContent = data.threatLevel;
+            document.getElementById('trustScore').textContent = data.trustScore;
+
+            // Update analysis metrics
+            const metrics = [
+                'voiceSynthesis', 'vocalBiometrics', 'emotionalConsistency',
+                'deepfakeDetection', 'temporalArtifacts', 'facialConsistency',
+                'aiTextDetection', 'styleConsistency', 'urgencyManipulation',
+                'commPattern', 'requestLegitimacy'
+            ];
+
+            metrics.forEach(metric => {
+                const element = document.getElementById(metric);
+                if (element && data[metric] !== undefined) {
+                    element.textContent = data[metric];
+                    
+                    // Update styling based on risk level
+                    element.className = 'metric-value ' + getRiskClass(data[metric]);
+                }
+            });
+
+            // Update trust meter
+            document.getElementById('trustFill').style.width = data.trustScore + '%';
+        }
+
+        function getRiskClass(value) {
+            if (typeof value === 'string') {
+                if (value.includes('N/A')) return 'metric-safe';
+                if (value.includes('High') || value.includes('Critical') || value.includes('Synthetic') || value.includes('Fake')) {
+                    return 'metric-danger';
+                }
+                if (value.includes('Medium') || value.includes('Suspicious')) {
+                    return 'metric-warning';
+                }
+            }
+            
+            if (typeof value === 'number') {
+                if (value < 30) return 'metric-danger';
+                if (value < 70) return 'metric-warning';
+                return 'metric-safe';
+            }
+
+            return 'metric-danger';
+        }
+
+        function startSimulation() {
+            if (!currentScenario) {
+                alert('Please select a scenario first');
+                return;
+            }
+
+            simulationActive = true;
+            document.getElementById('simStatus').textContent = 'Running';
+            document.getElementById('simStatus').style.color = '#FF5757';
+
+            // Enable/disable buttons
+            document.querySelector('.btn-start').disabled = true;
+            document.querySelector('.btn-stop').disabled = false;
+
+            // Show appropriate simulation display
+            showSimulationDisplay(currentScenario);
+
+            // Add pulse effect to analysis panel
+            document.querySelector('.analysis-panel').classList.add('pulse-danger');
+
+            // Simulate real-time updates
+            simulateRealTimeUpdates();
+
+            console.log(`Starting ${currentScenario} simulation`);
+        }
+
+        function showSimulationDisplay(scenario) {
+            // Hide all simulation displays
+            document.querySelectorAll('#videoCallSim, #emailSim, #defaultSim').forEach(el => {
+                el.classList.add('hidden');
+            });
+
+            // Show appropriate display
+            if (scenario === 'deepfake-ceo' || scenario === 'voice-clone' || scenario === 'behavioral-manipulation') {
+                document.getElementById('videoCallSim').classList.remove('hidden');
+            } else if (scenario === 'ai-phishing') {
+                document.getElementById('emailSim').classList.remove('hidden');
+            }
+        }
+
+        function simulateRealTimeUpdates() {
+            let updateCount = 0;
+            
+            simulationTimer = setInterval(() => {
+                updateCount++;
+                
+                // Simulate fluctuating trust score
+                const baseScore = parseInt(document.getElementById('trustScore').textContent);
+                const variation = Math.floor(Math.random() * 6) - 3; // -3 to +3
+                const newScore = Math.max(1, Math.min(100, baseScore + variation));
+                
+                document.getElementById('trustScore').textContent = newScore;
+                document.getElementById('trustFill').style.width = newScore + '%';
+
+                // Add new timeline events
+                if (updateCount % 3 === 0) {
+                    addTimelineEvent();
+                }
+
+                // Stop after 30 seconds
+                if (updateCount >= 30) {
+                    stopSimulation();
+                }
+            }, 1000);
+        }
+
+        function addTimelineEvent() {
+            const events = [
+                'Additional synthesis artifacts detected',
+                'Behavioral pattern analysis updated',
+                'Cross-reference with known attack patterns',
+                'Blockchain verification attempt failed',
+                'Multi-modal analysis confidence increased'
+            ];
+            
+            const timeline = document.querySelector('.threat-timeline');
+            const timelineItem = document.createElement('div');
+            timelineItem.className = 'timeline-item';
+            
+            const now = new Date();
+            const timeString = now.toTimeString().substring(0, 8);
+            
+            timelineItem.innerHTML = `
+                <div class="timeline-time">${timeString}</div>
+                <div class="timeline-event">${events[Math.floor(Math.random() * events.length)]}</div>
+            `;
+            
+            timeline.appendChild(timelineItem);
+            
+            // Keep only last 8 timeline items
+            const items = timeline.querySelectorAll('.timeline-item');
+            if (items.length > 8) {
+                items[4].remove(); // Remove oldest non-header item
+            }
+        }
+
+        function stopSimulation() {
+            simulationActive = false;
+            document.getElementById('simStatus').textContent = 'Stopped';
+            document.getElementById('simStatus').style.color = '#FFAA00';
+
+            // Enable/disable buttons
+            document.querySelector('.btn-start').disabled = false;
+            document.querySelector('.btn-stop').disabled = true;
+
+            // Remove pulse effect
+            document.querySelector('.analysis-panel').classList.remove('pulse-danger');
+
+            // Clear timer
+            if (simulationTimer) {
+                clearInterval(simulationTimer);
+                simulationTimer = null;
+            }
+
+            console.log('Simulation stopped');
+        }
+
+        function resetSimulation() {
+            stopSimulation();
+            
+            document.getElementById('simStatus').textContent = 'Ready';
+            document.getElementById('simStatus').style.color = '#FFAA00';
+
+            // Reset displays
+            document.querySelectorAll('#videoCallSim, #emailSim').forEach(el => {
+                el.classList.add('hidden');
+            });
+            document.getElementById('defaultSim').classList.remove('hidden');
+
+            // Clear extra timeline events
+            const timeline = document.querySelector('.threat-timeline');
+            const items = timeline.querySelectorAll('.timeline-item');
+            for (let i = 4; i < items.length; i++) {
+                items[i].remove();
+            }
+
+            console.log('Simulation reset');
+        }
+
+        function blockThreat() {
+            alert('🚨 THREAT BLOCKED\n\n• Communication terminated immediately\n• Incident logged to blockchain\n• Security team notified\n• User protected from cognitive attack\n\nAction: ✅ Successful defense');
+            addTimelineEvent();
+        }
+
+        function requestVerification() {
+            alert('🔍 VERIFICATION REQUESTED\n\n• Alternative contact channel activated\n• Identity confirmation protocol initiated\n• Communication placed on hold\n• Awaiting secure verification response\n\nAction: ⏳ Pending verification');
+            addTimelineEvent();
+        }
+
+        function escalateToSecurity() {
+            alert('📞 ESCALATED TO SECURITY\n\n• Security operations center notified\n• Threat intelligence team engaged\n• Forensic analysis initiated\n• Incident response protocol activated\n\nAction: 🛡️ Security response in progress');
+            addTimelineEvent();
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.key === ' ') {
+                e.preventDefault();
+                if (simulationActive) {
+                    stopSimulation();
+                } else if (currentScenario) {
+                    startSimulation();
+                }
+            } else if (e.key === 'r' || e.key === 'R') {
+                resetSimulation();
+            } else if (e.key >= '1' && e.key <= '4') {
+                const scenarios = ['deepfake-ceo', 'voice-clone', 'ai-phishing', 'behavioral-manipulation'];
+                selectScenario(scenarios[parseInt(e.key) - 1]);
+            }
+        });
+
+        // Auto-select first scenario on load
+        setTimeout(() => {
+            selectScenario('deepfake-ceo');
+        }, 500);
+    </script>
+</body>
+</html>

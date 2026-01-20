@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>CyberAgiesX Mobile - Cognitive Security</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-cyan: #00D9FF;
+            --primary-green: #00FF88;
+            --danger-red: #FF3B3B;
+            --warning-orange: #FF6B35;
+            --warning-yellow: #FFD700;
+            --accent-purple: #8B5CF6;
+            --bg-dark: #0A0E1A;
+            --bg-secondary: #1A1D23;
+            --bg-card: rgba(26, 29, 35, 0.95);
+            --text-primary: #FFFFFF;
+            --text-secondary: #8B9DC3;
+            --border-color: rgba(0, 217, 255, 0.3);
+            --shadow-glow: 0 8px 32px rgba(0, 217, 255, 0.2);
+            --gradient-primary: linear-gradient(135deg, #00D9FF 0%, #00FF88 100%);
+            --gradient-bg: linear-gradient(135deg, #0A0E1A 0%, #1A1D23 50%, #0A1628 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gradient-bg);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            height: 100vh;
+            position: relative;
+        }
+
+        /* Mobile-first app layout */
+        .mobile-app {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Header */
+        .mobile-header {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            padding: 16px 20px 12px;
+            border-bottom: 1px solid var(--border-color);
+            position: relative;
+            z-index: 100;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .logo-mobile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .shield-icon-mobile {
+            width: 32px;
+            height: 32px;
+            background: var(--gradient-primary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            animation: pulse-shield 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse-shield {
+            0%, 100% { box-shadow: 0 0 15px rgba(0, 255, 136, 0.3); }
+            50% { box-shadow: 0 0 25px rgba(0, 255, 136, 0.6); }
+        }
+
+        .logo-text-mobile {
+            font-size: 20px;
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .notification-btn,
+        .menu-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: rgba(0, 217, 255, 0.1);
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-cyan);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .notification-btn:active,
+        .menu-btn:active {
+            transform: scale(0.95);
+            background: rgba(0, 217, 255, 0.2);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 8px;
+            height: 8px;
+            background: var(--danger-red);
+            border-radius: 50%;
+            animation: badge-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes badge-pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Quick Stats */
+        .quick-stats {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .quick-stats::-webkit-scrollbar {
+            display: none;
+        }
+
+        .stat-chip {
+            flex: 0 0 auto;
+            background: rgba(0, 217, 255, 0.1);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .stat-value {
+            font-weight: 700;
+            color: var(--primary-cyan);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            padding-bottom: 100px;
+        }
+
+        /* Trust Score Card */
+        .trust-score-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-glow);
+            text-align: center;
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .trust-score-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-primary);
+        }
+
+        .trust-gauge-mobile {
+            width: 160px;
+            height: 160px;
+            margin: 0 auto 20px;
+            position: relative;
+        }
+
+        .gauge-circle {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(
+                from 0deg,
+                var(--danger-red) 0deg 36deg,
+                var(--warning-orange) 36deg 72deg,
+                var(--warning-yellow) 72deg 144deg,
+                #7FFF00 144deg 180deg,
+                var(--primary-green) 180deg 360deg
+            );
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: gauge-rotate 4s ease-in-out infinite;
+        }
+
+        @keyframes gauge-rotate {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(3deg); }
+        }
+
+        .gauge-inner-mobile {
+            width: 110px;
+            height: 110px;
+            background: var(--bg-dark);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .trust-score-mobile {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--primary-green);
+            text-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
+        }
+
+        .trust-label-mobile {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .status-mobile {
+            font-size: 16px;
+            font-weight: 700;
+            padding: 10px 20px;
+            border-radius: 20px;
+            background: rgba(0, 255, 136, 0.2);
+            color: var(--primary-green);
+            border: 2px solid var(--primary-green);
+            margin-top: 16px;
+            display: inline-block;
+        }
+
+        /* Analysis Cards */
+        .analysis-section-mobile {
+            margin-bottom: 24px;
+        }
+
+        .section-title-mobile {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .analysis-grid-mobile {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .analysis-card-mobile {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .analysis-card-mobile:active {
+            transform: scale(0.98);
+        }
+
+        .analysis-header-mobile {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .analysis-icon-mobile {
+            font-size: 20px;
+        }
+
+        .analysis-title-mobile {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .analysis-result-mobile {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .analysis-details-mobile {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .result-safe { color: var(--primary-green); }
+        .result-suspicious { color: var(--warning-yellow); }
+        .result-dangerous { color: var(--danger-red); }
+
+        /* Activity Feed */
+        .activity-feed-mobile {
+            margin-bottom: 24px;
+        }
+
+        .feed-item-mobile {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .feed-item-mobile:active {
+            transform: scale(0.98);
+        }
+
+        .feed-icon-mobile {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .feed-icon-mobile.critical { background: rgba(255, 59, 59, 0.2); color: var(--danger-red); }
+        .feed-icon-mobile.warning { background: rgba(255, 215, 0, 0.2); color: var(--warning-yellow); }
+        .feed-icon-mobile.success { background: rgba(0, 255, 136, 0.2); color: var(--primary-green); }
+
+        .feed-content-mobile {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .feed-title-mobile {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .feed-details-mobile {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.3;
+        }
+
+        .feed-time-mobile {
+            font-size: 10px;
+            color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+            flex-shrink: 0;
+        }
+
+        /* Alert Modal */
+        .alert-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .alert-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .alert-modal {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 30px;
+            border: 2px solid var(--danger-red);
+            box-shadow: 0 20px 60px rgba(255, 59, 59, 0.3);
+            text-align: center;
+            max-width: 320px;
+            width: 100%;
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+        }
+
+        .alert-overlay.show .alert-modal {
+            transform: scale(1);
+        }
+
+        .alert-icon-large {
+            font-size: 48px;
+            margin-bottom: 16px;
+            animation: alert-shake 0.5s ease-in-out infinite;
+        }
+
+        @keyframes alert-shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-2px); }
+            75% { transform: translateX(2px); }
+        }
+
+        .alert-title-mobile {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--danger-red);
+            margin-bottom: 12px;
+        }
+
+        .alert-message-mobile {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+            margin-bottom: 24px;
+        }
+
+        .alert-actions-mobile {
+            display: flex;
+            gap: 12px;
+        }
+
+        .alert-btn {
+            flex: 1;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            border: 2px solid;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .btn-terminate-mobile {
+            background: var(--danger-red);
+            border-color: var(--danger-red);
+            color: white;
+        }
+
+        .btn-terminate-mobile:active {
+            transform: scale(0.95);
+        }
+
+        .btn-continue-mobile {
+            background: transparent;
+            border-color: var(--warning-yellow);
+            color: var(--warning-yellow);
+        }
+
+        .btn-continue-mobile:active {
+            transform: scale(0.95);
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid var(--border-color);
+            padding: 12px 20px;
+            z-index: 100;
+        }
+
+        .nav-items {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 8px;
+            border-radius: 12px;
+            min-width: 50px;
+        }
+
+        .nav-item:active {
+            transform: scale(0.95);
+        }
+
+        .nav-item.active {
+            background: rgba(0, 217, 255, 0.1);
+        }
+
+        .nav-icon {
+            font-size: 20px;
+            color: var(--text-secondary);
+        }
+
+        .nav-item.active .nav-icon {
+            color: var(--primary-cyan);
+        }
+
+        .nav-label {
+            font-size: 10px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .nav-item.active .nav-label {
+            color: var(--primary-cyan);
+        }
+
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            background: var(--gradient-primary);
+            border-radius: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: var(--bg-dark);
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(0, 217, 255, 0.4);
+            transition: all 0.3s ease;
+            z-index: 90;
+        }
+
+        .fab:active {
+            transform: scale(0.9);
+        }
+
+        /* Haptic Feedback */
+        .haptic {
+            transition: all 0.1s ease;
+        }
+
+        .haptic:active {
+            transform: scale(0.95);
+        }
+
+        /* Accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* Focus states for accessibility */
+        .focusable:focus {
+            outline: 2px solid var(--primary-cyan);
+            outline-offset: 2px;
+        }
+
+        /* Screen reader only content */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* High contrast mode */
+        @media (prefers-contrast: high) {
+            :root {
+                --border-color: rgba(0, 217, 255, 0.8);
+                --bg-card: rgba(26, 29, 35, 1);
+            }
+        }
+
+        /* Dark mode (default) */
+        @media (prefers-color-scheme: dark) {
+            /* Already optimized for dark mode */
+        }
+
+        /* Loading states */
+        .loading-skeleton {
+            background: linear-gradient(90deg, 
+                rgba(255, 255, 255, 0.1) 25%, 
+                rgba(255, 255, 255, 0.2) 50%, 
+                rgba(255, 255, 255, 0.1) 75%);
+            background-size: 200% 100%;
+            animation: loading-shimmer 1.5s infinite;
+        }
+
+        @keyframes loading-shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="mobile-app">
+        <!-- Header -->
+        <header class="mobile-header">
+            <div class="header-top">
+                <div class="logo-mobile">
+                    <div class="shield-icon-mobile">🛡️</div>
+                    <div class="logo-text-mobile">CyberAgiesX</div>
+                </div>
+                
+                <div class="header-actions">
+                    <button class="notification-btn focusable" onclick="showNotifications()" aria-label="Show notifications">
+                        📬
+                        <div class="notification-badge"></div>
+                    </button>
+                    <button class="menu-btn focusable" onclick="toggleMenu()" aria-label="Open menu">
+                        ☰
+                    </button>
+                </div>
+            </div>
+            
+            <div class="quick-stats" role="region" aria-label="Quick statistics">
+                <div class="stat-chip">
+                    <span class="stat-value" id="mobile-threats">1,247</span>
+                    <span>threats blocked</span>
+                </div>
+                <div class="stat-chip">
+                    <span class="stat-value">99.8%</span>
+                    <span>accuracy</span>
+                </div>
+                <div class="stat-chip">
+                    <span class="stat-value">1.2s</span>
+                    <span>response time</span>
+                </div>
+                <div class="stat-chip">
+                    <span class="stat-value">127K</span>
+                    <span>active nodes</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content" role="main">
+            <!-- Trust Score -->
+            <section class="trust-score-card" aria-labelledby="trust-score-title">
+                <h2 id="trust-score-title" class="sr-only">Current Trust Score</h2>
+                <div class="trust-gauge-mobile">
+                    <div class="gauge-circle">
+                        <div class="gauge-inner-mobile">
+                            <div class="trust-score-mobile" id="mobile-trust-score" aria-live="polite">92</div>
+                            <div class="trust-label-mobile">Trust Score</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="status-mobile" id="mobile-status" aria-live="polite">EXCELLENT</div>
+                <p class="sr-only">Your current trust score is 92 out of 100, indicating excellent security status</p>
+            </section>
+
+            <!-- Analysis Section -->
+            <section class="analysis-section-mobile" aria-labelledby="analysis-title">
+                <h2 id="analysis-title" class="section-title-mobile">
+                    📊 Real-Time Analysis
+                </h2>
+                
+                <div class="analysis-grid-mobile">
+                    <div class="analysis-card-mobile haptic focusable" tabindex="0" role="button" aria-label="Voice analysis details">
+                        <div class="analysis-header-mobile">
+                            <div class="analysis-icon-mobile">🎤</div>
+                            <div class="analysis-title-mobile">Voice</div>
+                        </div>
+                        <div class="analysis-result-mobile result-safe" id="mobile-voice-result">✅ Verified</div>
+                        <div class="analysis-details-mobile" id="mobile-voice-details">Biometric match: 94%</div>
+                    </div>
+
+                    <div class="analysis-card-mobile haptic focusable" tabindex="0" role="button" aria-label="Video analysis details">
+                        <div class="analysis-header-mobile">
+                            <div class="analysis-icon-mobile">📹</div>
+                            <div class="analysis-title-mobile">Video</div>
+                        </div>
+                        <div class="analysis-result-mobile result-safe" id="mobile-video-result">✅ Natural</div>
+                        <div class="analysis-details-mobile" id="mobile-video-details">Facial match: 96%</div>
+                    </div>
+
+                    <div class="analysis-card-mobile haptic focusable" tabindex="0" role="button" aria-label="Behavioral analysis details">
+                        <div class="analysis-header-mobile">
+                            <div class="analysis-icon-mobile">🧠</div>
+                            <div class="analysis-title-mobile">Behavior</div>
+                        </div>
+                        <div class="analysis-result-mobile result-safe" id="mobile-behavior-result">✅ Consistent</div>
+                        <div class="analysis-details-mobile" id="mobile-behavior-details">Pattern match: 91%</div>
+                    </div>
+
+                    <div class="analysis-card-mobile haptic focusable" tabindex="0" role="button" aria-label="Digital DNA analysis details">
+                        <div class="analysis-header-mobile">
+                            <div class="analysis-icon-mobile">🔐</div>
+                            <div class="analysis-title-mobile">Digital DNA</div>
+                        </div>
+                        <div class="analysis-result-mobile result-safe" id="mobile-dna-result">✅ Confirmed</div>
+                        <div class="analysis-details-mobile" id="mobile-dna-details">Identity verified</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Activity Feed -->
+            <section class="activity-feed-mobile" aria-labelledby="activity-title">
+                <h2 id="activity-title" class="section-title-mobile">
+                    📡 Recent Activity
+                </h2>
+                
+                <div id="mobile-activity-feed" role="feed" aria-live="polite">
+                    <!-- Activity items will be populated by JavaScript -->
+                </div>
+            </section>
+        </main>
+
+        <!-- Alert Modal -->
+        <div class="alert-overlay" id="alert-overlay" role="dialog" aria-modal="true" aria-labelledby="alert-title">
+            <div class="alert-modal">
+                <div class="alert-icon-large">🚨</div>
+                <h3 id="alert-title" class="alert-title-mobile">Security Alert</h3>
+                <p class="alert-message-mobile">
+                    Critical threat detected in your communication. 
+                    Multiple anomalies suggest AI manipulation.
+                </p>
+                <div class="alert-actions-mobile">
+                    <button class="alert-btn btn-terminate-mobile haptic" onclick="terminateSession()" aria-describedby="terminate-description">
+                        🛑 Terminate
+                    </button>
+                    <button class="alert-btn btn-continue-mobile haptic" onclick="continueSession()" aria-describedby="continue-description">
+                        ⚠️ Continue
+                    </button>
+                </div>
+                <div id="terminate-description" class="sr-only">Immediately end the session and block all communications</div>
+                <div id="continue-description" class="sr-only">Continue with enhanced monitoring and restricted actions</div>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav" role="navigation" aria-label="Main navigation">
+            <div class="nav-items">
+                <div class="nav-item active haptic focusable" tabindex="0" onclick="switchTab('dashboard')" role="button" aria-label="Dashboard tab">
+                    <div class="nav-icon">🏠</div>
+                    <div class="nav-label">Dashboard</div>
+                </div>
+                <div class="nav-item haptic focusable" tabindex="0" onclick="switchTab('threats')" role="button" aria-label="Threats tab">
+                    <div class="nav-icon">🎯</div>
+                    <div class="nav-label">Threats</div>
+                </div>
+                <div class="nav-item haptic focusable" tabindex="0" onclick="switchTab('analytics')" role="button" aria-label="Analytics tab">
+                    <div class="nav-icon">📊</div>
+                    <div class="nav-label">Analytics</div>
+                </div>
+                <div class="nav-item haptic focusable" tabindex="0" onclick="switchTab('settings')" role="button" aria-label="Settings tab">
+                    <div class="nav-icon">⚙️</div>
+                    <div class="nav-label">Settings</div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Floating Action Button -->
+        <button class="fab haptic focusable" onclick="quickScan()" aria-label="Start quick security scan">
+            🔍
+        </button>
+    </div>
+
+    <script>
+        // Global state
+        let currentTab = 'dashboard';
+        let activityUpdateInterval;
+        let isAlertShown = false;
+
+        // Initialize mobile app
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeMobileApp();
+            startMobileUpdates();
+            initializeAccessibility();
+        });
+
+        function initializeMobileApp() {
+            populateMobileActivityFeed();
+            updateMobileStats();
+        }
+
+        function populateMobileActivityFeed() {
+            const feed = document.getElementById('mobile-activity-feed');
+            const activities = [
+                {
+                    type: 'critical',
+                    icon: '🚨',
+                    title: 'Deepfake Blocked',
+                    details: 'CEO impersonation attempt prevented',
+                    time: '2m ago'
+                },
+                {
+                    type: 'success',
+                    icon: '✅',
+                    title: 'Email Verified',
+                    details: 'Legitimate communication confirmed',
+                    time: '5m ago'
+                },
+                {
+                    type: 'warning',
+                    icon: '⚠️',
+                    title: 'Suspicious Activity',
+                    details: 'Voice anomaly in call - monitoring',
+                    time: '12m ago'
+                },
+                {
+                    type: 'success',
+                    icon: '🛡️',
+                    title: 'Threat Intelligence Updated',
+                    details: 'New patterns added to database',
+                    time: '18m ago'
+                }
+            ];
+
+            activities.forEach((activity, index) => {
+                setTimeout(() => {
+                    const item = document.createElement('div');
+                    item.className = 'feed-item-mobile haptic';
+                    item.tabIndex = 0;
+                    item.role = 'button';
+                    item.setAttribute('aria-label', `${activity.title}: ${activity.details}`);
+                    item.innerHTML = `
+                        <div class="feed-icon-mobile ${activity.type}">${activity.icon}</div>
+                        <div class="feed-content-mobile">
+                            <div class="feed-title-mobile">${activity.title}</div>
+                            <div class="feed-details-mobile">${activity.details}</div>
+                        </div>
+                        <div class="feed-time-mobile">${activity.time}</div>
+                    `;
+                    
+                    item.onclick = () => showActivityDetails(activity);
+                    item.onkeydown = (e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            showActivityDetails(activity);
+                        }
+                    };
+                    
+                    feed.appendChild(item);
+                }, index * 200);
+            });
+        }
+
+        function startMobileUpdates() {
+            // Update stats every 30 seconds
+            activityUpdateInterval = setInterval(() => {
+                updateMobileStats();
+                maybeAddMobileActivity();
+            }, 30000);
+
+            // Simulate periodic alerts for demo
+            setTimeout(() => {
+                if (Math.random() > 0.7) {
+                    showMobileAlert();
+                }
+            }, 60000);
+        }
+
+        function updateMobileStats() {
+            const threatsEl = document.getElementById('mobile-threats');
+            const currentThreats = parseInt(threatsEl.textContent.replace(',', ''));
+            const newThreats = currentThreats + Math.floor(Math.random() * 3) + 1;
+            
+            animateMobileCounter(threatsEl, currentThreats, newThreats);
+        }
+
+        function animateMobileCounter(element, start, end) {
+            const duration = 1000;
+            const range = end - start;
+            const startTime = performance.now();
+
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const current = Math.floor(start + range * progress);
+                element.textContent = current.toLocaleString();
+
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+
+            requestAnimationFrame(update);
+        }
+
+        function maybeAddMobileActivity() {
+            if (Math.random() > 0.6) {
+                addMobileActivity();
+            }
+        }
+
+        function addMobileActivity() {
+            const feed = document.getElementById('mobile-activity-feed');
+            const newActivities = [
+                { type: 'success', icon: '✅', title: 'Threat Blocked', details: 'Automated response successful' },
+                { type: 'warning', icon: '⚠️', title: 'Anomaly Detected', details: 'Increased monitoring active' },
+                { type: 'success', icon: '🔍', title: 'Scan Complete', details: 'All systems verified secure' }
+            ];
+
+            const activity = newActivities[Math.floor(Math.random() * newActivities.length)];
+            const item = document.createElement('div');
+            item.className = 'feed-item-mobile haptic';
+            item.style.opacity = '0';
+            item.style.transform = 'translateY(20px)';
+            item.innerHTML = `
+                <div class="feed-icon-mobile ${activity.type}">${activity.icon}</div>
+                <div class="feed-content-mobile">
+                    <div class="feed-title-mobile">${activity.title}</div>
+                    <div class="feed-details-mobile">${activity.details}</div>
+                </div>
+                <div class="feed-time-mobile">Just now</div>
+            `;
+
+            feed.insertBefore(item, feed.firstChild);
+
+            // Animate in
+            setTimeout(() => {
+                item.style.transition = 'all 0.5s ease';
+                item.style.opacity = '1';
+                item.style.transform = 'translateY(0)';
+            }, 100);
+
+            // Remove old items
+            if (feed.children.length > 8) {
+                feed.removeChild(feed.lastChild);
+            }
+
+            // Announce to screen readers
+            announceToScreenReader(`New activity: ${activity.title}`);
+        }
+
+        function switchTab(tab) {
+            currentTab = tab;
+            
+            // Update active states
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.closest('.nav-item').classList.add('active');
+
+            // Provide haptic feedback
+            if (navigator.vibrate) {
+                navigator.vibrate(50);
+            }
+
+            // Announce tab change
+            announceToScreenReader(`Switched to ${tab} tab`);
+        }
+
+        function quickScan() {
+            // Visual feedback
+            const fab = document.querySelector('.fab');
+            fab.innerHTML = '⏳';
+            fab.style.animation = 'none';
+            fab.style.transform = 'scale(0.9)';
+
+            // Haptic feedback
+            if (navigator.vibrate) {
+                navigator.vibrate([100, 50, 100]);
+            }
+
+            // Simulate scan
+            setTimeout(() => {
+                fab.innerHTML = '✅';
+                fab.style.background = 'var(--primary-green)';
+                
+                // Show success message
+                showMobileNotification('Quick scan complete - All systems secure', 'success');
+                
+                // Reset after 2 seconds
+                setTimeout(() => {
+                    fab.innerHTML = '🔍';
+                    fab.style.background = 'var(--gradient-primary)';
+                    fab.style.transform = 'scale(1)';
+                }, 2000);
+            }, 3000);
+
+            announceToScreenReader('Quick security scan started');
+        }
+
+        function showMobileAlert() {
+            if (isAlertShown) return;
+            
+            isAlertShown = true;
+            const overlay = document.getElementById('alert-overlay');
+            overlay.classList.add('show');
+            
+            // Focus management for accessibility
+            const firstButton = overlay.querySelector('.alert-btn');
+            firstButton.focus();
+
+            // Update trust score to show danger
+            updateMobileTrustScore(23, 'DANGEROUS', 'var(--danger-red)');
+
+            // Haptic feedback
+            if (navigator.vibrate) {
+                navigator.vibrate([200, 100, 200, 100, 200]);
+            }
+
+            announceToScreenReader('Critical security alert detected');
+        }
+
+        function terminateSession() {
+            const overlay = document.getElementById('alert-overlay');
+            overlay.classList.remove('show');
+            isAlertShown = false;
+
+            // Haptic feedback
+            if (navigator.vibrate) {
+                navigator.vibrate(100);
+            }
+
+            showMobileNotification('Session terminated successfully - Threat blocked', 'success');
+            updateMobileTrustScore(92, 'EXCELLENT', 'var(--primary-green)');
+            
+            announceToScreenReader('Session terminated successfully. Threat has been blocked.');
+        }
+
+        function continueSession() {
+            const overlay = document.getElementById('alert-overlay');
+            overlay.classList.remove('show');
+            isAlertShown = false;
+
+            // Haptic feedback
+            if (navigator.vibrate) {
+                navigator.vibrate([50, 25, 50]);
+            }
+
+            showMobileNotification('Continuing with enhanced monitoring', 'warning');
+            
+            announceToScreenReader('Continuing session with enhanced monitoring active');
+        }
+
+        function updateMobileTrustScore(score, status, color) {
+            const scoreEl = document.getElementById('mobile-trust-score');
+            const statusEl = document.getElementById('mobile-status');
+
+            // Animate score change
+            const currentScore = parseInt(scoreEl.textContent);
+            animateMobileCounter(scoreEl, currentScore, score);
+
+            // Update status
+            statusEl.textContent = status;
+            statusEl.style.color = color;
+            statusEl.style.borderColor = color;
+            statusEl.style.background = color + '33';
+        }
+
+        function showMobileNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            const colors = {
+                success: 'var(--primary-green)',
+                warning: 'var(--warning-yellow)',
+                danger: 'var(--danger-red)',
+                info: 'var(--primary-cyan)'
+            };
+
+            notification.style.cssText = `
+                position: fixed;
+                top: 80px;
+                left: 20px;
+                right: 20px;
+                background: ${colors[type]}22;
+                border: 1px solid ${colors[type]};
+                color: ${colors[type]};
+                padding: 16px;
+                border-radius: 12px;
+                font-weight: 600;
+                font-size: 14px;
+                z-index: 999;
+                animation: slideDown 0.3s ease;
+                text-align: center;
+            `;
+            notification.textContent = message;
+            notification.setAttribute('role', 'alert');
+            notification.setAttribute('aria-live', 'assertive');
+            
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.animation = 'slideUp 0.3s ease forwards';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        function showActivityDetails(activity) {
+            // Haptic feedback
+            if (navigator.vibrate) {
+                navigator.vibrate(50);
+            }
+
+            showMobileNotification(`${activity.title}: ${activity.details}`, activity.type);
+        }
+
+        function showNotifications() {
+            // Haptic feedback
+            if (navigator.vibrate) {
+                navigator.vibrate(50);
+            }
+
+            showMobileNotification('No new notifications', 'info');
+            announceToScreenReader('Notifications checked - no new items');
+        }
+
+        function toggleMenu() {
+            // Haptic feedback
+            if (navigator.vibrate) {
+                navigator.vibrate(50);
+            }
+
+            showMobileNotification('Menu functionality coming soon', 'info');
+        }
+
+        // Accessibility functions
+        function initializeAccessibility() {
+            // Add keyboard navigation
+            document.addEventListener('keydown', handleKeyboardNavigation);
+            
+            // Add focus management
+            document.addEventListener('focusin', handleFocusIn);
+            
+            // Add skip links (could be added to HTML)
+            addSkipLinks();
+        }
+
+        function handleKeyboardNavigation(e) {
+            // ESC to close modals
+            if (e.key === 'Escape' && isAlertShown) {
+                terminateSession();
+            }
+            
+            // Tab navigation enhancement
+            if (e.key === 'Tab') {
+                // Custom tab handling if needed
+            }
+        }
+
+        function handleFocusIn(e) {
+            // Ensure focused elements are visible
+            if (e.target.classList.contains('focusable')) {
+                e.target.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+
+        function addSkipLinks() {
+            const skipLink = document.createElement('a');
+            skipLink.href = '#main-content';
+            skipLink.textContent = 'Skip to main content';
+            skipLink.className = 'sr-only';
+            skipLink.style.position = 'absolute';
+            skipLink.style.top = '10px';
+            skipLink.style.left = '10px';
+            skipLink.style.zIndex = '9999';
+            skipLink.style.background = 'var(--primary-cyan)';
+            skipLink.style.color = 'var(--bg-dark)';
+            skipLink.style.padding = '8px 16px';
+            skipLink.style.borderRadius = '4px';
+            skipLink.style.textDecoration = 'none';
+            
+            skipLink.addEventListener('focus', () => {
+                skipLink.classList.remove('sr-only');
+            });
+            
+            skipLink.addEventListener('blur', () => {
+                skipLink.classList.add('sr-only');
+            });
+            
+            document.body.insertBefore(skipLink, document.body.firstChild);
+        }
+
+        function announceToScreenReader(message) {
+            const announcement = document.createElement('div');
+            announcement.setAttribute('aria-live', 'polite');
+            announcement.setAttribute('aria-atomic', 'true');
+            announcement.className = 'sr-only';
+            announcement.textContent = message;
+            
+            document.body.appendChild(announcement);
+            
+            setTimeout(() => {
+                document.body.removeChild(announcement);
+            }, 1000);
+        }
+
+        // Add CSS animations
+        const mobileStyle = document.createElement('style');
+        mobileStyle.textContent = `
+            @keyframes slideDown {
+                from { transform: translateY(-100%); opacity: 0; }
+                to { transform: translateY(0); opacity: 1; }
+            }
+            
+            @keyframes slideUp {
+                from { transform: translateY(0); opacity: 1; }
+                to { transform: translateY(-100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(mobileStyle);
+
+        // Service Worker registration for PWA capabilities
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                // Could register a service worker here for offline capabilities
+                console.log('PWA capabilities available');
+            });
+        }
+    </script>
+</body>
+</html>
+

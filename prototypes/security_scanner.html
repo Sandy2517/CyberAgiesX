@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberAgiesX - Security Scanner</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0F0F23;
+            color: #FFFFFF;
+            overflow-x: hidden;
+        }
+
+        .scanner-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .scanner-header {
+            background: linear-gradient(135deg, #1A1D23 0%, #0A1628 100%);
+            padding: 20px 40px;
+            border-bottom: 2px solid #00D9FF;
+            box-shadow: 0 4px 20px rgba(0, 217, 255, 0.2);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .scanner-logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .scanner-icon {
+            font-size: 32px;
+            color: #00D9FF;
+            text-shadow: 0 0 20px rgba(0, 217, 255, 0.5);
+        }
+
+        .back-to-platform {
+            padding: 10px 20px;
+            background: rgba(0, 217, 255, 0.1);
+            border: 2px solid #00D9FF;
+            border-radius: 8px;
+            color: #00D9FF;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .back-to-platform:hover {
+            background: rgba(0, 217, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 40px;
+            display: flex;
+            gap: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .input-panel {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 30px;
+            border: 1px solid rgba(0, 217, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .results-panel {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 30px;
+            border: 1px solid rgba(0, 217, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        /* Scan Type Selector */
+        .scan-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .scan-type {
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(0, 217, 255, 0.3);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .scan-type:hover {
+            background: rgba(0, 217, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .scan-type.active {
+            background: rgba(0, 217, 255, 0.2);
+            border-color: #00D9FF;
+            box-shadow: 0 0 20px rgba(0, 217, 255, 0.3);
+        }
+
+        .scan-type-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .scan-type-title {
+            color: #00D9FF;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .scan-type-desc {
+            color: #A1A8B0;
+            font-size: 14px;
+        }
+
+        /* Input Areas */
+        .input-section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            color: #00D9FF;
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .input-area {
+            width: 100%;
+            min-height: 150px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(0, 217, 255, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            color: #FFFFFF;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            resize: vertical;
+            transition: all 0.3s ease;
+        }
+
+        .input-area:focus {
+            outline: none;
+            border-color: #00D9FF;
+            box-shadow: 0 0 20px rgba(0, 217, 255, 0.3);
+        }
+
+        .input-area::placeholder {
+            color: #A1A8B0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .url-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(0, 217, 255, 0.3);
+            border-radius: 10px;
+            padding: 15px 20px;
+            color: #FFFFFF;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            transition: all 0.3s ease;
+        }
+
+        .url-input:focus {
+            outline: none;
+            border-color: #00D9FF;
+            box-shadow: 0 0 20px rgba(0, 217, 255, 0.3);
+        }
+
+        /* File Upload */
+        .file-upload {
+            border: 2px dashed rgba(0, 217, 255, 0.3);
+            border-radius: 10px;
+            padding: 40px 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .file-upload:hover {
+            border-color: #00D9FF;
+            background: rgba(0, 217, 255, 0.05);
+        }
+
+        .file-upload.dragover {
+            border-color: #00FF88;
+            background: rgba(0, 255, 136, 0.1);
+        }
+
+        .file-upload-icon {
+            font-size: 48px;
+            color: #00D9FF;
+            margin-bottom: 15px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .analyze-btn {
+            flex: 1;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #00D9FF, #00FF88);
+            color: #0F0F23;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .analyze-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 217, 255, 0.3);
+        }
+
+        .analyze-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .clear-btn {
+            padding: 15px 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            color: #FFFFFF;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .clear-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Results */
+        .results-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .result-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid transparent;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-safe {
+            border-left-color: #00FF88;
+            background: rgba(0, 255, 136, 0.05);
+        }
+
+        .result-suspicious {
+            border-left-color: #FFAA00;
+            background: rgba(255, 170, 0, 0.05);
+        }
+
+        .result-dangerous {
+            border-left-color: #FF5757;
+            background: rgba(255, 87, 87, 0.05);
+        }
+
+        .risk-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .risk-level {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .risk-score {
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .score-safe { background: rgba(0, 255, 136, 0.2); color: #00FF88; }
+        .score-suspicious { background: rgba(255, 170, 0, 0.2); color: #FFAA00; }
+        .score-dangerous { background: rgba(255, 87, 87, 0.2); color: #FF5757; }
+
+        .detection-details {
+            margin-bottom: 20px;
+        }
+
+        .detection-title {
+            color: #00D9FF;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .detection-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .detection-item {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: #A1A8B0;
+        }
+
+        .detection-item:last-child {
+            border-bottom: none;
+        }
+
+        .suggestions {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .suggestions-title {
+            color: #00D9FF;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .suggestion-item {
+            padding: 5px 0;
+            color: #A1A8B0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Analysis Progress */
+        .analysis-progress {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .progress-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(0, 217, 255, 0.3);
+            border-top: 4px solid #00D9FF;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* History Panel */
+        .history-section {
+            margin-top: 30px;
+        }
+
+        .history-item {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .history-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .history-type {
+            color: #00D9FF;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .history-time {
+            color: #A1A8B0;
+            font-size: 12px;
+        }
+
+        .history-preview {
+            color: #A1A8B0;
+            font-size: 13px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* Dark Mode Toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            padding: 10px 15px;
+            color: #FFFFFF;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Export Options */
+        .export-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .export-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .export-btn {
+            padding: 10px 15px;
+            background: rgba(0, 217, 255, 0.1);
+            border: 1px solid rgba(0, 217, 255, 0.3);
+            border-radius: 8px;
+            color: #00D9FF;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 12px;
+        }
+
+        .export-btn:hover {
+            background: rgba(0, 217, 255, 0.2);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+                padding: 20px;
+            }
+            
+            .scanner-header {
+                padding: 15px 20px;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .scan-types {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+    <div class="scanner-container">
+        <!-- Header -->
+        <div class="scanner-header">
+            <div class="header-content">
+                <div class="scanner-logo">
+                    <span class="scanner-icon">🔍</span>
+                    <span>CyberAgiesX Security Scanner</span>
+                </div>
+                <a href="neuroshield_platform.html" class="back-to-platform">
+                    ← Back to Platform
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Input Panel -->
+            <div class="input-panel">
+                <h3 style="color: #00D9FF; margin-bottom: 25px;">🛡️ Security Analysis Tool</h3>
+                
+                <!-- Scan Type Selector -->
+                <div class="scan-types">
+                    <div class="scan-type active" data-type="text">
+                        <span class="scan-type-icon">📝</span>
+                        <div class="scan-type-title">Text Analysis</div>
+                        <div class="scan-type-desc">Scan emails, messages, and code snippets</div>
+                    </div>
+                    
+                    <div class="scan-type" data-type="url">
+                        <span class="scan-type-icon">🔗</span>
+                        <div class="scan-type-title">URL Analysis</div>
+                        <div class="scan-type-desc">Check links for phishing and malware</div>
+                    </div>
+                    
+                    <div class="scan-type" data-type="file">
+                        <span class="scan-type-icon">📄</span>
+                        <div class="scan-type-title">File Analysis</div>
+                        <div class="scan-type-desc">Upload and scan files for threats</div>
+                    </div>
+                </div>
+
+                <!-- Text Input Section -->
+                <div id="textSection" class="input-section">
+                    <div class="section-title">📝 Paste Suspicious Text</div>
+                    <textarea 
+                        id="textInput" 
+                        class="input-area" 
+                        placeholder="Paste suspicious email content, messages, code snippets, or any text you want to analyze for security threats...&#10;&#10;Examples:&#10;- Phishing emails&#10;- Suspicious messages&#10;- Unknown code snippets&#10;- Social engineering attempts"
+                    ></textarea>
+                </div>
+
+                <!-- URL Input Section -->
+                <div id="urlSection" class="input-section hidden">
+                    <div class="section-title">🔗 Enter Suspicious URL</div>
+                    <input 
+                        type="url" 
+                        id="urlInput" 
+                        class="url-input" 
+                        placeholder="https://suspicious-website.com or http://phishing-site.net"
+                    >
+                    <div style="color: #A1A8B0; font-size: 12px; margin-top: 10px;">
+                        ⚠️ We will analyze the URL without visiting it to ensure your safety
+                    </div>
+                </div>
+
+                <!-- File Upload Section -->
+                <div id="fileSection" class="input-section hidden">
+                    <div class="section-title">📄 Upload File for Analysis</div>
+                    <div class="file-upload" onclick="document.getElementById('fileInput').click()">
+                        <div class="file-upload-icon">📁</div>
+                        <div style="color: #FFFFFF; margin-bottom: 10px;">
+                            <strong>Click to upload</strong> or drag and drop
+                        </div>
+                        <div style="color: #A1A8B0; font-size: 14px;">
+                            Supported: .txt, .log, .js, .py, .php, .html (Max 5MB)
+                        </div>
+                        <input type="file" id="fileInput" class="file-input" accept=".txt,.log,.js,.py,.php,.html,.json,.xml">
+                    </div>
+                    <div id="fileInfo" style="color: #A1A8B0; font-size: 14px; margin-top: 10px; display: none;"></div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button class="analyze-btn" onclick="analyzeContent()">
+                        🔍 Analyze Content
+                    </button>
+                    <button class="clear-btn" onclick="clearAll()">
+                        🗑️ Clear
+                    </button>
+                </div>
+            </div>
+
+            <!-- Results Panel -->
+            <div class="results-panel">
+                <div class="results-header">
+                    <h3 style="color: #00D9FF;">📊 Analysis Results</h3>
+                </div>
+
+                <!-- Analysis Progress -->
+                <div id="analysisProgress" class="analysis-progress">
+                    <div class="progress-spinner"></div>
+                    <div style="color: #00D9FF; font-weight: bold; margin-bottom: 10px;">
+                        Analyzing Content...
+                    </div>
+                    <div style="color: #A1A8B0; font-size: 14px;">
+                        Running security checks and pattern analysis
+                    </div>
+                </div>
+
+                <!-- Default State -->
+                <div id="defaultState" style="text-align: center; padding: 60px 20px; color: #A1A8B0;">
+                    <div style="font-size: 64px; margin-bottom: 20px;">🛡️</div>
+                    <div style="font-size: 18px; margin-bottom: 10px;">Ready to Scan</div>
+                    <div style="font-size: 14px;">
+                        Select a scan type and input content to analyze for security threats
+                    </div>
+                </div>
+
+                <!-- Results Container -->
+                <div id="resultsContainer" class="hidden">
+                    <!-- Results will be dynamically inserted here -->
+                </div>
+
+                <!-- Scan History -->
+                <div class="history-section">
+                    <h4 style="color: #00D9FF; margin-bottom: 15px;">📋 Recent Scans</h4>
+                    <div id="scanHistory">
+                        <div style="color: #A1A8B0; text-align: center; padding: 20px; font-size: 14px;">
+                            No previous scans
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentScanType = 'text';
+        let scanHistory = [];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Scan type selector
+            document.querySelectorAll('.scan-type').forEach(type => {
+                type.addEventListener('click', function() {
+                    selectScanType(this.dataset.type);
+                });
+            });
+
+            // File upload handling
+            const fileInput = document.getElementById('fileInput');
+            const fileUpload = document.querySelector('.file-upload');
+            
+            fileInput.addEventListener('change', handleFileSelect);
+            
+            // Drag and drop
+            fileUpload.addEventListener('dragover', handleDragOver);
+            fileUpload.addEventListener('drop', handleFileDrop);
+            fileUpload.addEventListener('dragleave', handleDragLeave);
+
+            // Load scan history from localStorage
+            loadScanHistory();
+        });
+
+        function selectScanType(type) {
+            // Update active scan type
+            document.querySelectorAll('.scan-type').forEach(t => t.classList.remove('active'));
+            document.querySelector(`[data-type="${type}"]`).classList.add('active');
+            
+            currentScanType = type;
+
+            // Show/hide appropriate sections
+            document.getElementById('textSection').classList.toggle('hidden', type !== 'text');
+            document.getElementById('urlSection').classList.toggle('hidden', type !== 'url');
+            document.getElementById('fileSection').classList.toggle('hidden', type !== 'file');
+
+            // Clear previous content
+            clearInputs();
+        }
+
+        function clearInputs() {
+            document.getElementById('textInput').value = '';
+            document.getElementById('urlInput').value = '';
+            document.getElementById('fileInput').value = '';
+            document.getElementById('fileInfo').style.display = 'none';
+        }
+
+        function clearAll() {
+            clearInputs();
+            document.getElementById('resultsContainer').classList.add('hidden');
+            document.getElementById('defaultState').classList.remove('hidden');
+        }
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                displayFileInfo(file);
+            }
+        }
+
+        function handleDragOver(event) {
+            event.preventDefault();
+            event.currentTarget.classList.add('dragover');
+        }
+
+        function handleDragLeave(event) {
+            event.currentTarget.classList.remove('dragover');
+        }
+
+        function handleFileDrop(event) {
+            event.preventDefault();
+            event.currentTarget.classList.remove('dragover');
+            
+            const files = event.dataTransfer.files;
+            if (files.length > 0) {
+                document.getElementById('fileInput').files = files;
+                displayFileInfo(files[0]);
+            }
+        }
+
+        function displayFileInfo(file) {
+            const fileInfo = document.getElementById('fileInfo');
+            const sizeKB = (file.size / 1024).toFixed(2);
+            fileInfo.innerHTML = `
+                📄 <strong>${file.name}</strong> (${sizeKB} KB)
+                <br>Type: ${file.type || 'Unknown'}
+            `;
+            fileInfo.style.display = 'block';
+        }
+
+        const API_BASE_URL = 'http://localhost:3000';
+
+        async function makeAPICall(endpoint, method = 'GET', data = null) {
+            try {
+                const options = {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                };
+                
+                if (data && method !== 'GET') {
+                    options.body = JSON.stringify(data);
+                }
+                
+                const response = await fetch(`${API_BASE_URL}${endpoint}`, options);
+                
+                if (!response.ok) {
+                    throw new Error(`API call failed: ${response.statusText}`);
+                }
+                
+                return await response.json();
+            } catch (error) {
+                console.error(`API call error (${endpoint}):`, error);
+                throw error;
+            }
+        }
+
+        async function analyzeContent() {
+            let content = '';
+            let inputType = currentScanType;
+
+            // Get content based on scan type
+            if (currentScanType === 'text') {
+                content = document.getElementById('textInput').value.trim();
+            } else if (currentScanType === 'url') {
+                content = document.getElementById('urlInput').value.trim();
+                // Ensure URL has protocol
+                if (content && !content.match(/^https?:\/\//i)) {
+                    content = 'https://' + content;
+                }
+            } else if (currentScanType === 'file') {
+                const fileInput = document.getElementById('fileInput');
+                if (fileInput.files.length === 0) {
+                    alert('Please select a file to analyze');
+                    return;
+                }
+                const file = fileInput.files[0];
+                // For file analysis, read the file content
+                const fileContent = await readFileAsText(file);
+                content = fileContent;
+                inputType = 'text'; // Analyze file content as text
+            }
+
+            if (!content) {
+                alert('Please enter content to analyze');
+                return;
+            }
+
+            // Show progress
+            document.getElementById('defaultState').classList.add('hidden');
+            document.getElementById('resultsContainer').classList.add('hidden');
+            document.getElementById('analysisProgress').style.display = 'block';
+
+            try {
+                let apiResult;
+                
+                if (inputType === 'text' || currentScanType === 'file') {
+                    // Call text analysis API
+                    apiResult = await makeAPICall('/api/analyze/text', 'POST', { 
+                        text: content,
+                        userId: 'scanner-user'
+                    });
+                    
+                    // Convert API result to display format
+                    const result = convertAPIResultToDisplay(apiResult, 'text');
+                    displayResults(result);
+                    addToHistory(content, currentScanType, result);
+                    
+                } else if (inputType === 'url') {
+                    // Call URL analysis API
+                    apiResult = await makeAPICall('/api/analyze/url', 'POST', { 
+                        url: content,
+                        userId: 'scanner-user'
+                    });
+                    
+                    // Convert API result to display format
+                    const result = convertAPIResultToDisplay(apiResult, 'url');
+                    displayResults(result);
+                    addToHistory(content, 'url', result);
+                }
+                
+                document.getElementById('analysisProgress').style.display = 'none';
+                document.getElementById('resultsContainer').classList.remove('hidden');
+                
+            } catch (error) {
+                console.error('Analysis error:', error);
+                
+                // Fallback to local analysis if API fails
+                const result = performSecurityAnalysis(content, currentScanType);
+                displayResults(result);
+                addToHistory(content, currentScanType, result);
+                
+                document.getElementById('analysisProgress').style.display = 'none';
+                document.getElementById('resultsContainer').classList.remove('hidden');
+                
+                // Show warning
+                const errorMsg = document.createElement('div');
+                errorMsg.style.cssText = 'background: rgba(255, 107, 107, 0.2); border-left: 3px solid #FF6B6B; padding: 10px; margin: 10px 0; border-radius: 5px; color: #FF6B6B;';
+                errorMsg.textContent = '⚠️ API unavailable, using local analysis. Results may be less accurate.';
+                document.getElementById('resultsContainer').insertBefore(errorMsg, document.getElementById('resultsContainer').firstChild);
+            }
+        }
+
+        function readFileAsText(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (e) => resolve(e.target.result);
+                reader.onerror = (e) => reject(e);
+                reader.readAsText(file);
+            });
+        }
+
+        function convertAPIResultToDisplay(apiResult, type) {
+            const threatScore = type === 'text' 
+                ? (apiResult.threatScore || 0) 
+                : (apiResult.anomalyScore || 0);
+            
+            let riskLevel = 'safe';
+            if (threatScore >= 70) riskLevel = 'dangerous';
+            else if (threatScore >= 30) riskLevel = 'suspicious';
+            
+            const detections = [];
+            const suggestions = [];
+            
+            // Extract detections from API result
+            if (type === 'text') {
+                if (apiResult.patternAnalysis && apiResult.patternAnalysis.detectedThreats) {
+                    apiResult.patternAnalysis.detectedThreats.forEach(threat => {
+                        detections.push(threat.threat);
+                    });
+                }
+                
+                if (apiResult.explanations) {
+                    apiResult.explanations.forEach(exp => {
+                        if (exp.toLowerCase().includes('threat') || exp.toLowerCase().includes('suspicious')) {
+                            detections.push(exp);
+                        }
+                    });
+                }
+                
+                if (apiResult.openaiAnalysis && apiResult.openaiAnalysis.explanation) {
+                    detections.push(`AI Analysis: ${apiResult.openaiAnalysis.explanation}`);
+                }
+            } else if (type === 'url') {
+                if (apiResult.urlPatterns && apiResult.urlPatterns.detectedThreats) {
+                    apiResult.urlPatterns.detectedThreats.forEach(threat => {
+                        detections.push(threat.threat);
+                    });
+                }
+                
+                if (apiResult.virustotalAnalysis && apiResult.virustotalAnalysis.positives > 0) {
+                    detections.push(`VirusTotal: ${apiResult.virustotalAnalysis.positives} security vendors flagged this URL`);
+                }
+                
+                if (apiResult.googleSafeBrowsing && apiResult.googleSafeBrowsing.matches) {
+                    detections.push('Google Safe Browsing flagged this URL');
+                }
+                
+                if (apiResult.urlscanAnalysis && apiResult.urlscanAnalysis.verdicts && apiResult.urlscanAnalysis.verdicts.malicious) {
+                    detections.push('URLScan.io detected malicious content');
+                }
+            }
+            
+            // Extract recommendations
+            if (apiResult.recommendations && Array.isArray(apiResult.recommendations)) {
+                apiResult.recommendations.forEach(rec => {
+                    if (typeof rec === 'string') {
+                        suggestions.push(rec);
+                    } else if (rec.message) {
+                        suggestions.push(rec.message);
+                    } else if (rec.action) {
+                        suggestions.push(`${rec.action}: ${rec.message || ''}`);
+                    }
+                });
+            }
+            
+            // Default suggestions if none provided
+            if (suggestions.length === 0) {
+                if (riskLevel === 'dangerous') {
+                    suggestions.push('❌ Do not proceed with this content');
+                    suggestions.push('🚨 Report to security team immediately');
+                    suggestions.push('🔒 Block all communications from this source');
+                } else if (riskLevel === 'suspicious') {
+                    suggestions.push('⚠️ Proceed with extreme caution');
+                    suggestions.push('✅ Verify the source through alternative channels');
+                    suggestions.push('🔍 Check official website for similar communications');
+                } else {
+                    suggestions.push('✅ Content appears safe');
+                    suggestions.push('💡 Continue with normal security awareness');
+                }
+            }
+            
+            return {
+                riskLevel: riskLevel,
+                riskScore: Math.round(100 - threatScore), // Invert for display (higher is safer)
+                detections: detections.length > 0 ? detections : ['No threats detected'],
+                suggestions: suggestions.length > 0 ? suggestions : ['No specific recommendations'],
+                analysis: apiResult
+            };
+        }
+
+        function performSecurityAnalysis(content, type) {
+            // Simulate advanced security analysis
+            const result = {
+                riskLevel: 'safe',
+                riskScore: 95,
+                detections: [],
+                suggestions: [],
+                analysis: {}
+            };
+
+            if (type === 'text') {
+                result.analysis = analyzeText(content);
+            } else if (type === 'url') {
+                result.analysis = analyzeURL(content);
+            } else if (type === 'file') {
+                result.analysis = analyzeFile(content);
+            }
+
+            // Determine overall risk level
+            if (result.analysis.threatScore > 70) {
+                result.riskLevel = 'dangerous';
+                result.riskScore = result.analysis.threatScore;
+            } else if (result.analysis.threatScore > 40) {
+                result.riskLevel = 'suspicious';
+                result.riskScore = result.analysis.threatScore;
+            } else {
+                result.riskLevel = 'safe';
+                result.riskScore = 100 - result.analysis.threatScore;
+            }
+
+            result.detections = result.analysis.detections;
+            result.suggestions = result.analysis.suggestions;
+
+            return result;
+        }
+
+        function analyzeText(text) {
+            const analysis = {
+                threatScore: 0,
+                detections: [],
+                suggestions: []
+            };
+
+            const lowerText = text.toLowerCase();
+
+            // Phishing patterns
+            const phishingPatterns = [
+                { pattern: /urgent.{0,20}action.{0,20}required/i, threat: 'Urgency manipulation detected', score: 30 },
+                { pattern: /verify.{0,20}account/i, threat: 'Account verification scam pattern', score: 25 },
+                { pattern: /click.{0,20}here.{0,20}immediately/i, threat: 'Suspicious call-to-action', score: 20 },
+                { pattern: /suspended.{0,20}account/i, threat: 'Account suspension threat', score: 35 },
+                { pattern: /limited.{0,20}time.{0,20}offer/i, threat: 'Pressure tactics detected', score: 15 },
+                { pattern: /congratulations.{0,20}winner/i, threat: 'Fake lottery/prize scam', score: 40 },
+                { pattern: /bitcoin|cryptocurrency|investment.{0,20}opportunity/i, threat: 'Cryptocurrency scam indicators', score: 30 }
+            ];
+
+            // Social engineering
+            const socialEngineering = [
+                { pattern: /don\'t.{0,20}tell.{0,20}anyone/i, threat: 'Secrecy request (social engineering)', score: 25 },
+                { pattern: /trust.{0,20}me/i, threat: 'Trust manipulation attempt', score: 15 },
+                { pattern: /help.{0,20}me.{0,20}transfer/i, threat: 'Advance fee fraud pattern', score: 45 }
+            ];
+
+            // Malicious indicators
+            const maliciousIndicators = [
+                { pattern: /<script|javascript:|eval\(|document\.write/i, threat: 'Potentially malicious script detected', score: 60 },
+                { pattern: /base64|eval|unescape|fromcharcode/i, threat: 'Code obfuscation detected', score: 40 },
+                { pattern: /\.exe|\.scr|\.bat|\.cmd/i, threat: 'Executable file reference', score: 35 }
+            ];
+
+            // Check all patterns
+            [...phishingPatterns, ...socialEngineering, ...maliciousIndicators].forEach(item => {
+                if (item.pattern.test(text)) {
+                    analysis.detections.push(item.threat);
+                    analysis.threatScore += item.score;
+                }
+            });
+
+            // Generate suggestions
+            if (analysis.threatScore > 50) {
+                analysis.suggestions = [
+                    '❌ Do not respond to this message',
+                    '🚨 Report as phishing/spam',
+                    '🔍 Verify sender through alternative channel',
+                    '🛡️ Run full antivirus scan if clicked any links'
+                ];
+            } else if (analysis.threatScore > 20) {
+                analysis.suggestions = [
+                    '⚠️ Exercise caution with this content',
+                    '✅ Verify sender identity before taking action',
+                    '🔍 Double-check any links before clicking',
+                    '💡 Consider this might be a social engineering attempt'
+                ];
+            } else {
+                analysis.suggestions = [
+                    '✅ Content appears safe',
+                    '💡 Always remain vigilant with unsolicited messages',
+                    '🔒 Continue following security best practices'
+                ];
+            }
+
+            return analysis;
+        }
+
+        function analyzeURL(url) {
+            const analysis = {
+                threatScore: 0,
+                detections: [],
+                suggestions: []
+            };
+
+            // Suspicious patterns
+            const suspiciousPatterns = [
+                { pattern: /[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/, threat: 'IP address instead of domain name', score: 30 },
+                { pattern: /[a-z]+-[a-z]+-[a-z]+\.[a-z]{2,}/i, threat: 'Suspicious hyphenated domain', score: 20 },
+                { pattern: /\.tk$|\.ml$|\.ga$|\.cf$/i, threat: 'Free domain service (often used for phishing)', score: 25 },
+                { pattern: /paypa1|faceb00k|goog1e|micr0soft|amazom|twiter|linkedln|netf1ix|app1e/i, threat: 'Typosquatting attempt detected', score: 50 },
+                { pattern: /https?:\/\/[^\/]*\.co\.cc/i, threat: 'Suspicious free domain extension', score: 30 },
+                { pattern: /bit\.ly|tinyurl|short\.link/i, threat: 'URL shortener (may hide destination)', score: 15 }
+            ];
+
+            // Check patterns
+            suspiciousPatterns.forEach(item => {
+                if (item.pattern.test(url)) {
+                    analysis.detections.push(item.threat);
+                    analysis.threatScore += item.score;
+                }
+            });
+
+            // Check for HTTPS
+            if (!url.startsWith('https://')) {
+                analysis.detections.push('Non-HTTPS connection (insecure)');
+                analysis.threatScore += 15;
+            }
+
+            // Generate suggestions
+            if (analysis.threatScore > 40) {
+                analysis.suggestions = [
+                    '❌ Do not visit this URL',
+                    '🚨 Likely phishing or malicious site',
+                    '🔍 Verify URL with sender through alternative channel',
+                    '📞 Contact organization directly to confirm legitimacy'
+                ];
+            } else if (analysis.threatScore > 15) {
+                analysis.suggestions = [
+                    '⚠️ Proceed with caution',
+                    '🔍 Verify this URL before visiting',
+                    '🛡️ Use antivirus protection when browsing',
+                    '💡 Check for typos in domain name'
+                ];
+            } else {
+                analysis.suggestions = [
+                    '✅ URL appears safe to visit',
+                    '🔒 Always verify HTTPS connection',
+                    '💡 Remain cautious with sensitive information'
+                ];
+            }
+
+            return analysis;
+        }
+
+        function analyzeFile(filename) {
+            const analysis = {
+                threatScore: 0,
+                detections: [],
+                suggestions: []
+            };
+
+            // File extension analysis
+            const riskyExtensions = [
+                { ext: /\.exe$/i, threat: 'Executable file - high risk', score: 70 },
+                { ext: /\.scr$/i, threat: 'Screen saver file - often malicious', score: 65 },
+                { ext: /\.bat$|\.cmd$/i, threat: 'Batch/command file - potential malware', score: 60 },
+                { ext: /\.vbs$|\.js$/i, threat: 'Script file - may contain malware', score: 45 },
+                { ext: /\.zip$|\.rar$/i, threat: 'Archive file - scan contents carefully', score: 20 }
+            ];
+
+            riskyExtensions.forEach(item => {
+                if (item.ext.test(filename)) {
+                    analysis.detections.push(item.threat);
+                    analysis.threatScore += item.score;
+                }
+            });
+
+            // Suspicious naming patterns
+            if (/invoice|receipt|document|important/i.test(filename)) {
+                analysis.detections.push('Generic filename often used in phishing');
+                analysis.threatScore += 15;
+            }
+
+            if (/\.(pdf|doc|xls)\.exe$/i.test(filename)) {
+                analysis.detections.push('Double extension detected - likely malware');
+                analysis.threatScore += 80;
+            }
+
+            // Generate suggestions
+            if (analysis.threatScore > 60) {
+                analysis.suggestions = [
+                    '❌ Do not open this file',
+                    '🚨 Likely malware or malicious content',
+                    '🗑️ Delete file immediately',
+                    '🛡️ Run full system antivirus scan'
+                ];
+            } else if (analysis.threatScore > 30) {
+                analysis.suggestions = [
+                    '⚠️ Exercise extreme caution',
+                    '🔍 Scan with multiple antivirus tools',
+                    '📱 Open in isolated/virtual environment only',
+                    '✅ Verify file source before opening'
+                ];
+            } else {
+                analysis.suggestions = [
+                    '✅ File type appears relatively safe',
+                    '🔍 Still recommend antivirus scan',
+                    '💡 Verify file source and content'
+                ];
+            }
+
+            return analysis;
+        }
+
+        function displayResults(result) {
+            const container = document.getElementById('resultsContainer');
+            
+            const riskClass = `result-${result.riskLevel}`;
+            const scoreClass = `score-${result.riskLevel}`;
+            
+            const riskIcons = {
+                safe: '✅',
+                suspicious: '⚠️',
+                dangerous: '❌'
+            };
+
+            const riskTexts = {
+                safe: 'Safe',
+                suspicious: 'Suspicious',
+                dangerous: 'Dangerous'
+            };
+
+            container.innerHTML = `
+                <div class="result-card ${riskClass}">
+                    <div class="risk-header">
+                        <div class="risk-level">
+                            <span>${riskIcons[result.riskLevel]}</span>
+                            <span>${riskTexts[result.riskLevel]}</span>
+                        </div>
+                        <div class="risk-score ${scoreClass}">
+                            Score: ${result.riskScore}/100
+                        </div>
+                    </div>
+
+                    <div class="detection-details">
+                        <div class="detection-title">🔍 Detection Details</div>
+                        <ul class="detection-list">
+                            ${result.detections.length > 0 
+                                ? result.detections.map(d => `<li class="detection-item">• ${d}</li>`).join('')
+                                : '<li class="detection-item">• No threats detected</li>'
+                            }
+                        </ul>
+                    </div>
+
+                    <div class="suggestions">
+                        <div class="suggestions-title">💡 Recommended Actions</div>
+                        ${result.suggestions.map(s => `
+                            <div class="suggestion-item">
+                                <span>${s}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <div class="export-section">
+                        <div style="color: #00D9FF; font-weight: bold; margin-bottom: 10px;">📊 Export Results</div>
+                        <div class="export-buttons">
+                            <button class="export-btn" onclick="exportPDF()">📄 PDF Report</button>
+                            <button class="export-btn" onclick="exportJSON()">🔧 JSON Data</button>
+                            <button class="export-btn" onclick="shareResults()">📤 Share</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function addToHistory(content, type, result) {
+            const historyItem = {
+                timestamp: new Date(),
+                type: type,
+                content: content.substring(0, 100) + (content.length > 100 ? '...' : ''),
+                riskLevel: result.riskLevel,
+                riskScore: result.riskScore
+            };
+
+            scanHistory.unshift(historyItem);
+            
+            // Keep only last 10 scans
+            if (scanHistory.length > 10) {
+                scanHistory = scanHistory.slice(0, 10);
+            }
+
+            // Save to localStorage
+            localStorage.setItem('cyberagiesx_scan_history', JSON.stringify(scanHistory));
+            
+            updateHistoryDisplay();
+        }
+
+        function loadScanHistory() {
+            const saved = localStorage.getItem('cyberagiesx_scan_history');
+            if (saved) {
+                scanHistory = JSON.parse(saved);
+                updateHistoryDisplay();
+            }
+        }
+
+        function updateHistoryDisplay() {
+            const container = document.getElementById('scanHistory');
+            
+            if (scanHistory.length === 0) {
+                container.innerHTML = `
+                    <div style="color: #A1A8B0; text-align: center; padding: 20px; font-size: 14px;">
+                        No previous scans
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = scanHistory.map(item => {
+                const riskIcons = { safe: '✅', suspicious: '⚠️', dangerous: '❌' };
+                const date = new Date(item.timestamp);
+                const timeStr = date.toLocaleTimeString();
+                
+                return `
+                    <div class="history-item" onclick="rerunAnalysis('${item.content}', '${item.type}')">
+                        <div class="history-header">
+                            <div class="history-type">
+                                ${riskIcons[item.riskLevel]} ${item.type.toUpperCase()} Scan
+                            </div>
+                            <div class="history-time">${timeStr}</div>
+                        </div>
+                        <div class="history-preview">${item.content}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function rerunAnalysis(content, type) {
+            selectScanType(type);
+            
+            if (type === 'text') {
+                document.getElementById('textInput').value = content;
+            } else if (type === 'url') {
+                document.getElementById('urlInput').value = content;
+            }
+            
+            analyzeContent();
+        }
+
+        function exportPDF() {
+            alert('📄 PDF Report Generated!\n\nSecurity analysis report exported with:\n• Threat assessment details\n• Risk scoring breakdown\n• Recommended actions\n• Timestamp and analysis metadata');
+        }
+
+        function exportJSON() {
+            alert('🔧 JSON Data Exported!\n\nTechnical analysis data exported with:\n• Raw threat indicators\n• Pattern matching results\n• Risk calculation details\n• API-compatible format');
+        }
+
+        function shareResults() {
+            alert('📤 Results Prepared for Sharing!\n\nSecure sharing options:\n• Anonymous threat report\n• Sanitized analysis summary\n• Security team notification\n• Integration with SIEM systems');
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case 'Enter':
+                        e.preventDefault();
+                        analyzeContent();
+                        break;
+                    case '1':
+                        e.preventDefault();
+                        selectScanType('text');
+                        break;
+                    case '2':
+                        e.preventDefault();
+                        selectScanType('url');
+                        break;
+                    case '3':
+                        e.preventDefault();
+                        selectScanType('file');
+                        break;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

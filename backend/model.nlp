@@ -1,0 +1,459 @@
+{
+  "settings": {
+    "languages": [
+      "en"
+    ],
+    "tag": "nlp",
+    "threshold": 0.5,
+    "autoLoad": true,
+    "autoSave": true,
+    "modelFileName": "model.nlp",
+    "executeActionsBeforeAnswers": false,
+    "calculateSentiment": true
+  },
+  "nluManager": {
+    "settings": {
+      "tag": "nlu-manager"
+    },
+    "locales": [
+      "en"
+    ],
+    "languageNames": {},
+    "domainManagers": {
+      "en": {
+        "settings": {
+          "locale": "en",
+          "trainByDomain": false,
+          "tag": "domain-manager-en",
+          "nluByDomain": {
+            "default": {
+              "className": "NeuralNlu",
+              "settings": {}
+            }
+          },
+          "useStemDict": true
+        },
+        "stemDict": {
+          "action,requir,urgent": {
+            "intent": "phishing",
+            "domain": "default"
+          },
+          "account,verifi,your": {
+            "intent": "phishing",
+            "domain": "default"
+          },
+          "click,here,immedi": {
+            "intent": "phishing",
+            "domain": "default"
+          },
+          "account,suspend": {
+            "intent": "phishing",
+            "domain": "default"
+          },
+          "congratul,won,you": {
+            "intent": "scam",
+            "domain": "default"
+          },
+          "bitcoin,invest,opportun": {
+            "intent": "scam",
+            "domain": "default"
+          },
+          "busi,email,normal": {
+            "intent": "legitimate",
+            "domain": "default"
+          },
+          "meet,remind": {
+            "intent": "legitimate",
+            "domain": "default"
+          },
+          "project,updat": {
+            "intent": "legitimate",
+            "domain": "default"
+          }
+        },
+        "intentDict": {
+          "phishing": "default",
+          "scam": "default",
+          "legitimate": "default"
+        },
+        "sentences": [
+          {
+            "domain": "default",
+            "utterance": "urgent action required",
+            "intent": "phishing"
+          },
+          {
+            "domain": "default",
+            "utterance": "verify your account",
+            "intent": "phishing"
+          },
+          {
+            "domain": "default",
+            "utterance": "click here immediately",
+            "intent": "phishing"
+          },
+          {
+            "domain": "default",
+            "utterance": "account suspended",
+            "intent": "phishing"
+          },
+          {
+            "domain": "default",
+            "utterance": "congratulations you won",
+            "intent": "scam"
+          },
+          {
+            "domain": "default",
+            "utterance": "bitcoin investment opportunity",
+            "intent": "scam"
+          },
+          {
+            "domain": "default",
+            "utterance": "normal business email",
+            "intent": "legitimate"
+          },
+          {
+            "domain": "default",
+            "utterance": "meeting reminder",
+            "intent": "legitimate"
+          },
+          {
+            "domain": "default",
+            "utterance": "project update",
+            "intent": "legitimate"
+          }
+        ],
+        "domains": {
+          "master_domain": {
+            "settings": {
+              "locale": "en",
+              "tag": "nlu-en",
+              "keepStopwords": true,
+              "nonefeatureValue": 1,
+              "nonedeltaMultiplier": 1.2,
+              "spellCheck": false,
+              "spellCheckDistance": 1,
+              "filterZeros": true,
+              "log": true
+            },
+            "features": {
+              "urgent": 1,
+              "action": 1,
+              "requir": 1,
+              "verifi": 1,
+              "your": 1,
+              "account": 1,
+              "click": 1,
+              "here": 1,
+              "immedi": 1,
+              "suspend": 1,
+              "congratul": 1,
+              "you": 1,
+              "won": 1,
+              "bitcoin": 1,
+              "invest": 1,
+              "opportun": 1,
+              "normal": 1,
+              "busi": 1,
+              "email": 1,
+              "meet": 1,
+              "remind": 1,
+              "project": 1,
+              "updat": 1
+            },
+            "intents": {
+              "phishing": 1,
+              "scam": 1,
+              "legitimate": 1
+            },
+            "intentFeatures": {
+              "phishing": {
+                "urgent": 1,
+                "action": 1,
+                "requir": 1,
+                "verifi": 1,
+                "your": 1,
+                "account": 1,
+                "click": 1,
+                "here": 1,
+                "immedi": 1,
+                "suspend": 1
+              },
+              "scam": {
+                "congratul": 1,
+                "you": 1,
+                "won": 1,
+                "bitcoin": 1,
+                "invest": 1,
+                "opportun": 1
+              },
+              "legitimate": {
+                "normal": 1,
+                "busi": 1,
+                "email": 1,
+                "meet": 1,
+                "remind": 1,
+                "project": 1,
+                "updat": 1
+              }
+            },
+            "featuresToIntent": {
+              "urgent": [
+                "phishing"
+              ],
+              "action": [
+                "phishing"
+              ],
+              "requir": [
+                "phishing"
+              ],
+              "verifi": [
+                "phishing"
+              ],
+              "your": [
+                "phishing"
+              ],
+              "account": [
+                "phishing"
+              ],
+              "click": [
+                "phishing"
+              ],
+              "here": [
+                "phishing"
+              ],
+              "immedi": [
+                "phishing"
+              ],
+              "suspend": [
+                "phishing"
+              ],
+              "congratul": [
+                "scam"
+              ],
+              "you": [
+                "scam"
+              ],
+              "won": [
+                "scam"
+              ],
+              "bitcoin": [
+                "scam"
+              ],
+              "invest": [
+                "scam"
+              ],
+              "opportun": [
+                "scam"
+              ],
+              "normal": [
+                "legitimate"
+              ],
+              "busi": [
+                "legitimate"
+              ],
+              "email": [
+                "legitimate"
+              ],
+              "meet": [
+                "legitimate"
+              ],
+              "remind": [
+                "legitimate"
+              ],
+              "project": [
+                "legitimate"
+              ],
+              "updat": [
+                "legitimate"
+              ]
+            },
+            "neuralNetwork": {
+              "settings": {
+                "locale": "en",
+                "tag": "nlu-en",
+                "keepStopwords": true,
+                "nonefeatureValue": 1,
+                "nonedeltaMultiplier": 1.2,
+                "spellCheck": false,
+                "spellCheckDistance": 1,
+                "filterZeros": true,
+                "log": true
+              },
+              "features": [
+                "urgent",
+                "action",
+                "requir",
+                "verifi",
+                "your",
+                "account",
+                "click",
+                "here",
+                "immedi",
+                "suspend",
+                "congratul",
+                "you",
+                "won",
+                "bitcoin",
+                "invest",
+                "opportun",
+                "normal",
+                "busi",
+                "email",
+                "meet",
+                "remind",
+                "project",
+                "updat"
+              ],
+              "intents": [
+                "phishing",
+                "scam",
+                "legitimate"
+              ],
+              "perceptrons": [
+                [
+                  3.6430819034576416,
+                  3.6430819034576416,
+                  3.6430819034576416,
+                  2.3231167793273926,
+                  2.3231167793273926,
+                  6.464998245239258,
+                  3.6454756259918213,
+                  3.6454756259918213,
+                  3.6454756259918213,
+                  4.142618179321289,
+                  -1.1935702562332153,
+                  -1.1935702562332153,
+                  -1.1935702562332153,
+                  -1.1760971546173096,
+                  -1.1760971546173096,
+                  -1.1760971546173096,
+                  -1.1800956726074219,
+                  -1.1800956726074219,
+                  -1.1800956726074219,
+                  -1.6823883056640625,
+                  -1.6823883056640625,
+                  -1.67536199092865,
+                  -1.67536199092865,
+                  3.3765097033512133
+                ],
+                [
+                  -0.622490406036377,
+                  -0.622490406036377,
+                  -0.622490406036377,
+                  -0.46753165125846863,
+                  -0.46753165125846863,
+                  -1.125820279121399,
+                  -0.6095461845397949,
+                  -0.6095461845397949,
+                  -0.6095461845397949,
+                  -0.6363261342048645,
+                  4.181113243103027,
+                  4.181113243103027,
+                  4.181113243103027,
+                  4.177827835083008,
+                  4.177827835083008,
+                  4.177827835083008,
+                  -0.6471494436264038,
+                  -0.6471494436264038,
+                  -0.6471494436264038,
+                  -0.8875575661659241,
+                  -0.8875575661659241,
+                  -0.8825499415397644,
+                  -0.8825499415397644,
+                  1.756209365121779
+                ],
+                [
+                  -1.2015137672424316,
+                  -1.2015137672424316,
+                  -1.2015137672424316,
+                  -0.8814998269081116,
+                  -0.8814998269081116,
+                  -2.2097458839416504,
+                  -1.1985169649124146,
+                  -1.1985169649124146,
+                  -1.1985169649124146,
+                  -1.3037360906600952,
+                  -1.1980088949203491,
+                  -1.1980088949203491,
+                  -1.1980088949203491,
+                  -1.1974844932556152,
+                  -1.1974844932556152,
+                  -1.1974844932556152,
+                  3.577970504760742,
+                  3.577970504760742,
+                  3.577970504760742,
+                  5.328103065490723,
+                  5.328103065490723,
+                  5.3107428550720215,
+                  5.3107428550720215,
+                  3.5930089858668293
+                ]
+              ]
+            }
+          }
+        }
+      }
+    },
+    "intentDomains": {},
+    "extraSentences": [
+      [
+        "en",
+        "urgent action required"
+      ],
+      [
+        "en",
+        "verify your account"
+      ],
+      [
+        "en",
+        "click here immediately"
+      ],
+      [
+        "en",
+        "account suspended"
+      ],
+      [
+        "en",
+        "congratulations you won"
+      ],
+      [
+        "en",
+        "bitcoin investment opportunity"
+      ],
+      [
+        "en",
+        "normal business email"
+      ],
+      [
+        "en",
+        "meeting reminder"
+      ],
+      [
+        "en",
+        "project update"
+      ]
+    ]
+  },
+  "ner": {
+    "settings": {
+      "tag": "ner",
+      "entityPreffix": "%",
+      "entitySuffix": "%"
+    },
+    "rules": {}
+  },
+  "nlgManager": {
+    "settings": {
+      "tag": "nlg-manager"
+    },
+    "responses": {}
+  },
+  "actionManager": {
+    "settings": {
+      "tag": "action-manager"
+    },
+    "actions": {}
+  },
+  "slotManager": {}
+}

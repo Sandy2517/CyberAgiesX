@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberAgiesX - Advanced Security Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-cyan: #00D9FF;
+            --primary-green: #00FF88;
+            --danger-red: #FF3B3B;
+            --warning-orange: #FF6B35;
+            --warning-yellow: #FFD700;
+            --accent-purple: #8B5CF6;
+            --accent-pink: #EC4899;
+            --bg-dark: #0A0E1A;
+            --bg-secondary: #1A1D23;
+            --bg-card: rgba(26, 29, 35, 0.8);
+            --text-primary: #FFFFFF;
+            --text-secondary: #8B9DC3;
+            --border-color: rgba(0, 217, 255, 0.3);
+            --shadow-glow: 0 8px 32px rgba(0, 217, 255, 0.2);
+            --gradient-primary: linear-gradient(135deg, #00D9FF 0%, #00FF88 100%);
+            --gradient-danger: linear-gradient(135deg, #FF3B3B 0%, #FF6B35 100%);
+            --gradient-bg: radial-gradient(ellipse at top, #1A1D23 0%, #0A0E1A 50%, #050810 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gradient-bg);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Animated Grid Background */
+        .grid-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.1;
+            background-image: 
+                linear-gradient(rgba(0, 217, 255, 0.3) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 217, 255, 0.3) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: grid-move 20s linear infinite;
+        }
+
+        @keyframes grid-move {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Header */
+        .header {
+            background: rgba(26, 29, 35, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 2px solid var(--border-color);
+            box-shadow: var(--shadow-glow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .shield-logo {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient-primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            animation: logo-pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes logo-pulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 136, 0.5); }
+            50% { box-shadow: 0 0 30px rgba(0, 255, 136, 0.8), 0 0 50px rgba(0, 217, 255, 0.3); }
+        }
+
+        .logo-text {
+            font-size: 28px;
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .time-selector {
+            display: flex;
+            gap: 10px;
+            padding: 8px;
+            background: rgba(0, 217, 255, 0.1);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .time-option {
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .time-option.active {
+            background: var(--primary-cyan);
+            color: var(--bg-dark);
+        }
+
+        .refresh-btn {
+            padding: 12px 20px;
+            background: var(--gradient-primary);
+            border: none;
+            border-radius: 10px;
+            color: var(--bg-dark);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 217, 255, 0.4);
+        }
+
+        /* Main Dashboard */
+        .dashboard {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 40px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            grid-template-rows: auto auto auto auto;
+            gap: 30px;
+            grid-template-areas:
+                "kpi kpi kpi kpi"
+                "threat-map threat-map analytics analytics"
+                "realtime-feed realtime-feed timeline timeline"
+                "network-status system-health incident-response vulnerability";
+        }
+
+        /* KPI Cards */
+        .kpi-section {
+            grid-area: kpi;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .kpi-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-primary);
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 217, 255, 0.3);
+        }
+
+        .kpi-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .kpi-title {
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .kpi-icon {
+            font-size: 24px;
+            opacity: 0.8;
+        }
+
+        .kpi-value {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .kpi-change {
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .kpi-change.positive { color: var(--primary-green); }
+        .kpi-change.negative { color: var(--danger-red); }
+
+        /* Dashboard Sections */
+        .dashboard-section {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-icon {
+            font-size: 24px;
+            padding: 8px;
+            background: rgba(0, 217, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        /* Threat Map */
+        .threat-map {
+            grid-area: threat-map;
+        }
+
+        .world-map {
+            width: 100%;
+            height: 300px;
+            background: rgba(0, 217, 255, 0.05);
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .threat-indicator {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            animation: threat-pulse 2s ease-in-out infinite;
+        }
+
+        .threat-critical {
+            background: var(--danger-red);
+            box-shadow: 0 0 20px var(--danger-red);
+        }
+
+        .threat-medium {
+            background: var(--warning-yellow);
+            box-shadow: 0 0 20px var(--warning-yellow);
+        }
+
+        .threat-low {
+            background: var(--primary-green);
+            box-shadow: 0 0 20px var(--primary-green);
+        }
+
+        @keyframes threat-pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.5); opacity: 0.7; }
+        }
+
+        /* Analytics Charts */
+        .analytics {
+            grid-area: analytics;
+        }
+
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+
+        /* Real-time Feed */
+        .realtime-feed {
+            grid-area: realtime-feed;
+        }
+
+        .feed-list {
+            max-height: 300px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-cyan) transparent;
+        }
+
+        .feed-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            border-left: 4px solid var(--primary-cyan);
+            transition: all 0.3s ease;
+        }
+
+        .feed-item:hover {
+            background: rgba(0, 217, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .feed-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .feed-icon.critical { background: rgba(255, 59, 59, 0.2); color: var(--danger-red); }
+        .feed-icon.warning { background: rgba(255, 215, 0, 0.2); color: var(--warning-yellow); }
+        .feed-icon.info { background: rgba(0, 217, 255, 0.2); color: var(--primary-cyan); }
+        .feed-icon.success { background: rgba(0, 255, 136, 0.2); color: var(--primary-green); }
+
+        .feed-content {
+            flex: 1;
+        }
+
+        .feed-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 5px;
+        }
+
+        .feed-details {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .feed-time {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Timeline */
+        .timeline {
+            grid-area: timeline;
+        }
+
+        .timeline-container {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding: 15px 0;
+            border-left: 2px solid var(--border-color);
+            margin-left: 20px;
+            padding-left: 30px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -6px;
+            top: 20px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--primary-cyan);
+        }
+
+        .timeline-time {
+            font-size: 12px;
+            color: var(--primary-cyan);
+            font-family: 'JetBrains Mono', monospace;
+            margin-bottom: 5px;
+        }
+
+        .timeline-event {
+            color: var(--text-primary);
+            font-weight: 500;
+            margin-bottom: 3px;
+        }
+
+        .timeline-description {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* Network Status */
+        .network-status {
+            grid-area: network-status;
+        }
+
+        .network-nodes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .network-node {
+            text-align: center;
+            padding: 15px;
+            background: rgba(0, 217, 255, 0.1);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .network-node:hover {
+            transform: scale(1.05);
+            background: rgba(0, 217, 255, 0.2);
+        }
+
+        .node-status {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin: 0 auto 10px;
+        }
+
+        .node-online { background: var(--primary-green); }
+        .node-warning { background: var(--warning-yellow); }
+        .node-offline { background: var(--danger-red); }
+
+        .node-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* System Health */
+        .system-health {
+            grid-area: system-health;
+        }
+
+        .health-metrics {
+            display: grid;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .health-metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+        }
+
+        .metric-name {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .metric-bar {
+            flex: 1;
+            margin: 0 15px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .metric-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .metric-value {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        /* Incident Response */
+        .incident-response {
+            grid-area: incident-response;
+        }
+
+        .incident-queue {
+            margin-top: 20px;
+        }
+
+        .incident-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            margin-bottom: 8px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .incident-priority {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .priority-high { background: var(--danger-red); }
+        .priority-medium { background: var(--warning-yellow); }
+        .priority-low { background: var(--primary-green); }
+
+        /* Vulnerability Assessment */
+        .vulnerability {
+            grid-area: vulnerability;
+        }
+
+        .vuln-summary {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .vuln-item {
+            text-align: center;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+        }
+
+        .vuln-count {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .vuln-critical { color: var(--danger-red); }
+        .vuln-high { color: var(--warning-orange); }
+        .vuln-medium { color: var(--warning-yellow); }
+        .vuln-low { color: var(--primary-green); }
+
+        .vuln-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1400px) {
+            .dashboard {
+                grid-template-columns: 1fr 1fr 1fr;
+                grid-template-areas:
+                    "kpi kpi kpi"
+                    "threat-map threat-map analytics"
+                    "realtime-feed timeline timeline"
+                    "network-status system-health incident-response"
+                    "vulnerability vulnerability vulnerability";
+            }
+        }
+
+        @media (max-width: 1000px) {
+            .dashboard {
+                grid-template-columns: 1fr 1fr;
+                grid-template-areas:
+                    "kpi kpi"
+                    "threat-map analytics"
+                    "realtime-feed timeline"
+                    "network-status system-health"
+                    "incident-response vulnerability";
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+                grid-template-areas:
+                    "kpi"
+                    "threat-map"
+                    "analytics"
+                    "realtime-feed"
+                    "timeline"
+                    "network-status"
+                    "system-health"
+                    "incident-response"
+                    "vulnerability";
+                padding: 20px;
+                gap: 20px;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+                padding: 20px;
+            }
+
+            .kpi-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .slide-in {
+            animation: slideIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-background"></div>
+    
+    <header class="header">
+        <div class="header-content">
+            <div class="logo-section">
+                <div class="shield-logo">🛡️</div>
+                <div>
+                    <div class="logo-text">CyberAgiesX</div>
+                    <div style="color: var(--text-secondary); font-size: 14px;">Advanced Security Dashboard</div>
+                </div>
+            </div>
+            
+            <div class="header-controls">
+                <div class="time-selector">
+                    <div class="time-option active" onclick="setTimeRange('1h')">1H</div>
+                    <div class="time-option" onclick="setTimeRange('24h')">24H</div>
+                    <div class="time-option" onclick="setTimeRange('7d')">7D</div>
+                    <div class="time-option" onclick="setTimeRange('30d')">30D</div>
+                </div>
+                <button class="refresh-btn" onclick="refreshDashboard()">
+                    🔄 Refresh
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="dashboard">
+        <!-- KPI Section -->
+        <div class="kpi-section">
+            <div class="kpi-card fade-in">
+                <div class="kpi-header">
+                    <div class="kpi-title">Threats Blocked</div>
+                    <div class="kpi-icon">🛡️</div>
+                </div>
+                <div class="kpi-value" id="threats-blocked">1,247</div>
+                <div class="kpi-change positive">
+                    <span>↗</span>
+                    <span>+23% from yesterday</span>
+                </div>
+            </div>
+
+            <div class="kpi-card fade-in" style="animation-delay: 0.1s;">
+                <div class="kpi-header">
+                    <div class="kpi-title">Active Users</div>
+                    <div class="kpi-icon">👥</div>
+                </div>
+                <div class="kpi-value" id="active-users">127,849</div>
+                <div class="kpi-change positive">
+                    <span>↗</span>
+                    <span>+5.2% growth</span>
+                </div>
+            </div>
+
+            <div class="kpi-card fade-in" style="animation-delay: 0.2s;">
+                <div class="kpi-header">
+                    <div class="kpi-title">Detection Accuracy</div>
+                    <div class="kpi-icon">🎯</div>
+                </div>
+                <div class="kpi-value" id="accuracy">99.8%</div>
+                <div class="kpi-change positive">
+                    <span>↗</span>
+                    <span>+0.3% improvement</span>
+                </div>
+            </div>
+
+            <div class="kpi-card fade-in" style="animation-delay: 0.3s;">
+                <div class="kpi-header">
+                    <div class="kpi-title">Response Time</div>
+                    <div class="kpi-icon">⚡</div>
+                </div>
+                <div class="kpi-value" id="response-time">1.2s</div>
+                <div class="kpi-change positive">
+                    <span>↗</span>
+                    <span>15% faster</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Threat Map -->
+        <div class="dashboard-section threat-map slide-in">
+            <div class="section-header">
+                <div class="section-title">
+                    <div class="section-icon">🌍</div>
+                    Global Threat Map
+                </div>
+                <div style="display: flex; gap: 15px; font-size: 12px;">
+                    <span style="color: var(--danger-red);">● Critical</span>
+                    <span style="color: var(--warning-yellow);">● Medium</span>
+                    <span style="color: var(--primary-green);">● Low</span>
+                </div>
+            </div>
+            <div class="world-map" id="threat-map">
+                <!-- Threat indicators will be added dynamically -->
+            </div>
+        </div>
+
+        <!-- Analytics Charts -->
+        <div class="dashboard-section analytics slide-in" style="animation-delay: 0.1s;">
+            <div class="section-header">
+                <div class="section-title">
+                    <div class="section-icon">📊</div>
+                    Threat Analytics
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="threat-chart"></canvas>
+            </div>
+        </div>
+
+        <!-- Real-time Feed -->
+        <div class="dashboard-section realtime-feed slide-in" style="animation-delay: 0.2s;">
+            <div class="section-header">
+                <div class="section-title">
+                    <div class="section-icon">📡</div>
+                    Real-time Activity Feed
+                </div>
+            </div>
+            <div class="feed-list" id="activity-feed">
+                <!-- Feed items will be added dynamically -->
+            </div>
+        </div>
+
+        <!-- Timeline -->
+        <div class="dashboard-section timeline slide-in" style="animation-delay: 0.3s;">
+            <div class="section-header">
+                <div class="section-title">
+                    <div class="section-icon">⏱️</div>
+                    Incident Timeline
+                </div>
+            </div>
+            <div class="timeline-container" id="incident-timeline">
+                <!-- Timeline items will be added dynamically -->
+            </div>
+        </div>
+
+        <!-- Network Status -->
+        <div class="dashboard-section network-status slide-in" style="animation-delay: 0.4s;">
+            <div class="section-header">
+                <div class="section-title">
+                    <div class="section-icon">🌐</div>
+                    Network Status
+                </div>
+            </div>
+            <div class="network-nodes" id="network-nodes">
+                <!-- Network nodes will be added dynamically -->
+            </div>
+        </div>
+
+        <!-- System Health -->
+        <div class="dashboard-section system-health slide-in" style="animation-delay: 0.5s;">
+            <div class="section-header">
+                <div class="section-title">
+                    <div class="section-icon">💓</div>
+                    System Health
+                </div>
+            </div>
+            <div class="health-metrics" id="health-metrics">
+                <!-- Health metrics will be added dynamically -->
+            </div>
+        </div>
+
+        <!-- Incident Response -->
+        <div class="dashboard-section incident-response slide-in" style="animation-delay: 0.6s;">
+            <div class="section-header">
+                <div class="section-title">
+                    <div class="section-icon">🚨</div>
+                    Incident Queue
+                </div>
+            </div>
+            <div class="incident-queue" id="incident-queue">
+                <!-- Incident items will be added dynamically -->
+            </div>
+        </div>
+
+        <!-- Vulnerability Assessment -->
+        <div class="dashboard-section vulnerability slide-in" style="animation-delay: 0.7s;">
+            <div class="section-header">
+                <div class="section-title">
+                    <div class="section-icon">🔍</div>
+                    Vulnerability Assessment
+                </div>
+            </div>
+            <div class="vuln-summary" id="vuln-summary">
+                <!-- Vulnerability items will be added dynamically -->
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Global state
+        let currentTimeRange = '1h';
+        let chartInstance = null;
+        let feedUpdateInterval = null;
+        let metricsUpdateInterval = null;
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeDashboard();
+            startRealtimeUpdates();
+        });
+
+        function initializeDashboard() {
+            populateThreatMap();
+            initializeChart();
+            populateActivityFeed();
+            populateTimeline();
+            populateNetworkNodes();
+            populateHealthMetrics();
+            populateIncidentQueue();
+            populateVulnerabilityAssessment();
+        }
+
+        function populateThreatMap() {
+            const map = document.getElementById('threat-map');
+            const threats = [
+                { x: 15, y: 25, type: 'critical' },
+                { x: 25, y: 35, type: 'medium' },
+                { x: 45, y: 20, type: 'low' },
+                { x: 60, y: 40, type: 'critical' },
+                { x: 75, y: 30, type: 'medium' },
+                { x: 85, y: 45, type: 'low' },
+                { x: 35, y: 60, type: 'medium' },
+                { x: 55, y: 70, type: 'critical' },
+                { x: 20, y: 80, type: 'low' },
+                { x: 70, y: 15, type: 'medium' }
+            ];
+
+            threats.forEach((threat, index) => {
+                setTimeout(() => {
+                    const indicator = document.createElement('div');
+                    indicator.className = `threat-indicator threat-${threat.type}`;
+                    indicator.style.left = threat.x + '%';
+                    indicator.style.top = threat.y + '%';
+                    indicator.style.animationDelay = (index * 0.2) + 's';
+                    map.appendChild(indicator);
+                }, index * 100);
+            });
+        }
+
+        function initializeChart() {
+            const ctx = document.getElementById('threat-chart').getContext('2d');
+            
+            const chartData = {
+                labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
+                datasets: [
+                    {
+                        label: 'Deepfakes',
+                        data: [12, 19, 15, 25, 22, 18],
+                        borderColor: '#FF3B3B',
+                        backgroundColor: 'rgba(255, 59, 59, 0.1)',
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Voice Clones',
+                        data: [8, 15, 12, 18, 16, 14],
+                        borderColor: '#FF6B35',
+                        backgroundColor: 'rgba(255, 107, 53, 0.1)',
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Phishing',
+                        data: [25, 32, 28, 45, 38, 35],
+                        borderColor: '#FFD700',
+                        backgroundColor: 'rgba(255, 215, 0, 0.1)',
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Blocked',
+                        data: [45, 66, 55, 88, 76, 67],
+                        borderColor: '#00FF88',
+                        backgroundColor: 'rgba(0, 255, 136, 0.1)',
+                        tension: 0.4
+                    }
+                ]
+            };
+
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: chartData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#8B9DC3',
+                                font: { family: 'Inter' }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: { color: '#8B9DC3' },
+                            grid: { color: 'rgba(139, 157, 195, 0.1)' }
+                        },
+                        y: {
+                            ticks: { color: '#8B9DC3' },
+                            grid: { color: 'rgba(139, 157, 195, 0.1)' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function populateActivityFeed() {
+            const feed = document.getElementById('activity-feed');
+            const activities = [
+                {
+                    type: 'critical',
+                    icon: '🚨',
+                    title: 'CEO Deepfake Attack Blocked',
+                    details: 'High-sophistication attack targeting Finance Dept',
+                    time: '2m ago'
+                },
+                {
+                    type: 'success',
+                    icon: '✅',
+                    title: 'Threat Pattern Updated',
+                    details: 'Global network synchronized with new signatures',
+                    time: '5m ago'
+                },
+                {
+                    type: 'warning',
+                    icon: '⚠️',
+                    title: 'Suspicious Email Flagged',
+                    details: 'AI-generated content detected in HR communications',
+                    time: '8m ago'
+                },
+                {
+                    type: 'info',
+                    icon: '🔍',
+                    title: 'Forensic Analysis Complete',
+                    details: 'Evidence package ready for legal review',
+                    time: '12m ago'
+                },
+                {
+                    type: 'success',
+                    icon: '🛡️',
+                    title: 'Voice Clone Prevented',
+                    details: 'Real-time detection saved $50K wire transfer',
+                    time: '18m ago'
+                }
+            ];
+
+            activities.forEach((activity, index) => {
+                setTimeout(() => {
+                    const item = document.createElement('div');
+                    item.className = 'feed-item';
+                    item.innerHTML = `
+                        <div class="feed-icon ${activity.type}">${activity.icon}</div>
+                        <div class="feed-content">
+                            <div class="feed-title">${activity.title}</div>
+                            <div class="feed-details">${activity.details}</div>
+                        </div>
+                        <div class="feed-time">${activity.time}</div>
+                    `;
+                    feed.appendChild(item);
+                }, index * 200);
+            });
+        }
+
+        function populateTimeline() {
+            const timeline = document.getElementById('incident-timeline');
+            const events = [
+                {
+                    time: '14:23:15',
+                    event: 'Critical Alert Triggered',
+                    description: 'Multiple anomalies detected in video call'
+                },
+                {
+                    time: '14:23:31',
+                    event: 'User Notification Sent',
+                    description: 'Trust score dropped to 23/100'
+                },
+                {
+                    time: '14:24:45',
+                    event: 'Financial Block Activated',
+                    description: 'All monetary transactions suspended'
+                },
+                {
+                    time: '14:25:12',
+                    event: 'Session Terminated',
+                    description: 'User initiated emergency disconnect'
+                },
+                {
+                    time: '14:25:30',
+                    event: 'Evidence Secured',
+                    description: 'Blockchain audit trail created'
+                }
+            ];
+
+            events.forEach((event, index) => {
+                setTimeout(() => {
+                    const item = document.createElement('div');
+                    item.className = 'timeline-item';
+                    item.innerHTML = `
+                        <div class="timeline-time">${event.time}</div>
+                        <div class="timeline-event">${event.event}</div>
+                        <div class="timeline-description">${event.description}</div>
+                    `;
+                    timeline.appendChild(item);
+                }, index * 150);
+            });
+        }
+
+        function populateNetworkNodes() {
+            const container = document.getElementById('network-nodes');
+            const nodes = [
+                { label: 'US-East', status: 'online' },
+                { label: 'US-West', status: 'online' },
+                { label: 'EU-Central', status: 'online' },
+                { label: 'Asia-Pacific', status: 'warning' },
+                { label: 'South America', status: 'online' },
+                { label: 'Africa', status: 'online' }
+            ];
+
+            nodes.forEach((node, index) => {
+                setTimeout(() => {
+                    const nodeEl = document.createElement('div');
+                    nodeEl.className = 'network-node';
+                    nodeEl.innerHTML = `
+                        <div class="node-status node-${node.status}"></div>
+                        <div class="node-label">${node.label}</div>
+                    `;
+                    container.appendChild(nodeEl);
+                }, index * 100);
+            });
+        }
+
+        function populateHealthMetrics() {
+            const container = document.getElementById('health-metrics');
+            const metrics = [
+                { name: 'CPU Usage', value: 67, color: '#00FF88' },
+                { name: 'Memory', value: 45, color: '#00D9FF' },
+                { name: 'Network I/O', value: 82, color: '#FFD700' },
+                { name: 'Detection Engine', value: 95, color: '#00FF88' },
+                { name: 'Global Sync', value: 78, color: '#00D9FF' }
+            ];
+
+            metrics.forEach((metric, index) => {
+                setTimeout(() => {
+                    const metricEl = document.createElement('div');
+                    metricEl.className = 'health-metric';
+                    metricEl.innerHTML = `
+                        <div class="metric-name">${metric.name}</div>
+                        <div class="metric-bar">
+                            <div class="metric-fill" style="width: ${metric.value}%; background: ${metric.color};"></div>
+                        </div>
+                        <div class="metric-value" style="color: ${metric.color};">${metric.value}%</div>
+                    `;
+                    container.appendChild(metricEl);
+                }, index * 100);
+            });
+        }
+
+        function populateIncidentQueue() {
+            const queue = document.getElementById('incident-queue');
+            const incidents = [
+                { priority: 'high', text: 'Deepfake attack - Finance Dept' },
+                { priority: 'medium', text: 'Suspicious email - HR Team' },
+                { priority: 'medium', text: 'Voice anomaly - Sales Call' },
+                { priority: 'low', text: 'Spam detection - Marketing' },
+                { priority: 'low', text: 'False positive review' }
+            ];
+
+            incidents.forEach((incident, index) => {
+                setTimeout(() => {
+                    const item = document.createElement('div');
+                    item.className = 'incident-item';
+                    item.innerHTML = `
+                        <div class="incident-priority priority-${incident.priority}"></div>
+                        <div>${incident.text}</div>
+                    `;
+                    queue.appendChild(item);
+                }, index * 100);
+            });
+        }
+
+        function populateVulnerabilityAssessment() {
+            const container = document.getElementById('vuln-summary');
+            const vulnerabilities = [
+                { count: 2, label: 'Critical', class: 'vuln-critical' },
+                { count: 8, label: 'High', class: 'vuln-high' },
+                { count: 15, label: 'Medium', class: 'vuln-medium' },
+                { count: 23, label: 'Low', class: 'vuln-low' }
+            ];
+
+            vulnerabilities.forEach((vuln, index) => {
+                setTimeout(() => {
+                    const item = document.createElement('div');
+                    item.className = 'vuln-item';
+                    item.innerHTML = `
+                        <div class="vuln-count ${vuln.class}">${vuln.count}</div>
+                        <div class="vuln-label">${vuln.label}</div>
+                    `;
+                    container.appendChild(item);
+                }, index * 100);
+            });
+        }
+
+        function startRealtimeUpdates() {
+            // Update activity feed every 30 seconds
+            feedUpdateInterval = setInterval(() => {
+                addRandomActivity();
+            }, 30000);
+
+            // Update metrics every 10 seconds
+            metricsUpdateInterval = setInterval(() => {
+                updateMetrics();
+            }, 10000);
+        }
+
+        function addRandomActivity() {
+            const feed = document.getElementById('activity-feed');
+            const activities = [
+                { type: 'success', icon: '✅', title: 'Threat Blocked', details: 'Automated response successful' },
+                { type: 'info', icon: '🔍', title: 'Analysis Complete', details: 'Behavioral pattern updated' },
+                { type: 'warning', icon: '⚠️', title: 'Anomaly Detected', details: 'Monitoring increased vigilance' }
+            ];
+
+            const activity = activities[Math.floor(Math.random() * activities.length)];
+            const item = document.createElement('div');
+            item.className = 'feed-item';
+            item.style.opacity = '0';
+            item.style.transform = 'translateX(-20px)';
+            item.innerHTML = `
+                <div class="feed-icon ${activity.type}">${activity.icon}</div>
+                <div class="feed-content">
+                    <div class="feed-title">${activity.title}</div>
+                    <div class="feed-details">${activity.details}</div>
+                </div>
+                <div class="feed-time">Just now</div>
+            `;
+
+            feed.insertBefore(item, feed.firstChild);
+
+            // Animate in
+            setTimeout(() => {
+                item.style.transition = 'all 0.5s ease';
+                item.style.opacity = '1';
+                item.style.transform = 'translateX(0)';
+            }, 100);
+
+            // Remove oldest items if too many
+            if (feed.children.length > 10) {
+                feed.removeChild(feed.lastChild);
+            }
+        }
+
+        function updateMetrics() {
+            // Update KPI values
+            const threatsEl = document.getElementById('threats-blocked');
+            const currentThreats = parseInt(threatsEl.textContent.replace(',', ''));
+            const newThreats = currentThreats + Math.floor(Math.random() * 5) + 1;
+            animateCounter(threatsEl, currentThreats, newThreats);
+
+            // Update health metrics
+            const metricFills = document.querySelectorAll('.metric-fill');
+            metricFills.forEach(fill => {
+                const currentWidth = parseInt(fill.style.width);
+                const variation = (Math.random() - 0.5) * 10;
+                const newWidth = Math.max(0, Math.min(100, currentWidth + variation));
+                fill.style.width = newWidth + '%';
+            });
+        }
+
+        function animateCounter(element, start, end) {
+            const duration = 1000;
+            const range = end - start;
+            const startTime = performance.now();
+
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const current = Math.floor(start + range * progress);
+                element.textContent = current.toLocaleString();
+
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+
+            requestAnimationFrame(update);
+        }
+
+        function setTimeRange(range) {
+            currentTimeRange = range;
+            
+            // Update active state
+            document.querySelectorAll('.time-option').forEach(option => {
+                option.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Update chart data based on time range
+            updateChartData(range);
+        }
+
+        function updateChartData(range) {
+            if (!chartInstance) return;
+
+            const datasets = {
+                '1h': {
+                    labels: ['00:00', '10:00', '20:00', '30:00', '40:00', '50:00'],
+                    data: [[2, 3, 1, 4, 3, 2], [1, 2, 2, 3, 2, 1], [5, 8, 6, 12, 9, 7], [8, 13, 9, 19, 14, 10]]
+                },
+                '24h': {
+                    labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
+                    data: [[12, 19, 15, 25, 22, 18], [8, 15, 12, 18, 16, 14], [25, 32, 28, 45, 38, 35], [45, 66, 55, 88, 76, 67]]
+                },
+                '7d': {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+                    data: [[85, 120, 98, 156, 134, 89], [65, 89, 76, 98, 87, 67], [180, 210, 195, 267, 234, 198], [330, 419, 369, 521, 455, 354]]
+                },
+                '30d': {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                    data: [[450, 567, 489, 678], [234, 345, 298, 445], [890, 1124, 976, 1345], [1574, 2036, 1833, 2468]]
+                }
+            };
+
+            const selectedData = datasets[range];
+            chartInstance.data.labels = selectedData.labels;
+            chartInstance.data.datasets.forEach((dataset, index) => {
+                dataset.data = selectedData.data[index];
+            });
+            chartInstance.update('active');
+        }
+
+        function refreshDashboard() {
+            // Show loading state
+            const refreshBtn = document.querySelector('.refresh-btn');
+            const originalText = refreshBtn.innerHTML;
+            refreshBtn.innerHTML = '🔄 Refreshing...';
+            refreshBtn.disabled = true;
+
+            // Simulate refresh delay
+            setTimeout(() => {
+                // Update all metrics
+                updateMetrics();
+                addRandomActivity();
+                
+                // Reset button
+                refreshBtn.innerHTML = originalText;
+                refreshBtn.disabled = false;
+                
+                // Show success feedback
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 100px;
+                    right: 40px;
+                    background: var(--primary-green);
+                    color: var(--bg-dark);
+                    padding: 15px 25px;
+                    border-radius: 10px;
+                    font-weight: 600;
+                    z-index: 1000;
+                    animation: slideInRight 0.3s ease;
+                `;
+                notification.textContent = '✅ Dashboard refreshed successfully';
+                document.body.appendChild(notification);
+
+                setTimeout(() => {
+                    notification.remove();
+                }, 3000);
+            }, 1500);
+        }
+
+        // Add CSS animation for notification
+        const notificationStyle = document.createElement('style');
+        notificationStyle.textContent = `
+            @keyframes slideInRight {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(notificationStyle);
+    </script>
+</body>
+</html>
+

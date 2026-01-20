@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberAgiesX - Interactive Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #1A1D23;
+            color: #FFFFFF;
+            overflow-x: hidden;
+        }
+
+        .demo-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1A1D23 0%, #0A1628 100%);
+            padding: 20px 40px;
+            border-bottom: 2px solid #00D9FF;
+            box-shadow: 0 4px 20px rgba(0, 217, 255, 0.2);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .shield-icon {
+            font-size: 36px;
+            color: #00FF88;
+            text-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+        }
+
+        .demo-nav {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .role-button {
+            padding: 12px 24px;
+            background: rgba(0, 217, 255, 0.1);
+            border: 2px solid #00D9FF;
+            border-radius: 8px;
+            color: #00D9FF;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .role-button:hover {
+            background: rgba(0, 217, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 217, 255, 0.3);
+        }
+
+        .role-button.active {
+            background: #00D9FF;
+            color: #1A1D23;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 40px;
+            display: flex;
+            gap: 30px;
+        }
+
+        .demo-panel {
+            flex: 2;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 30px;
+            border: 1px solid rgba(0, 217, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .control-panel {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 30px;
+            border: 1px solid rgba(0, 217, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .trust-score-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .trust-score-gauge {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 20px;
+        }
+
+        .gauge-bg {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(
+                from 0deg,
+                #FF3B3B 0deg 36deg,
+                #FF6B35 36deg 72deg,
+                #FFD700 72deg 144deg,
+                #7FFF00 144deg 180deg,
+                #00FF88 180deg 360deg
+            );
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .gauge-inner {
+            width: 140px;
+            height: 140px;
+            background: #1A1D23;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .trust-score-value {
+            font-size: 36px;
+            font-weight: bold;
+            color: #00FF88;
+            text-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+        }
+
+        .trust-score-label {
+            font-size: 14px;
+            color: #8B9DC3;
+            margin-top: 5px;
+        }
+
+        .status-indicator {
+            font-size: 18px;
+            font-weight: 600;
+            margin-top: 10px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: rgba(0, 255, 136, 0.2);
+            color: #00FF88;
+            border: 1px solid #00FF88;
+        }
+
+        .analysis-section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            color: #00D9FF;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .analysis-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid rgba(139, 157, 195, 0.3);
+        }
+
+        .analysis-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .analysis-icon {
+            font-size: 20px;
+        }
+
+        .analysis-title {
+            font-weight: 600;
+            color: #FFFFFF;
+        }
+
+        .analysis-result {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .result-safe { color: #00FF88; }
+        .result-suspicious { color: #FFD700; }
+        .result-dangerous { color: #FF3B3B; }
+
+        .analysis-details {
+            font-size: 14px;
+            color: #8B9DC3;
+            line-height: 1.4;
+        }
+
+        .alert-banner {
+            background: linear-gradient(135deg, #FF3B3B, #FF6B35);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            animation: pulse 2s infinite;
+        }
+
+        .alert-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .alert-message {
+            font-size: 16px;
+            line-height: 1.4;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+
+        .action-button {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid;
+        }
+
+        .btn-terminate {
+            background: #FF3B3B;
+            border-color: #FF3B3B;
+            color: white;
+        }
+
+        .btn-terminate:hover {
+            background: #FF1F1F;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 59, 59, 0.4);
+        }
+
+        .btn-continue {
+            background: transparent;
+            border-color: #FFD700;
+            color: #FFD700;
+        }
+
+        .btn-continue:hover {
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .scenario-controls {
+            margin-bottom: 30px;
+        }
+
+        .scenario-button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: rgba(0, 217, 255, 0.1);
+            border: 2px solid #00D9FF;
+            border-radius: 8px;
+            color: #00D9FF;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .scenario-button:hover {
+            background: rgba(0, 217, 255, 0.2);
+        }
+
+        .scenario-button.active {
+            background: #00D9FF;
+            color: #1A1D23;
+        }
+
+        .timeline {
+            margin-top: 20px;
+        }
+
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(139, 157, 195, 0.2);
+        }
+
+        .timeline-time {
+            color: #00D9FF;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            min-width: 80px;
+        }
+
+        .timeline-event {
+            color: #8B9DC3;
+            font-size: 14px;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        @keyframes countUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: countUp 0.5s ease-out forwards;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <header class="header">
+            <div class="logo">
+                <span class="shield-icon">🛡️</span>
+                <span>CyberAgiesX</span>
+                <span style="color: #8B9DC3; font-size: 16px; font-weight: normal;">Interactive Demo</span>
+            </div>
+            <nav class="demo-nav">
+                <div class="role-button active" onclick="switchRole('enduser')">👤 End User</div>
+                <div class="role-button" onclick="switchRole('admin')">🔧 Security Admin</div>
+            </nav>
+        </header>
+
+        <main class="main-content">
+            <div class="demo-panel">
+                <!-- End User View -->
+                <div id="enduser-view" class="role-view">
+                    <div class="trust-score-container">
+                        <div class="trust-score-gauge">
+                            <div class="gauge-bg">
+                                <div class="gauge-inner">
+                                    <div class="trust-score-value" id="trust-score">92</div>
+                                    <div class="trust-score-label">Trust Score</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="status-indicator" id="status-indicator">EXCELLENT</div>
+                    </div>
+
+                    <div class="analysis-section">
+                        <h3 class="section-title">
+                            <span>📊</span>
+                            Real-Time Analysis
+                        </h3>
+                        
+                        <div class="analysis-grid">
+                            <div class="analysis-card">
+                                <div class="analysis-header">
+                                    <span class="analysis-icon">🎤</span>
+                                    <span class="analysis-title">Voice Analysis</span>
+                                </div>
+                                <div class="analysis-result result-safe" id="voice-result">✅ Verified</div>
+                                <div class="analysis-details" id="voice-details">Biometric match: 94%<br>No synthesis detected</div>
+                            </div>
+
+                            <div class="analysis-card">
+                                <div class="analysis-header">
+                                    <span class="analysis-icon">📹</span>
+                                    <span class="analysis-title">Video Analysis</span>
+                                </div>
+                                <div class="analysis-result result-safe" id="video-result">✅ Verified</div>
+                                <div class="analysis-details" id="video-details">Facial match: 96%<br>Natural expressions</div>
+                            </div>
+
+                            <div class="analysis-card">
+                                <div class="analysis-header">
+                                    <span class="analysis-icon">📝</span>
+                                    <span class="analysis-title">Behavioral Analysis</span>
+                                </div>
+                                <div class="analysis-result result-safe" id="behavior-result">✅ Verified</div>
+                                <div class="analysis-details" id="behavior-details">Pattern match: 91%<br>Consistent with profile</div>
+                            </div>
+
+                            <div class="analysis-card">
+                                <div class="analysis-header">
+                                    <span class="analysis-icon">🧠</span>
+                                    <span class="analysis-title">Digital DNA</span>
+                                </div>
+                                <div class="analysis-result result-safe" id="dna-result">✅ Verified</div>
+                                <div class="analysis-details" id="dna-details">Identity confirmed<br>Behavioral consistency</div>
+                            </div>
+                        </div>
+
+                        <div id="alert-container" class="hidden">
+                            <div class="alert-banner">
+                                <div class="alert-title">🚨 CRITICAL SECURITY ALERT</div>
+                                <div class="alert-message">This call shows 89% likelihood of AI manipulation</div>
+                                <div class="action-buttons">
+                                    <button class="action-button btn-terminate" onclick="terminateCall()">🛑 TERMINATE</button>
+                                    <button class="action-button btn-continue" onclick="continueCall()">⚠️ CONTINUE</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin View -->
+                <div id="admin-view" class="role-view hidden">
+                    <div class="analysis-section">
+                        <h3 class="section-title">
+                            <span>🎯</span>
+                            Threat Overview
+                        </h3>
+                        
+                        <div class="analysis-grid">
+                            <div class="analysis-card">
+                                <div class="analysis-header">
+                                    <span class="analysis-icon">👥</span>
+                                    <span class="analysis-title">Users Protected</span>
+                                </div>
+                                <div class="analysis-result result-safe">1,247</div>
+                                <div class="analysis-details">Active monitoring<br>across organization</div>
+                            </div>
+
+                            <div class="analysis-card">
+                                <div class="analysis-header">
+                                    <span class="analysis-icon">🚨</span>
+                                    <span class="analysis-title">Threats Today</span>
+                                </div>
+                                <div class="analysis-result result-dangerous">23</div>
+                                <div class="analysis-details">15 blocked<br>8 under review</div>
+                            </div>
+
+                            <div class="analysis-card">
+                                <div class="analysis-header">
+                                    <span class="analysis-icon">💰</span>
+                                    <span class="analysis-title">Fraud Prevented</span>
+                                </div>
+                                <div class="analysis-result result-safe">$2.3M</div>
+                                <div class="analysis-details">This month<br>156 incidents blocked</div>
+                            </div>
+
+                            <div class="analysis-card">
+                                <div class="analysis-header">
+                                    <span class="analysis-icon">⚡</span>
+                                    <span class="analysis-title">System Health</span>
+                                </div>
+                                <div class="analysis-result result-safe">99.2%</div>
+                                <div class="analysis-details">Uptime<br>All engines operational</div>
+                            </div>
+                        </div>
+
+                        <div class="timeline">
+                            <h4 style="color: #00D9FF; margin-bottom: 15px;">Recent Incidents</h4>
+                            <div class="timeline-item">
+                                <div class="timeline-time">2m ago</div>
+                                <div class="timeline-event">🔴 CEO Deepfake attack blocked - Finance Dept</div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-time">15m ago</div>
+                                <div class="timeline-event">🟡 Suspicious email flagged - HR Team</div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-time">1h ago</div>
+                                <div class="timeline-event">🟢 Voice clone attempt blocked - Reception</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="control-panel">
+                <div class="scenario-controls">
+                    <h3 style="color: #00D9FF; margin-bottom: 20px;">🎭 Attack Scenarios</h3>
+                    
+                    <button class="scenario-button active" onclick="runScenario('safe')">
+                        ✅ Safe Communication<br>
+                        <small>Normal CEO video call</small>
+                    </button>
+                    
+                    <button class="scenario-button" onclick="runScenario('deepfake')">
+                        🎭 Deepfake Attack<br>
+                        <small>CEO impersonation with voice clone</small>
+                    </button>
+                    
+                    <button class="scenario-button" onclick="runScenario('phishing')">
+                        📧 AI Phishing<br>
+                        <small>Sophisticated email manipulation</small>
+                    </button>
+                    
+                    <button class="scenario-button" onclick="runScenario('voice_clone')">
+                        🎤 Voice Clone<br>
+                        <small>Phone call impersonation</small>
+                    </button>
+                </div>
+
+                <div style="background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 8px;">
+                    <h4 style="color: #00D9FF; margin-bottom: 15px;">🌐 Global Impact</h4>
+                    <div style="margin-bottom: 10px;">
+                        <span style="color: #8B9DC3;">Threats Blocked Today:</span>
+                        <span style="color: #00FF88; font-weight: bold; float: right;">1,247</span>
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <span style="color: #8B9DC3;">Active Nodes:</span>
+                        <span style="color: #00D9FF; font-weight: bold; float: right;">127,849</span>
+                    </div>
+                    <div>
+                        <span style="color: #8B9DC3;">Pattern Updates:</span>
+                        <span style="color: #FFD700; font-weight: bold; float: right;">Real-time</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        let currentRole = 'enduser';
+        let currentScenario = 'safe';
+
+        function switchRole(role) {
+            // Update navigation
+            document.querySelectorAll('.role-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Hide all views
+            document.querySelectorAll('.role-view').forEach(view => {
+                view.classList.add('hidden');
+            });
+
+            // Show selected view
+            document.getElementById(role + '-view').classList.remove('hidden');
+            currentRole = role;
+
+            // Apply current scenario to new role
+            runScenario(currentScenario);
+        }
+
+        function runScenario(scenario) {
+            // Update scenario buttons
+            document.querySelectorAll('.scenario-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            currentScenario = scenario;
+
+            switch(scenario) {
+                case 'safe':
+                    showSafeScenario();
+                    break;
+                case 'deepfake':
+                    showDeepfakeScenario();
+                    break;
+                case 'phishing':
+                    showPhishingScenario();
+                    break;
+                case 'voice_clone':
+                    showVoiceCloneScenario();
+                    break;
+            }
+        }
+
+        function showSafeScenario() {
+            if (currentRole === 'enduser') {
+                animateScore(92);
+                updateAnalysis('safe');
+                document.getElementById('status-indicator').textContent = 'EXCELLENT';
+                document.getElementById('status-indicator').style.background = 'rgba(0, 255, 136, 0.2)';
+                document.getElementById('status-indicator').style.color = '#00FF88';
+                document.getElementById('status-indicator').style.borderColor = '#00FF88';
+                document.getElementById('alert-container').classList.add('hidden');
+            }
+        }
+
+        function showDeepfakeScenario() {
+            if (currentRole === 'enduser') {
+                animateScore(23);
+                updateAnalysis('dangerous');
+                document.getElementById('status-indicator').textContent = 'DANGEROUS';
+                document.getElementById('status-indicator').style.background = 'rgba(255, 59, 59, 0.2)';
+                document.getElementById('status-indicator').style.color = '#FF3B3B';
+                document.getElementById('status-indicator').style.borderColor = '#FF3B3B';
+                document.getElementById('alert-container').classList.remove('hidden');
+            }
+        }
+
+        function showPhishingScenario() {
+            if (currentRole === 'enduser') {
+                animateScore(45);
+                updateAnalysis('suspicious');
+                document.getElementById('status-indicator').textContent = 'SUSPICIOUS';
+                document.getElementById('status-indicator').style.background = 'rgba(255, 215, 0, 0.2)';
+                document.getElementById('status-indicator').style.color = '#FFD700';
+                document.getElementById('status-indicator').style.borderColor = '#FFD700';
+                document.getElementById('alert-container').classList.add('hidden');
+            }
+        }
+
+        function showVoiceCloneScenario() {
+            if (currentRole === 'enduser') {
+                animateScore(34);
+                updateAnalysis('dangerous');
+                document.getElementById('status-indicator').textContent = 'HIGH RISK';
+                document.getElementById('status-indicator').style.background = 'rgba(255, 107, 53, 0.2)';
+                document.getElementById('status-indicator').style.color = '#FF6B35';
+                document.getElementById('status-indicator').style.borderColor = '#FF6B35';
+                document.getElementById('alert-container').classList.remove('hidden');
+            }
+        }
+
+        function updateAnalysis(type) {
+            const scenarios = {
+                safe: {
+                    voice: { result: '✅ Verified', details: 'Biometric match: 94%<br>No synthesis detected', class: 'result-safe' },
+                    video: { result: '✅ Verified', details: 'Facial match: 96%<br>Natural expressions', class: 'result-safe' },
+                    behavior: { result: '✅ Verified', details: 'Pattern match: 91%<br>Consistent with profile', class: 'result-safe' },
+                    dna: { result: '✅ Verified', details: 'Identity confirmed<br>Behavioral consistency', class: 'result-safe' }
+                },
+                suspicious: {
+                    voice: { result: '🟡 Suspicious', details: 'Biometric match: 76%<br>Minor inconsistencies', class: 'result-suspicious' },
+                    video: { result: '✅ Verified', details: 'Facial match: 94%<br>Natural expressions', class: 'result-safe' },
+                    behavior: { result: '🟡 Unusual', details: 'Pattern match: 67%<br>Style deviation noted', class: 'result-suspicious' },
+                    dna: { result: '🟡 Partial', details: 'Some deviation<br>Requires attention', class: 'result-suspicious' }
+                },
+                dangerous: {
+                    voice: { result: '❌ AI Clone', details: 'Clone probability: 89%<br>Synthesis detected', class: 'result-dangerous' },
+                    video: { result: '❌ Deepfake', details: 'Lip-sync: 78%<br>Facial anomalies', class: 'result-dangerous' },
+                    behavior: { result: '❌ Mismatch', details: 'Pattern match: 33%<br>Major deviation', class: 'result-dangerous' },
+                    dna: { result: '❌ Failed', details: 'Identity mismatch<br>Impersonation likely', class: 'result-dangerous' }
+                }
+            };
+
+            const data = scenarios[type];
+            Object.keys(data).forEach(key => {
+                const resultEl = document.getElementById(key + '-result');
+                const detailsEl = document.getElementById(key + '-details');
+                
+                resultEl.textContent = data[key].result;
+                resultEl.className = 'analysis-result ' + data[key].class;
+                detailsEl.innerHTML = data[key].details;
+            });
+        }
+
+        function animateScore(targetScore) {
+            const scoreEl = document.getElementById('trust-score');
+            const currentScore = parseInt(scoreEl.textContent);
+            const duration = 2000;
+            const steps = 60;
+            const stepDuration = duration / steps;
+            const scoreChange = (targetScore - currentScore) / steps;
+
+            let step = 0;
+            const timer = setInterval(() => {
+                step++;
+                const newScore = Math.round(currentScore + (scoreChange * step));
+                scoreEl.textContent = newScore;
+                
+                if (step >= steps) {
+                    clearInterval(timer);
+                    scoreEl.textContent = targetScore;
+                }
+            }, stepDuration);
+        }
+
+        function terminateCall() {
+            alert('Call terminated successfully!\n\n✅ Attack prevented\n✅ Evidence secured\n✅ Incident reported');
+            showSafeScenario();
+        }
+
+        function continueCall() {
+            alert('⚠️ Continuing with enhanced monitoring\n\nAll financial actions will be blocked\nFull recording active for analysis');
+        }
+
+        // Initialize demo
+        window.addEventListener('load', () => {
+            showSafeScenario();
+        });
+    </script>
+</body>
+</html>

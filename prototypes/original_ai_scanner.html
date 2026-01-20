@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberAgiesX - Security Scanner</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0F0F23;
+            color: #FFFFFF;
+            overflow-x: hidden;
+        }
+
+        .scanner-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .scanner-header {
+            background: linear-gradient(135deg, #1A1D23 0%, #0A1628 100%);
+            padding: 20px 40px;
+            border-bottom: 2px solid #00D9FF;
+            box-shadow: 0 4px 20px rgba(0, 217, 255, 0.2);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .scanner-logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .scanner-icon {
+            font-size: 32px;
+            color: #00D9FF;
+            text-shadow: 0 0 20px rgba(0, 217, 255, 0.5);
+        }
+
+        .back-to-platform {
+            padding: 10px 20px;
+            background: rgba(0, 217, 255, 0.1);
+            border: 2px solid #00D9FF;
+            border-radius: 8px;
+            color: #00D9FF;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .back-to-platform:hover {
+            background: rgba(0, 217, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 40px;
+            display: flex;
+            gap: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .input-panel {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 30px;
+            border: 1px solid rgba(0, 217, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .results-panel {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 30px;
+            border: 1px solid rgba(0, 217, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        /* Scan Type Selector */
+        .scan-types {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .scan-type-btn {
+            flex: 1;
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid transparent;
+            border-radius: 8px;
+            color: #FFFFFF;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .scan-type-btn.active {
+            background: rgba(0, 217, 255, 0.2);
+            border-color: #00D9FF;
+            color: #00D9FF;
+        }
+
+        .scan-type-btn:hover {
+            background: rgba(0, 217, 255, 0.1);
+        }
+
+        /* Input Fields */
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #B0B0B0;
+            font-weight: 500;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: #FFFFFF;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #00D9FF;
+            box-shadow: 0 0 20px rgba(0, 217, 255, 0.3);
+        }
+
+        .textarea-field {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-input-display {
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .file-input-display:hover {
+            border-color: #00D9FF;
+            background: rgba(0, 217, 255, 0.1);
+        }
+
+        /* Scan Button */
+        .scan-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, #00D9FF, #0099CC);
+            border: none;
+            border-radius: 10px;
+            color: #FFFFFF;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .scan-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 217, 255, 0.3);
+        }
+
+        .scan-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .scan-btn .loading {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ffffff;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Results */
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .threat-score {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .score-low {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4CAF50;
+            border: 1px solid #4CAF50;
+        }
+
+        .score-medium {
+            background: rgba(255, 193, 7, 0.2);
+            color: #FFC107;
+            border: 1px solid #FFC107;
+        }
+
+        .score-high {
+            background: rgba(255, 152, 0, 0.2);
+            color: #FF9800;
+            border: 1px solid #FF9800;
+        }
+
+        .score-critical {
+            background: rgba(244, 67, 54, 0.2);
+            color: #F44336;
+            border: 1px solid #F44336;
+        }
+
+        .detections-list {
+            margin-bottom: 20px;
+        }
+
+        .detection-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border-left: 4px solid #00D9FF;
+        }
+
+        .detection-threat {
+            font-weight: 500;
+        }
+
+        .detection-score {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .suggestions-list {
+            background: rgba(0, 217, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid rgba(0, 217, 255, 0.3);
+        }
+
+        .suggestion-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .suggestion-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .suggestion-icon {
+            font-size: 16px;
+            margin-top: 2px;
+        }
+
+        .suggestion-text {
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .ai-enhanced {
+            background: linear-gradient(45deg, #4ECDC4, #44A08D);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-left: 10px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+                padding: 20px;
+            }
+            
+            .scan-types {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="scanner-container">
+        <!-- Header -->
+        <header class="scanner-header">
+            <div class="header-content">
+                <div class="scanner-logo">
+                    <div class="scanner-icon">🛡️</div>
+                    <div>CyberAgiesX Security Scanner</div>
+                    <div class="ai-enhanced">AI Enhanced</div>
+                </div>
+                <a href="neuroshield_platform.html" class="back-to-platform">← Back to Platform</a>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Input Panel -->
+            <div class="input-panel">
+                <h2 style="margin-bottom: 20px; color: #00D9FF;">Scan Content</h2>
+                
+                <!-- Scan Type Selector -->
+                <div class="scan-types">
+                    <button class="scan-type-btn active" onclick="setScanType('text')">📝 Text</button>
+                    <button class="scan-type-btn" onclick="setScanType('url')">🔗 URL</button>
+                    <button class="scan-type-btn" onclick="setScanType('file')">📁 File</button>
+                </div>
+
+                <!-- Text Input -->
+                <div class="input-group" id="textGroup">
+                    <label class="input-label">Enter text to analyze:</label>
+                    <textarea class="input-field textarea-field" id="textInput" placeholder="Paste suspicious text, email, or message here...">Dear Customer,
+
+Your bank account has been temporarily locked due to suspicious activity. To restore access immediately, please verify your account information by clicking the link below:
+
+http://secure-bank-login.fake.com
+
+This is urgent - your account will be permanently closed if you don't respond within 24 hours.
+
+Thank you for your prompt action.
+
+Bank Security Team</textarea>
+                </div>
+
+                <!-- URL Input -->
+                <div class="input-group" id="urlGroup" style="display: none;">
+                    <label class="input-label">Enter URL to analyze:</label>
+                    <input type="url" class="input-field" id="urlInput" placeholder="https://example.com" value="http://paypa1-security-verification.com">
+                </div>
+
+                <!-- File Input -->
+                <div class="input-group" id="fileGroup" style="display: none;">
+                    <label class="input-label">Select file to analyze:</label>
+                    <div class="file-input-wrapper">
+                        <input type="file" class="file-input" id="fileInput" onchange="handleFileSelect()">
+                        <div class="file-input-display" onclick="document.getElementById('fileInput').click()">
+                            <div id="fileDisplay">Click to select file or drag and drop</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scan Button -->
+                <button class="scan-btn" onclick="analyzeContent()">
+                    <span class="loading" id="loadingSpinner"></span>
+                    <span id="scanBtnText">🔍 Scan Content</span>
+                </button>
+            </div>
+
+            <!-- Results Panel -->
+            <div class="results-panel">
+                <h2 style="margin-bottom: 20px; color: #00D9FF;">Analysis Results</h2>
+                
+                <div id="resultsContent">
+                    <div style="text-align: center; color: #B0B0B0; padding: 40px;">
+                        <div style="font-size: 48px; margin-bottom: 20px;">🛡️</div>
+                        <p>Select content type and click "Scan Content" to begin analysis</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        let currentScanType = 'text';
+
+        function setScanType(type) {
+            currentScanType = type;
+            
+            // Update button states
+            document.querySelectorAll('.scan-type-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Show/hide input groups
+            document.getElementById('textGroup').style.display = type === 'text' ? 'block' : 'none';
+            document.getElementById('urlGroup').style.display = type === 'url' ? 'block' : 'none';
+            document.getElementById('fileGroup').style.display = type === 'file' ? 'block' : 'none';
+        }
+
+        function handleFileSelect() {
+            const fileInput = document.getElementById('fileInput');
+            const fileDisplay = document.getElementById('fileDisplay');
+            
+            if (fileInput.files.length > 0) {
+                fileDisplay.textContent = `Selected: ${fileInput.files[0].name}`;
+            } else {
+                fileDisplay.textContent = 'Click to select file or drag and drop';
+            }
+        }
+
+        async function analyzeContent() {
+            let content = '';
+            let inputType = currentScanType;
+
+            // Get content based on scan type
+            if (currentScanType === 'text') {
+                content = document.getElementById('textInput').value.trim();
+            } else if (currentScanType === 'url') {
+                content = document.getElementById('urlInput').value.trim();
+            } else if (currentScanType === 'file') {
+                const fileInput = document.getElementById('fileInput');
+                if (fileInput.files.length === 0) {
+                    alert('Please select a file to analyze');
+                    return;
+                }
+                content = fileInput.files[0].name;
+            }
+
+            if (!content) {
+                alert('Please enter content to analyze');
+                return;
+            }
+
+            // Show loading state
+            const scanBtn = document.querySelector('.scan-btn');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            const scanBtnText = document.getElementById('scanBtnText');
+            
+            scanBtn.disabled = true;
+            loadingSpinner.style.display = 'inline-block';
+            scanBtnText.textContent = 'Analyzing...';
+
+            try {
+                let analysis;
+                
+                // Try AI backend first, fallback to local analysis
+                if (currentScanType === 'text') {
+                    analysis = await analyzeTextWithAI(content);
+                } else if (currentScanType === 'url') {
+                    analysis = await analyzeURLWithAI(content);
+                } else {
+                    analysis = analyzeFile(content);
+                }
+                
+                displayResults(analysis);
+            } catch (error) {
+                console.error('Analysis error:', error);
+                // Fallback to local analysis
+                let analysis;
+                if (currentScanType === 'text') {
+                    analysis = analyzeText(content);
+                } else if (currentScanType === 'url') {
+                    analysis = analyzeURL(content);
+                } else {
+                    analysis = analyzeFile(content);
+                }
+                displayResults(analysis);
+            } finally {
+                // Hide loading state
+                scanBtn.disabled = false;
+                loadingSpinner.style.display = 'none';
+                scanBtnText.textContent = '🔍 Scan Content';
+            }
+        }
+
+        // AI-Enhanced Analysis Functions
+        async function analyzeTextWithAI(text) {
+            try {
+                const response = await fetch('http://localhost:3000/api/analyze/text', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ text: text })
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    return {
+                        threatScore: result.threatScore,
+                        detections: result.detectedThreats || [],
+                        suggestions: result.recommendations || [],
+                        aiEnhanced: true
+                    };
+                }
+            } catch (error) {
+                console.log('AI analysis failed, using local analysis');
+            }
+            
+            // Fallback to local analysis
+            return analyzeText(text);
+        }
+
+        async function analyzeURLWithAI(url) {
+            try {
+                const response = await fetch('http://localhost:3000/api/analyze/url', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ url: url })
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    return {
+                        threatScore: result.anomalyScore,
+                        detections: result.detectedThreats || [],
+                        suggestions: result.recommendations || [],
+                        aiEnhanced: true
+                    };
+                }
+            } catch (error) {
+                console.log('AI analysis failed, using local analysis');
+            }
+            
+            // Fallback to local analysis
+            return analyzeURL(url);
+        }
+
+        // Enhanced Phishing Detection Functions
+        function analyzeText(text) {
+            const analysis = {
+                threatScore: 0,
+                detections: [],
+                suggestions: []
+            };
+
+            const lowerText = text.toLowerCase();
+
+            // Comprehensive Phishing Patterns with Detailed Explanations
+            const phishingPatterns = [
+                // Urgency and Fear Tactics
+                { 
+                    pattern: /urgent.{0,30}(action|response|attention|immediate)/gi, 
+                    threat: 'Urgency manipulation detected', 
+                    score: 45,
+                    explanation: 'Legitimate organizations rarely use urgent language to pressure immediate action. This is a common phishing tactic to bypass rational thinking.'
+                },
+                { 
+                    pattern: /(immediately|asap|right now|without delay)/gi, 
+                    threat: 'Immediate action pressure detected', 
+                    score: 35,
+                    explanation: 'Creating artificial time pressure is a psychological manipulation technique used by scammers to prevent victims from thinking critically.'
+                },
+                { 
+                    pattern: /(expires?|expiring|deadline|limited time)/gi, 
+                    threat: 'False urgency with time pressure', 
+                    score: 40,
+                    explanation: 'Real organizations give reasonable timeframes. Fake deadlines are used to rush victims into making mistakes.'
+                },
+                { 
+                    pattern: /(suspended?|locked|blocked|frozen|disabled)/gi, 
+                    threat: 'Account status threat detected', 
+                    score: 50,
+                    explanation: 'Threatening to suspend accounts creates fear and urgency. Legitimate organizations use secure portals, not email links.'
+                },
+                { 
+                    pattern: /(verify|confirm|validate|update).{0,20}(account|information|details)/gi, 
+                    threat: 'Account verification request detected', 
+                    score: 45,
+                    explanation: 'Real organizations never ask for account verification via email links. This is a common way to steal login credentials.'
+                },
+                
+                // Banking and Financial Scams
+                { 
+                    pattern: /(bank|banking|financial|account).{0,20}(locked|suspended|compromised|hacked)/gi, 
+                    threat: 'Banking account threat detected', 
+                    score: 60,
+                    explanation: 'Banks never send urgent account suspension emails with links. They use secure messaging systems and phone calls for serious issues.'
+                },
+                { 
+                    pattern: /(credit card|debit card|payment).{0,20}(expired|suspended|blocked)/gi, 
+                    threat: 'Payment card threat detected', 
+                    score: 55,
+                    explanation: 'Card companies notify you through official channels, not urgent emails. This is designed to steal your card information.'
+                },
+                { 
+                    pattern: /(wire transfer|money transfer|payment).{0,20}(urgent|immediate|required)/gi, 
+                    threat: 'Financial urgency scam detected', 
+                    score: 65,
+                    explanation: 'No legitimate financial institution demands immediate wire transfers via email. This is a classic money theft scam.'
+                },
+                { 
+                    pattern: /(refund|rebate|cashback).{0,20}(click here|visit link|claim now)/gi, 
+                    threat: 'Fake refund scam detected', 
+                    score: 50,
+                    explanation: 'Real refunds are processed automatically or through official portals. Fake refund links steal your payment information.'
+                },
+                
+                // Social Engineering
+                { 
+                    pattern: /(dear customer|valued customer|account holder)/gi, 
+                    threat: 'Generic greeting detected', 
+                    score: 25,
+                    explanation: 'Legitimate organizations use your actual name. Generic greetings like "Dear Customer" are red flags for mass phishing campaigns.'
+                },
+                { 
+                    pattern: /(congratulations|you have won|prize|lottery)/gi, 
+                    threat: 'Fake prize/lottery scam detected', 
+                    score: 55,
+                    explanation: 'You cannot win contests you never entered. These scams ask for personal information or payment to claim fake prizes.'
+                },
+                { 
+                    pattern: /(investment opportunity|make money|earn cash)/gi, 
+                    threat: 'Investment scam detected', 
+                    score: 50,
+                    explanation: 'Legitimate investment opportunities are not promoted via unsolicited emails. These are designed to steal your money.'
+                },
+                { 
+                    pattern: /(bitcoin|cryptocurrency|crypto).{0,20}(investment|opportunity|trading)/gi, 
+                    threat: 'Cryptocurrency scam detected', 
+                    score: 45,
+                    explanation: 'Crypto investment scams are rampant. Real opportunities come through registered financial advisors, not email promotions.'
+                },
+                
+                // Technical Threats
+                { pattern: /(password|login|credentials).{0,20}(expired|invalid|compromised)/gi, threat: 'Password/credential scam', score: 50 },
+                { pattern: /(security|breach|hack|compromise).{0,20}(detected|found|suspected)/gi, threat: 'Fake security threat', score: 55 },
+                { pattern: /(antivirus|malware|virus).{0,20}(detected|found|threat)/gi, threat: 'Fake antivirus scam', score: 50 },
+                
+                // Call-to-Action Red Flags
+                { pattern: /(click here|click below|visit link|follow link)/gi, threat: 'Suspicious call-to-action', score: 40 },
+                { pattern: /(download|install|update).{0,20}(now|immediately|urgent)/gi, threat: 'Urgent download request', score: 45 },
+                { pattern: /(reply|respond|answer).{0,20}(urgently|immediately|asap)/gi, threat: 'Urgent response pressure', score: 35 },
+                
+                // Authority Impersonation
+                { pattern: /(irs|tax|revenue).{0,20}(audit|investigation|penalty)/gi, threat: 'Tax authority impersonation', score: 60 },
+                { pattern: /(fbi|police|law enforcement).{0,20}(investigation|warrant|arrest)/gi, threat: 'Law enforcement impersonation', score: 70 },
+                { pattern: /(court|legal|lawsuit).{0,20}(summons|hearing|judgment)/gi, threat: 'Legal threat scam', score: 65 },
+                
+                // Emotional Manipulation
+                { pattern: /(help|emergency|crisis|urgent help)/gi, threat: 'Emergency help scam', score: 40 },
+                { pattern: /(family|friend|relative).{0,20}(emergency|trouble|help)/gi, threat: 'Family emergency scam', score: 45 },
+                { pattern: /(charity|donation|fundraising).{0,20}(urgent|emergency|crisis)/gi, threat: 'Fake charity scam', score: 40 }
+            ];
+
+            // Check for phishing patterns
+            phishingPatterns.forEach(item => {
+                const matches = text.match(item.pattern);
+                if (matches) {
+                    analysis.detections.push({
+                        threat: item.threat,
+                        score: item.score,
+                        matches: matches.length,
+                        explanation: item.explanation,
+                        matchedText: matches[0] // Show what text triggered the detection
+                    });
+                    analysis.threatScore += item.score * matches.length;
+                }
+            });
+
+            // Check for suspicious URLs in text
+            const urlPattern = /https?:\/\/[^\s]+/gi;
+            const urls = text.match(urlPattern);
+            if (urls) {
+                urls.forEach(url => {
+                    const urlAnalysis = analyzeURL(url);
+                    if (urlAnalysis.threatScore > 30) {
+                        analysis.detections.push({
+                            threat: `Suspicious URL detected: ${url}`,
+                            score: urlAnalysis.threatScore,
+                            matches: 1
+                        });
+                        analysis.threatScore += urlAnalysis.threatScore;
+                    }
+                });
+            }
+
+            // Check for suspicious email patterns
+            const emailPatterns = [
+                { pattern: /(noreply|no-reply|donotreply)@/gi, threat: 'No-reply email address - suspicious', score: 20 },
+                { pattern: /@[a-z0-9-]+\.(tk|ml|ga|cf|cc)/gi, threat: 'Free domain email - high risk', score: 40 },
+                { pattern: /@[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/gi, threat: 'IP address email - very suspicious', score: 60 }
+            ];
+
+            emailPatterns.forEach(item => {
+                const matches = text.match(item.pattern);
+                if (matches) {
+                    analysis.detections.push({
+                        threat: item.threat,
+                        score: item.score,
+                        matches: matches.length
+                    });
+                    analysis.threatScore += item.score * matches.length;
+                }
+            });
+
+            // Malicious script patterns
+            const scriptPatterns = [
+                { pattern: /<script|javascript:|eval\(|document\.write/gi, threat: 'Malicious script detected', score: 80 },
+                { pattern: /base64|eval|unescape|fromcharcode/gi, threat: 'Code obfuscation detected', score: 70 },
+                { pattern: /onclick|onload|onerror/gi, threat: 'Suspicious JavaScript events', score: 50 }
+            ];
+
+            scriptPatterns.forEach(item => {
+                const matches = text.match(item.pattern);
+                if (matches) {
+                    analysis.detections.push({
+                        threat: item.threat,
+                        score: item.score,
+                        matches: matches.length
+                    });
+                    analysis.threatScore += item.score * matches.length;
+                }
+            });
+
+            // Check for poor grammar/spelling (phishing indicator)
+            const grammarIssues = [
+                { pattern: /\b(recieve|recieved|recieving)\b/gi, threat: 'Poor spelling - phishing indicator', score: 15 },
+                { pattern: /\b(seperate|seperated|seperating)\b/gi, threat: 'Poor spelling - phishing indicator', score: 15 },
+                { pattern: /\b(occured|occuring|occurence)\b/gi, threat: 'Poor spelling - phishing indicator', score: 15 },
+                { pattern: /\b(definately|defiantly)\b/gi, threat: 'Poor spelling - phishing indicator', score: 15 }
+            ];
+
+            grammarIssues.forEach(item => {
+                const matches = text.match(item.pattern);
+                if (matches) {
+                    analysis.detections.push({
+                        threat: item.threat,
+                        score: item.score,
+                        matches: matches.length
+                    });
+                    analysis.threatScore += item.score * matches.length;
+                }
+            });
+
+            // Generate suggestions based on threat level
+            if (analysis.threatScore > 80) {
+                analysis.suggestions = [
+                    '🚫 CRITICAL THREAT - Do not click any links or download anything',
+                    '📞 Contact the organization through official channels',
+                    '🔍 Report this to your security team immediately',
+                    '🛡️ Run a full system scan for malware'
+                ];
+            } else if (analysis.threatScore > 60) {
+                analysis.suggestions = [
+                    '🚫 HIGH RISK - Do not click any links or provide information',
+                    '📞 Verify through official website or phone number',
+                    '🔍 Check sender email address carefully',
+                    '⚠️ Report to security team'
+                ];
+            } else if (analysis.threatScore > 30) {
+                analysis.suggestions = [
+                    '⚠️ MEDIUM RISK - Proceed with extreme caution',
+                    '🔍 Verify sender through alternative communication',
+                    '🌐 Check official website for similar communications',
+                    '🔒 Look for security indicators (HTTPS, verified sender)'
+                ];
+            } else if (analysis.threatScore > 10) {
+                analysis.suggestions = [
+                    '⚠️ LOW RISK - Some suspicious elements detected',
+                    '🔍 Review content carefully',
+                    '🛡️ Maintain normal security practices',
+                    '📝 Report if behavior seems unusual'
+                ];
+            } else {
+                analysis.suggestions = [
+                    '✅ Content appears safe',
+                    '🛡️ Continue with normal security practices',
+                    '📝 Report any suspicious behavior'
+                ];
+            }
+
+            analysis.threatScore = Math.min(100, analysis.threatScore);
+            return analysis;
+        }
+
+        function analyzeURL(url) {
+            const analysis = {
+                threatScore: 0,
+                detections: [],
+                suggestions: []
+            };
+
+            // Comprehensive URL threat patterns
+            const suspiciousPatterns = [
+                // IP Address patterns
+                { pattern: /[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/, threat: 'IP address instead of domain name - very suspicious', score: 40 },
+                
+                // Typosquatting patterns (common misspellings)
+                { 
+                    pattern: /paypa1|paypal1|paypall|paypai/i, 
+                    threat: 'PayPal typosquatting detected', 
+                    score: 60,
+                    explanation: 'This domain mimics PayPal with character substitutions (1 for l, 0 for o). Scammers use these to trick users into entering their PayPal credentials.'
+                },
+                { 
+                    pattern: /faceb00k|facebook1|facebok|faceboook/i, 
+                    threat: 'Facebook typosquatting detected', 
+                    score: 60,
+                    explanation: 'This domain mimics Facebook with character substitutions. These fake sites steal your Facebook login information.'
+                },
+                { 
+                    pattern: /goog1e|googIe|g00gle|gooogle/i, 
+                    threat: 'Google typosquatting detected', 
+                    score: 60,
+                    explanation: 'This domain mimics Google with character substitutions. These fake sites can steal your Google account credentials.'
+                },
+                { pattern: /micr0soft|microsoft1|micosoft|microsft/i, threat: 'Microsoft typosquatting detected', score: 60 },
+                { pattern: /amazom|amazon1|amaz0n|amazoon/i, threat: 'Amazon typosquatting detected', score: 60 },
+                { pattern: /twiter|twitter1|twittr|twittter/i, threat: 'Twitter typosquatting detected', score: 60 },
+                { pattern: /linkedln|linkedin1|linkdin|linkedinn/i, threat: 'LinkedIn typosquatting detected', score: 60 },
+                { pattern: /netf1ix|netflix1|netflx|netfliix/i, threat: 'Netflix typosquatting detected', score: 60 },
+                { pattern: /app1e|apple1|aple|applle/i, threat: 'Apple typosquatting detected', score: 60 },
+                { pattern: /ebay1|ebayy|ebai|ebayy/i, threat: 'eBay typosquatting detected', score: 60 },
+                { pattern: /youtub1|youtube1|youtub|youttube/i, threat: 'YouTube typosquatting detected', score: 60 },
+                { pattern: /instagr4m|instagram1|instagrm|instagrram/i, threat: 'Instagram typosquatting detected', score: 60 },
+                
+                // Banking and financial typosquatting
+                { pattern: /bankofamerica1|bankofameric|bankofamericaa/i, threat: 'Bank of America typosquatting', score: 70 },
+                { pattern: /wellsfargo1|wellsfarg|wellsfargoo/i, threat: 'Wells Fargo typosquatting', score: 70 },
+                { pattern: /chase1|chasee|chas|chasebank/i, threat: 'Chase Bank typosquatting', score: 70 },
+                { pattern: /citibank1|citibankk|citi|citibnk/i, threat: 'CitiBank typosquatting', score: 70 },
+                
+                // URL shorteners (often used for phishing)
+                { pattern: /bit\.ly|tinyurl|short\.link|t\.co|goo\.gl|ow\.ly|is\.gd|v\.gd/i, threat: 'URL shortener detected - high phishing risk', score: 30 },
+                
+                // Free domain services (often used for malicious sites)
+                { pattern: /\.tk$|\.ml$|\.ga$|\.cf$|\.cc$/i, threat: 'Free domain service - high risk', score: 35 },
+                
+                // Suspicious domain patterns
+                { pattern: /[a-z]+-[a-z]+-[a-z]+\.[a-z]{2,}/i, threat: 'Suspicious hyphenated domain', score: 25 },
+                { pattern: /[0-9]{10,}/, threat: 'Suspicious numeric domain', score: 30 },
+                { pattern: /[a-z]{1,2}\.[a-z]{1,2}\.[a-z]{2,}/i, threat: 'Suspicious short domain structure', score: 20 },
+                
+                // Common phishing keywords in domains
+                { pattern: /(secure|security|login|account|verify|update|confirm)\./i, threat: 'Suspicious security-related subdomain', score: 40 },
+                { pattern: /(bank|banking|financial|payment|credit|debit)\./i, threat: 'Financial-related subdomain - verify authenticity', score: 45 },
+                
+                // Suspicious TLDs
+                { pattern: /\.(ru|cn|tk|ml|ga|cf|cc)$/i, threat: 'Suspicious top-level domain', score: 25 },
+                
+                // Long domains (often used to hide malicious intent)
+                { pattern: /^https?:\/\/[^\/]{50,}/i, threat: 'Unusually long domain name', score: 20 },
+                
+                // Mixed case domains (potential obfuscation)
+                { pattern: /[A-Z][a-z]+[A-Z][a-z]+/i, threat: 'Mixed case domain - potential obfuscation', score: 15 }
+            ];
+
+            // Check for suspicious patterns
+            suspiciousPatterns.forEach(item => {
+                if (item.pattern.test(url)) {
+                    analysis.detections.push({
+                        threat: item.threat,
+                        score: item.score,
+                        explanation: item.explanation,
+                        matchedText: url.match(item.pattern)?.[0] // Show what part of URL triggered detection
+                    });
+                    analysis.threatScore += item.score;
+                }
+            });
+
+            // Check HTTPS
+            if (!url.startsWith('https://')) {
+                analysis.detections.push({
+                    threat: 'Non-HTTPS connection detected',
+                    score: 20,
+                    explanation: 'HTTPS encrypts data between your browser and the website. HTTP connections can be intercepted, making them unsafe for sensitive information.',
+                    matchedText: 'http://'
+                });
+                analysis.threatScore += 20;
+            }
+
+            // Check for suspicious port numbers
+            const portPattern = /:([0-9]+)/;
+            const portMatch = url.match(portPattern);
+            if (portMatch) {
+                const port = parseInt(portMatch[1]);
+                if (port !== 80 && port !== 443 && port !== 8080) {
+                    analysis.detections.push({
+                        threat: `Suspicious port number: ${port}`,
+                        score: 30
+                    });
+                    analysis.threatScore += 30;
+                }
+            }
+
+            // Check for suspicious characters
+            if (url.includes('%') || url.includes('&amp;') || url.includes('&#x')) {
+                analysis.detections.push({
+                    threat: 'URL encoding detected - potential obfuscation',
+                    score: 25
+                });
+                analysis.threatScore += 25;
+            }
+
+            // Generate suggestions based on threat level
+            if (analysis.threatScore > 80) {
+                analysis.suggestions = [
+                    '🚫 CRITICAL THREAT - Do not visit this URL',
+                    '🔍 Report to security team immediately',
+                    '🛡️ Use a virtual machine if absolutely necessary',
+                    '📞 Contact the organization through official channels'
+                ];
+            } else if (analysis.threatScore > 60) {
+                analysis.suggestions = [
+                    '🚫 HIGH RISK - Do not visit this URL',
+                    '🔍 Report to security team',
+                    '🌐 Verify domain authenticity through official sources',
+                    '🛡️ Use additional security tools if necessary'
+                ];
+            } else if (analysis.threatScore > 30) {
+                analysis.suggestions = [
+                    '⚠️ MEDIUM RISK - Proceed with extreme caution',
+                    '🔒 Enable additional browser security',
+                    '🌐 Verify domain authenticity',
+                    '📝 Report if behavior seems suspicious'
+                ];
+            } else if (analysis.threatScore > 10) {
+                analysis.suggestions = [
+                    '⚠️ LOW RISK - Some suspicious elements detected',
+                    '🔍 Review URL carefully',
+                    '🛡️ Maintain normal security practices',
+                    '📝 Report any suspicious behavior'
+                ];
+            } else {
+                analysis.suggestions = [
+                    '✅ URL appears safe',
+                    '🔒 Maintain normal security practices',
+                    '📝 Report any suspicious behavior'
+                ];
+            }
+
+            analysis.threatScore = Math.min(100, analysis.threatScore);
+            return analysis;
+        }
+
+        function analyzeFile(filename) {
+            const analysis = {
+                threatScore: 0,
+                detections: [],
+                suggestions: []
+            };
+
+            // File extension analysis
+            const riskyExtensions = [
+                { ext: /\.exe$/i, threat: 'Executable file - high risk', score: 70 },
+                { ext: /\.scr$/i, threat: 'Screen saver file - often malicious', score: 65 },
+                { ext: /\.bat$/i, threat: 'Batch file - can execute commands', score: 60 },
+                { ext: /\.cmd$/i, threat: 'Command file - can execute commands', score: 60 },
+                { ext: /\.pif$/i, threat: 'Program information file - suspicious', score: 55 },
+                { ext: /\.com$/i, threat: 'Command file - executable', score: 70 },
+                { ext: /\.js$/i, threat: 'JavaScript file - can be malicious', score: 40 },
+                { ext: /\.vbs$/i, threat: 'VBScript file - can be malicious', score: 45 }
+            ];
+
+            riskyExtensions.forEach(item => {
+                if (item.ext.test(filename)) {
+                    analysis.detections.push({
+                        threat: item.threat,
+                        score: item.score
+                    });
+                    analysis.threatScore += item.score;
+                }
+            });
+
+            // Generate suggestions
+            if (analysis.threatScore > 50) {
+                analysis.suggestions = [
+                    '🚫 Do not open this file',
+                    '🔍 Scan with antivirus software',
+                    '📞 Report to security team'
+                ];
+            } else if (analysis.threatScore > 25) {
+                analysis.suggestions = [
+                    '⚠️ Open with caution',
+                    '🛡️ Scan with antivirus first',
+                    '🔒 Use a sandbox environment'
+                ];
+            } else {
+                analysis.suggestions = [
+                    '✅ File appears safe',
+                    '🛡️ Continue with normal security practices',
+                    '📝 Report any suspicious behavior'
+                ];
+            }
+
+            analysis.threatScore = Math.min(100, analysis.threatScore);
+            return analysis;
+        }
+
+        function displayResults(analysis) {
+            const resultsContent = document.getElementById('resultsContent');
+            
+            let riskLevel = 'low';
+            let riskColor = '#4CAF50';
+            let riskIcon = '🟢';
+            
+            if (analysis.threatScore >= 80) {
+                riskLevel = 'critical';
+                riskColor = '#F44336';
+                riskIcon = '🔴';
+            } else if (analysis.threatScore >= 60) {
+                riskLevel = 'high';
+                riskColor = '#FF9800';
+                riskIcon = '🟠';
+            } else if (analysis.threatScore >= 30) {
+                riskLevel = 'medium';
+                riskColor = '#FFC107';
+                riskIcon = '🟡';
+            }
+
+            let html = `
+                <div class="results-header">
+                    <h3>Threat Analysis</h3>
+                    <div class="threat-score score-${riskLevel}">
+                        ${riskIcon} ${analysis.threatScore}/100
+                    </div>
+                </div>
+            `;
+
+            if (analysis.aiEnhanced) {
+                html += `<div style="text-align: center; margin-bottom: 20px;"><span class="ai-enhanced">🤖 AI Enhanced Analysis</span></div>`;
+            }
+
+            if (analysis.detections.length > 0) {
+                html += `
+                    <div class="detections-list">
+                        <h4 style="margin-bottom: 15px; color: #00D9FF;">Detected Threats:</h4>
+                `;
+                
+                analysis.detections.forEach(detection => {
+                    html += `
+                        <div class="detection-item" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                                <span class="detection-threat">${detection.threat}</span>
+                                <span class="detection-score" style="background: ${getScoreColor(detection.score)}; color: #FFFFFF;">${detection.score}</span>
+                            </div>
+                            ${detection.matchedText ? `<div style="font-size: 12px; color: #FFC107; font-style: italic;">Matched: "${detection.matchedText}"</div>` : ''}
+                            ${detection.explanation ? `<div style="font-size: 12px; color: #B0B0B0; line-height: 1.4; margin-top: 4px;">💡 ${detection.explanation}</div>` : ''}
+                        </div>
+                    `;
+                });
+                
+                html += `</div>`;
+            } else {
+                html += `
+                    <div style="text-align: center; padding: 20px; color: #4CAF50;">
+                        <div style="font-size: 24px; margin-bottom: 10px;">✅</div>
+                        <p>No threats detected</p>
+                    </div>
+                `;
+            }
+
+            if (analysis.suggestions.length > 0) {
+                html += `
+                    <div class="suggestions-list">
+                        <h4 style="margin-bottom: 15px; color: #00D9FF;">Recommendations:</h4>
+                `;
+                
+                analysis.suggestions.forEach(suggestion => {
+                    html += `
+                        <div class="suggestion-item">
+                            <span class="suggestion-icon">${suggestion.charAt(0)}</span>
+                            <span class="suggestion-text">${suggestion}</span>
+                        </div>
+                    `;
+                });
+                
+                html += `</div>`;
+            }
+
+            resultsContent.innerHTML = html;
+        }
+
+        function getScoreColor(score) {
+            if (score >= 70) return 'rgba(244, 67, 54, 0.8)';
+            if (score >= 50) return 'rgba(255, 152, 0, 0.8)';
+            if (score >= 30) return 'rgba(255, 193, 7, 0.8)';
+            return 'rgba(76, 175, 80, 0.8)';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+[
+  {
+    "id": "6f9d3e2a-0001-0000-0000-000000000001",
+    "source": "gmail",
+    "source_id": "msg_12345",
+    "tenant_id": "default",
+    "event_type": "email",
+    "timestamp": "2025-10-29T10:30:00Z",
+    "sender": "sender@example.redacted",
+    "recipients": ["recipient@company.redacted"],
+    "subject": "Internal communication",
+    "body_preview": "Regular business communication",
+    "trust_score": 85.5,
+    "provenance": {
+      "gmail_message_id": "msg_12345",
+      "thread_id": "thread_001"
+    }
+  },
+  {
+    "id": "6f9d3e2a-0002-0000-0000-000000000002",
+    "source": "twilio",
+    "source_id": "CA123456",
+    "tenant_id": "default",
+    "event_type": "call",
+    "timestamp": "2025-10-29T10:41:23Z",
+    "sender": "alias_4f2a (redacted)",
+    "recipients": ["support@company.redacted"],
+    "recording_key": "recordings/2025/10/CA123456.wav",
+    "trust_score": 72.3,
+    "provenance": {
+      "twilio_form": {
+        "CallSid": "CA123456",
+        "From": "+15551234567",
+        "To": "+15559876543",
+        "CallStatus": "completed"
+      }
+    }
+  }
+]
+

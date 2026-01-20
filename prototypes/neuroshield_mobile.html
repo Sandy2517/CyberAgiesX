@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberAgiesX Mobile - Cognitive Firewall</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: #000;
+            color: #FFFFFF;
+            overflow-x: hidden;
+            touch-action: manipulation;
+        }
+
+        /* Mobile-specific layout */
+        .mobile-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Header */
+        .mobile-header {
+            background: linear-gradient(135deg, #1A1D23 0%, #0A1628 100%);
+            padding: 20px 20px 15px;
+            border-bottom: 2px solid #00D9FF;
+            box-shadow: 0 2px 20px rgba(0, 217, 255, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .mobile-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .shield-icon {
+            font-size: 28px;
+            color: #00FF88;
+            text-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
+        }
+
+        .trust-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: rgba(0, 255, 136, 0.1);
+            border: 2px solid #00FF88;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .trust-score-large {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, #FF5757 0%, #FFAA00 30%, #00FF88 70%, #00FF88 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .trust-score-large::before {
+            content: '';
+            position: absolute;
+            width: 65px;
+            height: 65px;
+            background: #000;
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        .trust-value-large {
+            position: relative;
+            z-index: 2;
+            color: #FFFFFF;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        /* Navigation */
+        .mobile-nav {
+            display: flex;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 5px;
+            gap: 5px;
+            overflow-x: auto;
+        }
+
+        .nav-btn {
+            flex: 1;
+            min-width: 80px;
+            padding: 10px 8px;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            color: #A1A8B0;
+            font-size: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .nav-btn.active {
+            background: rgba(0, 217, 255, 0.2);
+            color: #00D9FF;
+        }
+
+        .nav-btn:hover {
+            background: rgba(0, 217, 255, 0.1);
+        }
+
+        /* Main Content */
+        .mobile-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        /* Cards */
+        .mobile-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(0, 217, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .card-title {
+            color: #00D9FF;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .card-icon {
+            font-size: 20px;
+        }
+
+        /* Communication Stream */
+        .comm-item {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-left: 4px solid transparent;
+        }
+
+        .comm-item.safe { border-left-color: #00FF88; }
+        .comm-item.warning { border-left-color: #FFAA00; }
+        .comm-item.danger { border-left-color: #FF5757; }
+
+        .comm-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .comm-type {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #FFFFFF;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .comm-trust {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .trust-safe { background: rgba(0, 255, 136, 0.1); color: #00FF88; }
+        .trust-warning { background: rgba(255, 170, 0, 0.1); color: #FFAA00; }
+        .trust-danger { background: rgba(255, 87, 87, 0.1); color: #FF5757; }
+
+        .comm-content {
+            color: #A1A8B0;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        /* Action Buttons */
+        .action-btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        .btn-danger {
+            background: #FF5757;
+            color: #FFFFFF;
+        }
+
+        .btn-warning {
+            background: #FFAA00;
+            color: #000;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #FFFFFF;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .action-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid rgba(0, 217, 255, 0.3);
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #FFFFFF;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #A1A8B0;
+            font-size: 12px;
+        }
+
+        /* Alert Modal */
+        .mobile-alert {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .alert-content {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 30px;
+            border: 2px solid #FF5757;
+            backdrop-filter: blur(20px);
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .alert-icon {
+            font-size: 48px;
+            color: #FF5757;
+            margin-bottom: 15px;
+        }
+
+        .alert-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #FF5757;
+            margin-bottom: 10px;
+        }
+
+        .alert-message {
+            color: #FFFFFF;
+            margin-bottom: 20px;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+
+        .alert-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .quick-btn {
+            padding: 20px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(0, 217, 255, 0.3);
+            border-radius: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: #FFFFFF;
+        }
+
+        .quick-btn:hover {
+            background: rgba(0, 217, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .quick-btn-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .quick-btn-text {
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #00D9FF, #00FF88);
+            border-radius: 50%;
+            border: none;
+            color: #000;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0, 217, 255, 0.4);
+            transition: all 0.3s ease;
+            z-index: 50;
+        }
+
+        .fab:hover {
+            transform: scale(1.1);
+        }
+
+        .fab:active {
+            transform: scale(0.95);
+        }
+
+        /* Hidden class */
+        .hidden { display: none !important; }
+
+        /* Status indicators */
+        .status-online { color: #00FF88; }
+        .status-warning { color: #FFAA00; }
+        .status-offline { color: #FF5757; }
+
+        /* Haptic feedback simulation */
+        .haptic {
+            animation: hapticFeedback 0.1s ease-in-out;
+        }
+
+        @keyframes hapticFeedback {
+            0% { transform: scale(1); }
+            50% { transform: scale(0.98); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="mobile-container">
+        <!-- Header -->
+        <div class="mobile-header">
+            <div class="header-top">
+                <div class="mobile-logo">
+                    <span class="shield-icon">🛡️</span>
+                    <span>CyberAgiesX</span>
+                </div>
+                <div class="trust-badge">
+                    <span>🔒</span>
+                    <span id="trustScore">94/100</span>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-bottom: 15px;">
+                <div class="trust-score-large">
+                    <span class="trust-value-large" id="trustValueLarge">94</span>
+                </div>
+                <div style="color: #00FF88; font-size: 14px; margin-top: 8px; font-weight: bold;">
+                    Excellent Security
+                </div>
+            </div>
+
+            <div class="mobile-nav">
+                <button class="nav-btn active" data-section="monitor">🔍 Monitor</button>
+                <button class="nav-btn" data-section="alerts">🚨 Alerts</button>
+                <button class="nav-btn" data-section="stats">📊 Stats</button>
+                <button class="nav-btn" data-section="settings">⚙️ Settings</button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="mobile-content">
+            <!-- Monitor Section -->
+            <div id="monitor" class="content-section">
+                <div class="mobile-card">
+                    <div class="card-header">
+                        <div class="card-title">🛡️ Active Protection</div>
+                        <div class="status-online">●</div>
+                    </div>
+                    <div style="color: #A1A8B0; font-size: 13px; line-height: 1.5;">
+                        <span class="status-online">✅</span> Real-time monitoring active<br>
+                        <span class="status-online">✅</span> All channels protected<br>
+                        <span class="status-online">✅</span> Behavioral analysis running<br>
+                        <span class="status-online">✅</span> Blockchain logging enabled
+                    </div>
+                </div>
+
+                <div class="mobile-card">
+                    <div class="card-header">
+                        <div class="card-title">📱 Live Communications</div>
+                        <div style="color: #A1A8B0; font-size: 12px;">Last 15 min</div>
+                    </div>
+                    
+                    <div class="comm-item safe">
+                        <div class="comm-header">
+                            <div class="comm-type">
+                                <span>💬</span>
+                                <span>Teams Chat</span>
+                            </div>
+                            <div class="comm-trust trust-safe">
+                                <span>✅</span>
+                                <span>91</span>
+                            </div>
+                        </div>
+                        <div class="comm-content">
+                            Message from Sarah (Marketing)<br>
+                            "Project update scheduled for 3pm"
+                        </div>
+                    </div>
+
+                    <div class="comm-item warning">
+                        <div class="comm-header">
+                            <div class="comm-type">
+                                <span>📧</span>
+                                <span>Email</span>
+                            </div>
+                            <div class="comm-trust trust-warning">
+                                <span>⚠️</span>
+                                <span>67</span>
+                            </div>
+                        </div>
+                        <div class="comm-content">
+                            External sender: finance.request@bank-trust.com<br>
+                            Subject: "Urgent payment verification required"
+                        </div>
+                        <button class="action-btn btn-warning" onclick="requestVerification()">
+                            Verify Sender
+                        </button>
+                    </div>
+
+                    <div class="comm-item danger">
+                        <div class="comm-header">
+                            <div class="comm-type">
+                                <span>📞</span>
+                                <span>Phone Call</span>
+                            </div>
+                            <div class="comm-trust trust-danger">
+                                <span>🚨</span>
+                                <span>23</span>
+                            </div>
+                        </div>
+                        <div class="comm-content">
+                            <strong style="color: #FF5757;">HIGH RISK:</strong> Voice clone detected<br>
+                            Caller claiming to be CEO requesting wire transfer
+                        </div>
+                        <button class="action-btn btn-danger" onclick="showAlert()">
+                            🚨 Block & Report
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alerts Section -->
+            <div id="alerts" class="content-section hidden">
+                <div class="mobile-card">
+                    <div class="card-header">
+                        <div class="card-title">🚨 Active Threats</div>
+                        <div style="background: #FF5757; color: #FFF; padding: 4px 8px; border-radius: 10px; font-size: 12px;">3</div>
+                    </div>
+                    
+                    <div style="background: rgba(255, 87, 87, 0.1); border: 1px solid #FF5757; border-radius: 10px; padding: 15px; margin-bottom: 15px;">
+                        <div style="color: #FF5757; font-weight: bold; margin-bottom: 8px;">🎭 Deepfake Video Call</div>
+                        <div style="color: #FFFFFF; font-size: 13px; margin-bottom: 10px;">CEO impersonation detected requesting $50K transfer</div>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="action-btn btn-danger" style="flex: 1; margin-top: 0;">Block</button>
+                            <button class="action-btn btn-secondary" style="flex: 1; margin-top: 0;">Investigate</button>
+                        </div>
+                    </div>
+
+                    <div style="background: rgba(255, 170, 0, 0.1); border: 1px solid #FFAA00; border-radius: 10px; padding: 15px; margin-bottom: 15px;">
+                        <div style="color: #FFAA00; font-weight: bold; margin-bottom: 8px;">📧 Suspicious Email Pattern</div>
+                        <div style="color: #FFFFFF; font-size: 13px; margin-bottom: 10px;">AI-generated phishing attempt detected in HR emails</div>
+                        <button class="action-btn btn-warning" style="margin-top: 0;">Review Details</button>
+                    </div>
+
+                    <div style="background: rgba(255, 170, 0, 0.1); border: 1px solid #FFAA00; border-radius: 10px; padding: 15px;">
+                        <div style="color: #FFAA00; font-weight: bold; margin-bottom: 8px;">🎤 Voice Authentication Failed</div>
+                        <div style="color: #FFFFFF; font-size: 13px; margin-bottom: 10px;">Multiple failed voice verification attempts for admin access</div>
+                        <button class="action-btn btn-warning" style="margin-top: 0;">Check Logs</button>
+                    </div>
+                </div>
+
+                <div class="mobile-card">
+                    <div class="card-header">
+                        <div class="card-title">✅ Recent Resolutions</div>
+                        <div style="color: #00FF88;">8 today</div>
+                    </div>
+                    <div style="color: #A1A8B0; font-size: 13px; line-height: 1.5;">
+                        • Blocked 12 phishing attempts<br>
+                        • Verified 847 legitimate communications<br>
+                        • Prevented 3 social engineering attacks<br>
+                        • Updated 156 user behavioral profiles
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Section -->
+            <div id="stats" class="content-section hidden">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" style="color: #00FF88;">847</div>
+                        <div class="stat-label">Communications<br>Analyzed Today</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" style="color: #FF5757;">12</div>
+                        <div class="stat-label">Threats<br>Blocked Today</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" style="color: #00D9FF;">89.2</div>
+                        <div class="stat-label">Average<br>Trust Score</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" style="color: #FFAA00;">99.2%</div>
+                        <div class="stat-label">Protection<br>Success Rate</div>
+                    </div>
+                </div>
+
+                <div class="mobile-card">
+                    <div class="card-header">
+                        <div class="card-title">📈 Weekly Trends</div>
+                    </div>
+                    <div style="color: #A1A8B0; font-size: 13px; line-height: 1.6;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <span>Threats detected:</span>
+                            <span style="color: #FF5757;">↓ 23%</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <span>Trust score average:</span>
+                            <span style="color: #00FF88;">↑ 2.1 pts</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <span>Communications scanned:</span>
+                            <span style="color: #00D9FF;">↑ 15%</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span>False positives:</span>
+                            <span style="color: #00FF88;">↓ 45%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mobile-card">
+                    <div class="card-header">
+                        <div class="card-title">🎯 Protection Coverage</div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; color: #A1A8B0; font-size: 13px;">
+                        <div>
+                            <div style="color: #00FF88; margin-bottom: 5px;">✅ Email: 100%</div>
+                            <div style="color: #00FF88; margin-bottom: 5px;">✅ Video: 100%</div>
+                            <div style="color: #00FF88; margin-bottom: 5px;">✅ Voice: 100%</div>
+                        </div>
+                        <div>
+                            <div style="color: #00FF88; margin-bottom: 5px;">✅ Chat: 100%</div>
+                            <div style="color: #FFAA00; margin-bottom: 5px;">⚠️ IoT: 87%</div>
+                            <div style="color: #00FF88; margin-bottom: 5px;">✅ Social: 95%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Section -->
+            <div id="settings" class="content-section hidden">
+                <div class="mobile-card">
+                    <div class="card-header">
+                        <div class="card-title">🔧 Protection Settings</div>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <span style="color: #FFFFFF; font-size: 14px;">Auto-block threshold</span>
+                            <span style="color: #A1A8B0; font-size: 12px;">30</span>
+                        </div>
+                        <input type="range" min="0" max="50" value="30" style="width: 100%; accent-color: #00D9FF;">
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <span style="color: #FFFFFF; font-size: 14px;">Warning threshold</span>
+                            <span style="color: #A1A8B0; font-size: 12px;">60</span>
+                        </div>
+                        <input type="range" min="30" max="80" value="60" style="width: 100%; accent-color: #FFAA00;">
+                    </div>
+                </div>
+
+                <div class="mobile-card">
+                    <div class="card-header">
+                        <div class="card-title">🔔 Notifications</div>
+                    </div>
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <span style="color: #FFFFFF; font-size: 14px;">Push notifications</span>
+                        <input type="checkbox" checked style="transform: scale(1.2);">
+                    </div>
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <span style="color: #FFFFFF; font-size: 14px;">Critical alerts only</span>
+                        <input type="checkbox" style="transform: scale(1.2);">
+                    </div>
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <span style="color: #FFFFFF; font-size: 14px;">Vibration alerts</span>
+                        <input type="checkbox" checked style="transform: scale(1.2);">
+                    </div>
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="color: #FFFFFF; font-size: 14px;">Sound alerts</span>
+                        <input type="checkbox" checked style="transform: scale(1.2);">
+                    </div>
+                </div>
+
+                <div class="quick-actions">
+                    <div class="quick-btn" onclick="exportLogs()">
+                        <span class="quick-btn-icon">📊</span>
+                        <span class="quick-btn-text">Export Logs</span>
+                    </div>
+                    <div class="quick-btn" onclick="runDiagnostics()">
+                        <span class="quick-btn-icon">🔍</span>
+                        <span class="quick-btn-text">Diagnostics</span>
+                    </div>
+                    <div class="quick-btn" onclick="updateSettings()">
+                        <span class="quick-btn-icon">🔄</span>
+                        <span class="quick-btn-text">Update</span>
+                    </div>
+                    <div class="quick-btn" onclick="contactSupport()">
+                        <span class="quick-btn-icon">💬</span>
+                        <span class="quick-btn-text">Support</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Floating Action Button -->
+        <button class="fab" onclick="emergencyBlock()" title="Emergency Block">🚨</button>
+    </div>
+
+    <!-- Alert Modal -->
+    <div id="alertModal" class="mobile-alert">
+        <div class="alert-content">
+            <div class="alert-icon">⚠️</div>
+            <div class="alert-title">Cognitive Attack Detected</div>
+            <div class="alert-message">
+                High probability AI-generated communication detected. This appears to be a deepfake video call attempting CEO impersonation.
+                <br><br>
+                <strong>Risk Level: Critical</strong>
+            </div>
+            <div class="alert-actions">
+                <button class="action-btn btn-danger" onclick="blockThreat()">🚨 Block Immediately</button>
+                <button class="action-btn btn-warning" onclick="requestVerification()">🔍 Verify Identity</button>
+                <button class="action-btn btn-secondary" onclick="closeAlert()">⚠️ Ignore (Risk)</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Mobile-specific JavaScript
+        let currentSection = 'monitor';
+        let trustScore = 94;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Navigation
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    switchSection(this.dataset.section);
+                    addHapticFeedback(this);
+                });
+            });
+
+            // Auto-update trust score
+            setInterval(updateTrustScore, 3000);
+
+            // Simulate incoming communications
+            setInterval(simulateIncomingComm, 8000);
+        });
+
+        function switchSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.add('hidden');
+            });
+
+            // Show selected section
+            document.getElementById(sectionId).classList.remove('hidden');
+
+            // Update navigation
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-section="${sectionId}"]`).classList.add('active');
+
+            currentSection = sectionId;
+        }
+
+        function addHapticFeedback(element) {
+            element.classList.add('haptic');
+            setTimeout(() => element.classList.remove('haptic'), 100);
+            
+            // Vibrate if supported
+            if (navigator.vibrate) {
+                navigator.vibrate(50);
+            }
+        }
+
+        function updateTrustScore() {
+            const variation = Math.random() > 0.5 ? 1 : -1;
+            trustScore = Math.max(85, Math.min(100, trustScore + variation));
+            
+            document.getElementById('trustScore').textContent = `${trustScore}/100`;
+            document.getElementById('trustValueLarge').textContent = trustScore;
+        }
+
+        function showAlert() {
+            document.getElementById('alertModal').style.display = 'flex';
+            addHapticFeedback(document.body);
+            
+            // Vibrate for alert
+            if (navigator.vibrate) {
+                navigator.vibrate([200, 100, 200]);
+            }
+        }
+
+        function closeAlert() {
+            document.getElementById('alertModal').style.display = 'none';
+        }
+
+        function blockThreat() {
+            addHapticFeedback(document.body);
+            alert('🚨 Threat blocked successfully!\n\n• Communication terminated\n• Security team notified\n• Incident logged to blockchain\n• User protected');
+            closeAlert();
+        }
+
+        function requestVerification() {
+            addHapticFeedback(document.body);
+            alert('🔍 Verification initiated!\n\n• Alternative contact method activated\n• Identity confirmation request sent\n• Temporary communication hold applied\n• Awaiting secure verification');
+            closeAlert();
+        }
+
+        function emergencyBlock() {
+            addHapticFeedback(document.body);
+            if (confirm('🚨 EMERGENCY BLOCK\n\nThis will immediately block all incoming communications and alert security.\n\nProceed?')) {
+                alert('🛡️ EMERGENCY PROTOCOL ACTIVATED\n\n• All communications blocked\n• Security team alerted\n• Location logged\n• Safe mode enabled');
+            }
+        }
+
+        function simulateIncomingComm() {
+            // Simulate random communication for demo
+            const commTypes = ['📧 Email', '💬 Chat', '📞 Call', '📹 Video'];
+            const trustLevels = [92, 87, 34, 78];
+            
+            console.log('New communication simulated:', commTypes[Math.floor(Math.random() * commTypes.length)]);
+        }
+
+        function exportLogs() {
+            addHapticFeedback(document.body);
+            alert('📊 Export initiated!\n\nForensic logs will be compiled and sent to your registered email address within 5 minutes.');
+        }
+
+        function runDiagnostics() {
+            addHapticFeedback(document.body);
+            alert('🔍 System diagnostics running...\n\n✅ All protection modules active\n✅ Blockchain connectivity verified\n✅ AI engines operational\n✅ No issues detected');
+        }
+
+        function updateSettings() {
+            addHapticFeedback(document.body);
+            alert('🔄 Settings updated!\n\nConfiguration changes saved and synchronized across all protected devices.');
+        }
+
+        function contactSupport() {
+            addHapticFeedback(document.body);
+            alert('💬 Support contacted!\n\nA CyberAgiesX specialist will reach out within 15 minutes via secure channel.');
+        }
+
+        // Touch gestures for mobile
+        let touchStartY = 0;
+        let touchEndY = 0;
+
+        document.addEventListener('touchstart', function(e) {
+            touchStartY = e.changedTouches[0].screenY;
+        });
+
+        document.addEventListener('touchend', function(e) {
+            touchEndY = e.changedTouches[0].screenY;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const diff = touchStartY - touchEndY;
+            
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0) {
+                    // Swipe up - could implement quick actions
+                    console.log('Swipe up detected');
+                } else {
+                    // Swipe down - could implement refresh
+                    console.log('Swipe down detected');
+                }
+            }
+        }
+
+        // PWA installation prompt
+        let deferredPrompt;
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            // Show install button or notification
+            console.log('PWA install prompt available');
+        });
+
+        // Network status monitoring
+        function updateNetworkStatus() {
+            const isOnline = navigator.onLine;
+            const statusIndicator = document.querySelector('.trust-badge');
+            
+            if (!isOnline) {
+                statusIndicator.style.background = 'rgba(255, 87, 87, 0.1)';
+                statusIndicator.style.borderColor = '#FF5757';
+                statusIndicator.style.color = '#FF5757';
+            }
+        }
+
+        window.addEventListener('online', updateNetworkStatus);
+        window.addEventListener('offline', updateNetworkStatus);
+    </script>
+</body>
+</html>

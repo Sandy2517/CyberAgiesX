@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberAgiesX - Cognitive Firewall Demo</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #1A1D23 0%, #0A1628 100%);
+            color: #FFFFFF;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: rgba(0, 217, 255, 0.1);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid #00D9FF;
+        }
+        
+        .logo {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #8B9DC3;
+            font-size: 18px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .demo-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(0, 217, 255, 0.3);
+        }
+        
+        .trust-score {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .score-gauge {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, #FF3B3B 0deg 36deg, #FFD700 36deg 144deg, #00FF88 144deg 360deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .score-inner {
+            width: 140px;
+            height: 140px;
+            background: #1A1D23;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        
+        .score-value {
+            font-size: 48px;
+            font-weight: bold;
+            color: #00FF88;
+        }
+        
+        .score-label {
+            color: #8B9DC3;
+            margin-top: 5px;
+        }
+        
+        .status {
+            font-size: 20px;
+            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 25px;
+            background: rgba(0, 255, 136, 0.2);
+            color: #00FF88;
+            border: 2px solid #00FF88;
+        }
+        
+        .scenarios {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .scenario-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 20px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .scenario-card:hover {
+            border-color: #00D9FF;
+            transform: translateY(-5px);
+        }
+        
+        .scenario-card.active {
+            border-color: #00FF88;
+            background: rgba(0, 255, 136, 0.1);
+        }
+        
+        .scenario-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #00D9FF;
+        }
+        
+        .scenario-desc {
+            color: #8B9DC3;
+            font-size: 14px;
+        }
+        
+        .alert {
+            background: linear-gradient(135deg, #FF3B3B, #FF6B35);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 20px 0;
+            display: none;
+        }
+        
+        .alert.show {
+            display: block;
+            animation: pulse 2s infinite;
+        }
+        
+        .alert-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            border: 2px solid;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-danger {
+            background: #FF3B3B;
+            border-color: #FF3B3B;
+            color: white;
+        }
+        
+        .btn-warning {
+            background: transparent;
+            border-color: #FFD700;
+            color: #FFD700;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">🛡️ CyberAgiesX</div>
+        <div class="subtitle">The World's First Cognitive Firewall</div>
+    </div>
+    
+    <div class="container">
+        <div class="demo-section">
+            <div class="trust-score">
+                <div class="score-gauge">
+                    <div class="score-inner">
+                        <div class="score-value" id="trustScore">92</div>
+                        <div class="score-label">Trust Score</div>
+                    </div>
+                </div>
+                <div class="status" id="status">EXCELLENT</div>
+            </div>
+            
+            <div id="alert" class="alert">
+                <div class="alert-title">🚨 CRITICAL SECURITY ALERT</div>
+                <div>This communication shows 89% likelihood of AI manipulation</div>
+                <div class="buttons">
+                    <button class="btn btn-danger" onclick="terminate()">🛑 TERMINATE</button>
+                    <button class="btn btn-warning" onclick="continueRisk()">⚠️ CONTINUE</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="demo-section">
+            <h2 style="color: #00D9FF; margin-bottom: 20px;">🎭 Attack Scenarios</h2>
+            <div class="scenarios">
+                <div class="scenario-card active" onclick="setScenario('safe', 92, 'EXCELLENT', '#00FF88')">
+                    <div class="scenario-title">✅ Safe Communication</div>
+                    <div class="scenario-desc">Normal CEO video call - all systems verified</div>
+                </div>
+                
+                <div class="scenario-card" onclick="setScenario('deepfake', 23, 'DANGEROUS', '#FF3B3B')">
+                    <div class="scenario-title">🎭 Deepfake Attack</div>
+                    <div class="scenario-desc">CEO impersonation with sophisticated voice clone</div>
+                </div>
+                
+                <div class="scenario-card" onclick="setScenario('phishing', 45, 'SUSPICIOUS', '#FFD700')">
+                    <div class="scenario-title">📧 AI Phishing</div>
+                    <div class="scenario-desc">Advanced email manipulation attempt</div>
+                </div>
+                
+                <div class="scenario-card" onclick="setScenario('voice', 34, 'HIGH RISK', '#FF6B35')">
+                    <div class="scenario-title">🎤 Voice Clone</div>
+                    <div class="scenario-desc">Phone call impersonation detected</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="demo-section">
+            <h2 style="color: #00D9FF; margin-bottom: 20px;">🌐 Global Impact</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                <div style="text-align: center;">
+                    <div style="font-size: 32px; color: #00FF88; font-weight: bold;">1,247</div>
+                    <div style="color: #8B9DC3;">Threats Blocked Today</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 32px; color: #00D9FF; font-weight: bold;">127,849</div>
+                    <div style="color: #8B9DC3;">Active Global Nodes</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 32px; color: #FFD700; font-weight: bold;">$2.3M</div>
+                    <div style="color: #8B9DC3;">Fraud Prevented</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 32px; color: #FF6B35; font-weight: bold;">99.2%</div>
+                    <div style="color: #8B9DC3;">System Uptime</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function setScenario(type, score, statusText, color) {
+            // Update active card
+            document.querySelectorAll('.scenario-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            event.target.closest('.scenario-card').classList.add('active');
+            
+            // Animate score change
+            animateScore(score);
+            
+            // Update status
+            const statusEl = document.getElementById('status');
+            statusEl.textContent = statusText;
+            statusEl.style.color = color;
+            statusEl.style.borderColor = color;
+            statusEl.style.background = color + '33';
+            
+            // Show/hide alert
+            const alertEl = document.getElementById('alert');
+            if (score < 50) {
+                alertEl.classList.add('show');
+            } else {
+                alertEl.classList.remove('show');
+            }
+        }
+        
+        function animateScore(targetScore) {
+            const scoreEl = document.getElementById('trustScore');
+            const currentScore = parseInt(scoreEl.textContent);
+            const duration = 2000;
+            const steps = 60;
+            const stepDuration = duration / steps;
+            const scoreChange = (targetScore - currentScore) / steps;
+            
+            let step = 0;
+            const timer = setInterval(() => {
+                step++;
+                const newScore = Math.round(currentScore + (scoreChange * step));
+                scoreEl.textContent = newScore;
+                
+                if (step >= steps) {
+                    clearInterval(timer);
+                    scoreEl.textContent = targetScore;
+                }
+            }, stepDuration);
+        }
+        
+        function terminate() {
+            alert('🛡️ Call terminated successfully!\n\n✅ Attack prevented\n✅ Evidence secured to blockchain\n✅ Security team notified\n✅ Global threat intelligence updated');
+            setScenario('safe', 92, 'EXCELLENT', '#00FF88');
+        }
+        
+        function continueRisk() {
+            alert('⚠️ Continuing with enhanced monitoring\n\n🔒 All financial actions blocked\n📹 Full recording active\n🔍 Forensic analysis enabled\n📧 Security team alerted');
+        }
+    </script>
+</body>
+</html>

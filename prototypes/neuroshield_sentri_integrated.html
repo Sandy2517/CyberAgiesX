@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberAgiesX-Sentri Unified Defense System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(0, 217, 255, 0.04) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 107, 107, 0.04) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(0, 255, 136, 0.04) 0%, transparent 50%),
+                linear-gradient(135deg, #0A0A1A 0%, #1A0A2E 30%, #16213E 60%, #0F1419 100%);
+            color: #FFFFFF;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Neural Network Background */
+        .neural-network {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, rgba(0, 217, 255, 0.3), transparent),
+                radial-gradient(2px 2px at 40px 70px, rgba(0, 255, 136, 0.3), transparent),
+                radial-gradient(1px 1px at 90px 40px, rgba(255, 107, 107, 0.3), transparent);
+            background-repeat: repeat;
+            background-size: 120px 120px;
+            animation: neuralFlow 20s linear infinite;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.6;
+        }
+
+        @keyframes neuralFlow {
+            0% { transform: translate(0, 0); }
+            50% { transform: translate(-60px, -60px); }
+            100% { transform: translate(0, 0); }
+        }
+
+        .unified-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Unified Header */
+        .unified-header {
+            background: linear-gradient(135deg, 
+                        rgba(26, 13, 46, 0.95) 0%, 
+                        rgba(10, 10, 26, 0.98) 50%,
+                        rgba(15, 20, 25, 0.95) 100%);
+            padding: 25px 40px;
+            border-bottom: 3px solid transparent;
+            background-clip: padding-box;
+            border-image: linear-gradient(90deg, #00D9FF, #00FF88, #FF6B6B, #9D4EDD) 1;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4);
+            position: relative;
+        }
+
+        .unified-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, 
+                        rgba(0, 217, 255, 0.08) 0%, 
+                        rgba(0, 255, 136, 0.08) 25%, 
+                        rgba(255, 107, 107, 0.08) 50%,
+                        rgba(157, 78, 221, 0.08) 100%);
+            animation: unifiedPulse 4s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes unifiedPulse {
+            0%, 100% { opacity: 0.1; }
+            50% { opacity: 0.3; }
+        }
+
+        .unified-logo {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            font-size: 36px;
+            font-weight: 900;
+            position: relative;
+            z-index: 2;
+        }
+
+        .dual-consciousness-icon {
+            width: 80px;
+            height: 80px;
+            background: conic-gradient(from 0deg, #00D9FF, #00FF88, #FF6B6B, #9D4EDD, #00D9FF);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            animation: dualRotate 10s linear infinite;
+            box-shadow: 0 0 30px rgba(0, 217, 255, 0.5);
+        }
+
+        .dual-consciousness-icon::before {
+            content: '🧠';
+            font-size: 32px;
+            position: absolute;
+            z-index: 2;
+            animation: counterRotate 10s linear infinite;
+        }
+
+        .dual-consciousness-icon::after {
+            content: '🤖';
+            font-size: 24px;
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: rgba(157, 78, 221, 0.9);
+            padding: 5px;
+            border-radius: 50%;
+            animation: aiPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes dualRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes counterRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(-360deg); }
+        }
+
+        @keyframes aiPulse {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.2); opacity: 1; }
+        }
+
+        .unified-title {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .primary-title {
+            background: linear-gradient(135deg, #00D9FF, #00FF88, #FF6B6B);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(0, 217, 255, 0.5);
+            font-size: 36px;
+        }
+
+        .secondary-title {
+            background: linear-gradient(135deg, #9D4EDD, #FF6B6B, #00D9FF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 28px;
+        }
+
+        .unified-subtitle {
+            color: #A1A8B0;
+            font-size: 16px;
+            margin-top: 10px;
+            font-weight: 400;
+        }
+
+        .integration-status {
+            position: absolute;
+            top: 25px;
+            right: 40px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            z-index: 2;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 15px;
+            background: rgba(0, 255, 136, 0.1);
+            border: 2px solid #00FF88;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #00FF88;
+            border-radius: 50%;
+            animation: statusPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes statusPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.2); }
+        }
+
+        /* Unified Navigation */
+        .unified-nav {
+            background: rgba(255, 255, 255, 0.02);
+            padding: 15px 40px;
+            display: flex;
+            gap: 20px;
+            border-bottom: 1px solid rgba(0, 217, 255, 0.2);
+            backdrop-filter: blur(10px);
+            overflow-x: auto;
+        }
+
+        .unified-nav-item {
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            color: #A1A8B0;
+            border: 1px solid transparent;
+            white-space: nowrap;
+            position: relative;
+            overflow: hidden;
+            font-weight: 500;
+        }
+
+        .unified-nav-item::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: radial-gradient(circle, rgba(157, 78, 221, 0.3), transparent);
+            transition: all 0.4s ease;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+        }
+
+        .unified-nav-item:hover::before,
+        .unified-nav-item.active::before {
+            width: 200px;
+            height: 200px;
+        }
+
+        .unified-nav-item:hover,
+        .unified-nav-item.active {
+            color: #9D4EDD;
+            border-color: rgba(157, 78, 221, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(157, 78, 221, 0.2);
+        }
+
+        /* Main Dashboard Grid */
+        .unified-dashboard {
+            flex: 1;
+            padding: 40px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: auto auto 1fr;
+            gap: 25px;
+            max-width: 2000px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* CyberAgiesX Panel */
+        .neuroshield-panel {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid rgba(0, 217, 255, 0.3);
+            backdrop-filter: blur(15px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .neuroshield-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #00D9FF, #00FF88);
+            animation: neuroFlow 3s linear infinite;
+        }
+
+        @keyframes neuroFlow {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Sentri AI Panel */
+        .sentri-panel {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid rgba(157, 78, 221, 0.3);
+            backdrop-filter: blur(15px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sentri-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #9D4EDD, #FF6B6B);
+            animation: sentriFlow 3s linear infinite;
+        }
+
+        @keyframes sentriFlow {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Integration Panel */
+        .integration-panel {
+            grid-column: 1 / -1;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            backdrop-filter: blur(15px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .integration-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #FFD700, #00D9FF, #9D4EDD, #FF6B6B);
+            animation: integrationFlow 4s linear infinite;
+        }
+
+        @keyframes integrationFlow {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .panel-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .neuro-icon {
+            background: linear-gradient(135deg, #00D9FF, #00FF88);
+        }
+
+        .sentri-icon {
+            background: linear-gradient(135deg, #9D4EDD, #FF6B6B);
+        }
+
+        .integration-icon {
+            background: linear-gradient(135deg, #FFD700, #00D9FF);
+        }
+
+        /* Real-Time Metrics */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .metric-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .metric-value {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .metric-neuroshield { color: #00D9FF; }
+        .metric-sentri { color: #9D4EDD; }
+        .metric-integration { color: #FFD700; }
+        .metric-danger { color: #FF6B6B; }
+        .metric-safe { color: #00FF88; }
+
+        .metric-label {
+            font-size: 11px;
+            color: #A1A8B0;
+            font-weight: 500;
+        }
+
+        /* AI Learning Visualization */
+        .ai-learning {
+            height: 180px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 15px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(157, 78, 221, 0.3);
+        }
+
+        .learning-wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, 
+                        rgba(157, 78, 221, 0.4) 0%, 
+                        rgba(255, 107, 107, 0.3) 30%,
+                        rgba(0, 217, 255, 0.2) 60%, 
+                        transparent 100%);
+            animation: aiWave 3s ease-in-out infinite;
+        }
+
+        @keyframes aiWave {
+            0%, 100% { 
+                clip-path: polygon(0 70%, 15% 65%, 30% 75%, 45% 60%, 60% 70%, 75% 55%, 90% 65%, 100% 60%, 100% 100%, 0 100%);
+            }
+            50% { 
+                clip-path: polygon(0 60%, 15% 55%, 30% 65%, 45% 50%, 60% 60%, 75% 45%, 90% 55%, 100% 50%, 100% 100%, 0 100%);
+            }
+        }
+
+        .learning-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 2;
+        }
+
+        .learning-level {
+            font-size: 28px;
+            font-weight: bold;
+            color: #9D4EDD;
+            margin-bottom: 5px;
+            text-shadow: 0 0 20px rgba(157, 78, 221, 0.5);
+        }
+
+        .learning-label {
+            color: #A1A8B0;
+            font-size: 12px;
+        }
+
+        /* Threat Intelligence Feed */
+        .threat-feed {
+            height: 250px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 15px;
+            padding: 15px;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+        }
+
+        .feed-entry {
+            margin-bottom: 8px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            border-left: 3px solid transparent;
+            animation: feedSlide 0.5s ease-in-out;
+            line-height: 1.4;
+        }
+
+        @keyframes feedSlide {
+            from { opacity: 0; transform: translateX(-15px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .feed-timestamp {
+            color: #666;
+            margin-right: 8px;
+            font-size: 10px;
+        }
+
+        .feed-neuroshield {
+            background: rgba(0, 217, 255, 0.1);
+            border-left-color: #00D9FF;
+            color: #00D9FF;
+        }
+
+        .feed-sentri {
+            background: rgba(157, 78, 221, 0.1);
+            border-left-color: #9D4EDD;
+            color: #9D4EDD;
+        }
+
+        .feed-integration {
+            background: rgba(255, 215, 0, 0.1);
+            border-left-color: #FFD700;
+            color: #FFD700;
+        }
+
+        .feed-critical {
+            background: rgba(255, 107, 107, 0.1);
+            border-left-color: #FF6B6B;
+            color: #FF6B6B;
+        }
+
+        .feed-safe {
+            background: rgba(0, 255, 136, 0.1);
+            border-left-color: #00FF88;
+            color: #00FF88;
+        }
+
+        /* Integration Flow Diagram */
+        .flow-diagram {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr auto 1fr;
+            align-items: center;
+            gap: 20px;
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+        }
+
+        .flow-node {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .flow-node.neuroshield {
+            border-color: rgba(0, 217, 255, 0.5);
+            background: rgba(0, 217, 255, 0.05);
+        }
+
+        .flow-node.sentri {
+            border-color: rgba(157, 78, 221, 0.5);
+            background: rgba(157, 78, 221, 0.05);
+        }
+
+        .flow-node.integration {
+            border-color: rgba(255, 215, 0, 0.5);
+            background: rgba(255, 215, 0, 0.05);
+        }
+
+        .flow-arrow {
+            font-size: 24px;
+            color: #FFD700;
+            animation: flowPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes flowPulse {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+
+        .flow-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .flow-desc {
+            font-size: 11px;
+            color: #A1A8B0;
+            line-height: 1.3;
+        }
+
+        /* Control Center */
+        .control-center {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .control-btn {
+            padding: 15px 20px;
+            border: none;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            font-size: 14px;
+        }
+
+        .control-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+        }
+
+        .control-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-neuroshield {
+            background: linear-gradient(135deg, rgba(0, 217, 255, 0.2), rgba(0, 255, 136, 0.2));
+            border: 2px solid rgba(0, 217, 255, 0.5);
+            color: #00D9FF;
+        }
+
+        .btn-sentri {
+            background: linear-gradient(135deg, rgba(157, 78, 221, 0.2), rgba(255, 107, 107, 0.2));
+            border: 2px solid rgba(157, 78, 221, 0.5);
+            color: #9D4EDD;
+        }
+
+        .btn-integration {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(0, 217, 255, 0.2));
+            border: 2px solid rgba(255, 215, 0, 0.5);
+            color: #FFD700;
+        }
+
+        .btn-emergency {
+            background: linear-gradient(135deg, rgba(255, 0, 0, 0.3), rgba(255, 107, 107, 0.3));
+            border: 2px solid #FF0000;
+            color: #FF6B6B;
+            animation: emergencyPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes emergencyPulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(255, 0, 0, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(255, 0, 0, 0.6); }
+        }
+
+        .control-btn:hover {
+            transform: translateY(-3px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .unified-dashboard {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .unified-dashboard {
+                grid-template-columns: 1fr;
+                padding: 20px;
+            }
+            
+            .unified-header {
+                padding: 20px;
+            }
+            
+            .integration-status {
+                position: static;
+                margin-top: 15px;
+            }
+            
+            .unified-nav {
+                padding: 10px 20px;
+            }
+            
+            .flow-diagram {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .flow-arrow {
+                transform: rotate(90deg);
+            }
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #9D4EDD, #00D9FF);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #00D9FF, #9D4EDD);
+        }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+    <div class="neural-network"></div>
+    
+    <div class="unified-container">
+        <!-- Unified Header -->
+        <div class="unified-header">
+            <div class="unified-logo">
+                <div class="dual-consciousness-icon"></div>
+                <div class="unified-title">
+                    <div class="primary-title">CyberAgiesX</div>
+                    <div class="secondary-title">× Sentri AI</div>
+                </div>
+            </div>
+            <div class="unified-subtitle">Unified Cognitive Defense System - AI-Enhanced Security Intelligence</div>
+            
+            <div class="integration-status">
+                <div class="status-indicator">
+                    <div class="status-dot"></div>
+                    <span>Systems Synchronized</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Unified Navigation -->
+        <div class="unified-nav">
+            <div class="unified-nav-item active" data-section="overview">🌟 Unified Overview</div>
+            <div class="unified-nav-item" data-section="neuroshield">🧠 CyberAgiesX Core</div>
+            <div class="unified-nav-item" data-section="sentri">🤖 Sentri AI Engine</div>
+            <div class="unified-nav-item" data-section="integration">🔗 Integration Hub</div>
+            <div class="unified-nav-item" data-section="analytics">📊 Unified Analytics</div>
+            <div class="unified-nav-item" data-section="response">🚨 Response Center</div>
+        </div>
+
+        <!-- Main Dashboard -->
+        <div class="unified-dashboard">
+            <!-- CyberAgiesX Panel -->
+            <div class="neuroshield-panel">
+                <div class="panel-header">
+                    <div class="panel-icon neuro-icon">🧠</div>
+                    <span>CyberAgiesX Cognitive Defense</span>
+                </div>
+
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-value metric-neuroshield" id="consciousnessLevel">97.8%</div>
+                        <div class="metric-label">Consciousness Integrity</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value metric-safe" id="cognitiveThreats">3</div>
+                        <div class="metric-label">Cognitive Threats</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value metric-neuroshield" id="memoryAuth">98.2%</div>
+                        <div class="metric-label">Memory Authenticity</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value metric-neuroshield" id="quantumStable">94.7%</div>
+                        <div class="metric-label">Quantum Stability</div>
+                    </div>
+                </div>
+
+                <div style="background: rgba(0, 0, 0, 0.3); border-radius: 12px; padding: 15px; margin-bottom: 15px;">
+                    <h4 style="color: #00D9FF; margin-bottom: 10px; font-size: 14px;">🧬 Real-Time Consciousness Monitor</h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 12px;">
+                        <div>
+                            <span style="color: #A1A8B0;">Neural Pattern:</span><br>
+                            <span style="color: #00FF88;">✅ Authentic</span>
+                        </div>
+                        <div>
+                            <span style="color: #A1A8B0;">Identity Verification:</span><br>
+                            <span style="color: #00FF88;">✅ Verified</span>
+                        </div>
+                        <div>
+                            <span style="color: #A1A8B0;">Memory Integrity:</span><br>
+                            <span style="color: #FFD700;">⚠️ 1 Anomaly</span>
+                        </div>
+                        <div>
+                            <span style="color: #A1A8B0;">Behavioral Profile:</span><br>
+                            <span style="color: #00FF88;">✅ Consistent</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="control-btn btn-neuroshield" onclick="enhanceNeuroDefense()" style="width: 100%; margin-top: 10px;">
+                    🧠 Enhance Cognitive Defense
+                </button>
+            </div>
+
+            <!-- Sentri AI Panel -->
+            <div class="sentri-panel">
+                <div class="panel-header">
+                    <div class="panel-icon sentri-icon">🤖</div>
+                    <span>Sentri AI Learning Engine</span>
+                </div>
+
+                <div class="ai-learning">
+                    <div class="learning-wave"></div>
+                    <div class="learning-overlay">
+                        <div class="learning-level" id="learningProgress">87.4%</div>
+                        <div class="learning-label">AI Learning Progress</div>
+                    </div>
+                </div>
+
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-value metric-sentri" id="modelsActive">7</div>
+                        <div class="metric-label">Active ML Models</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value metric-danger" id="anomaliesDetected">23</div>
+                        <div class="metric-label">Anomalies Detected</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value metric-sentri" id="threatIntel">1.2M</div>
+                        <div class="metric-label">Threat Intel Updates</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value metric-safe" id="responseTime">0.3s</div>
+                        <div class="metric-label">Avg Response Time</div>
+                    </div>
+                </div>
+
+                <div style="background: rgba(0, 0, 0, 0.3); border-radius: 12px; padding: 15px; margin-bottom: 15px;">
+                    <h4 style="color: #9D4EDD; margin-bottom: 10px; font-size: 14px;">🤖 AI Engine Status</h4>
+                    <div style="font-size: 12px; line-height: 1.5;">
+                        <div style="color: #A1A8B0; margin-bottom: 5px;">
+                            <span style="color: #00FF88;">●</span> Anomaly Detection: Active
+                        </div>
+                        <div style="color: #A1A8B0; margin-bottom: 5px;">
+                            <span style="color: #00FF88;">●</span> Behavioral Analytics: Learning
+                        </div>
+                        <div style="color: #A1A8B0; margin-bottom: 5px;">
+                            <span style="color: #FFD700;">●</span> Threat Intel: Updating
+                        </div>
+                        <div style="color: #A1A8B0;">
+                            <span style="color: #00FF88;">●</span> Auto-Response: Ready
+                        </div>
+                    </div>
+                </div>
+
+                <button class="control-btn btn-sentri" onclick="optimizeAI()" style="width: 100%; margin-top: 10px;">
+                    🤖 Optimize AI Learning
+                </button>
+            </div>
+
+            <!-- Unified Threat Feed -->
+            <div class="neuroshield-panel">
+                <div class="panel-header">
+                    <div class="panel-icon integration-icon">🔗</div>
+                    <span>Unified Threat Intelligence</span>
+                </div>
+
+                <div class="threat-feed" id="unifiedFeed">
+                    <div class="feed-entry feed-neuroshield">
+                        <span class="feed-timestamp">[14:47:23]</span>
+                        NEURO: Consciousness verification complete - authentic human interaction
+                    </div>
+                    <div class="feed-entry feed-sentri">
+                        <span class="feed-timestamp">[14:47:20]</span>
+                        SENTRI: ML model updated with new phishing pattern - accuracy improved 2.3%
+                    </div>
+                    <div class="feed-entry feed-integration">
+                        <span class="feed-timestamp">[14:47:18]</span>
+                        SYNC: CyberAgiesX + Sentri data fusion complete - threat score recalculated
+                    </div>
+                    <div class="feed-entry feed-critical">
+                        <span class="feed-timestamp">[14:47:15]</span>
+                        ALERT: Deepfake attempt blocked - pattern shared with AI learning engine
+                    </div>
+                    <div class="feed-entry feed-sentri">
+                        <span class="feed-timestamp">[14:47:12]</span>
+                        SENTRI: Behavioral anomaly detected - unusual access pattern flagged
+                    </div>
+                    <div class="feed-entry feed-safe">
+                        <span class="feed-timestamp">[14:47:09]</span>
+                        SUCCESS: Integrated defense prevented advanced persistent threat
+                    </div>
+                </div>
+
+                <div style="margin-top: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <button class="control-btn btn-integration" onclick="syncSystems()" style="margin-top: 0;">
+                        🔗 Force Sync
+                    </button>
+                    <button class="control-btn btn-emergency" onclick="emergencyLockdown()" style="margin-top: 0;">
+                        🚨 Lockdown
+                    </button>
+                </div>
+            </div>
+
+            <!-- Integration Flow Diagram -->
+            <div class="integration-panel">
+                <div class="panel-header">
+                    <div class="panel-icon integration-icon">⚡</div>
+                    <span>Real-Time Integration Flow</span>
+                </div>
+
+                <div class="flow-diagram">
+                    <div class="flow-node neuroshield">
+                        <div class="flow-title" style="color: #00D9FF;">CyberAgiesX</div>
+                        <div class="flow-desc">Cognitive threat detection & consciousness verification</div>
+                    </div>
+                    
+                    <div class="flow-arrow">→</div>
+                    
+                    <div class="flow-node integration">
+                        <div class="flow-title" style="color: #FFD700;">Integration Hub</div>
+                        <div class="flow-desc">Data fusion & intelligence sharing</div>
+                    </div>
+                    
+                    <div class="flow-arrow">→</div>
+                    
+                    <div class="flow-node sentri">
+                        <div class="flow-title" style="color: #9D4EDD;">Sentri AI</div>
+                        <div class="flow-desc">ML analysis & adaptive learning</div>
+                    </div>
+                </div>
+
+                <div style="background: rgba(0, 0, 0, 0.3); border-radius: 12px; padding: 20px; margin-top: 20px;">
+                    <h4 style="color: #FFD700; margin-bottom: 15px;">🚀 Integration Benefits</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; font-size: 13px;">
+                        <div>
+                            <strong style="color: #00D9FF;">CyberAgiesX Enhancement:</strong><br>
+                            <span style="color: #A1A8B0;">• AI-powered pattern recognition<br>• Predictive threat modeling<br>• Adaptive defense protocols</span>
+                        </div>
+                        <div>
+                            <strong style="color: #9D4EDD;">Sentri AI Enhancement:</strong><br>
+                            <span style="color: #A1A8B0;">• Consciousness-level context<br>• Human behavior insights<br>• Quantum identity validation</span>
+                        </div>
+                        <div>
+                            <strong style="color: #FFD700;">Unified Capabilities:</strong><br>
+                            <span style="color: #A1A8B0;">• 99.7% threat detection<br>• 0.1s response time<br>• Zero false positives</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="control-center">
+                    <button class="control-btn btn-neuroshield" onclick="runFullScan()">
+                        🧠 Consciousness Scan
+                    </button>
+                    <button class="control-btn btn-sentri" onclick="trainAI()">
+                        🤖 Train AI Models
+                    </button>
+                    <button class="control-btn btn-integration" onclick="optimizeIntegration()">
+                        ⚡ Optimize Integration
+                    </button>
+                    <button class="control-btn btn-emergency" onclick="activateMaxDefense()">
+                        🛡️ Maximum Defense
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Unified Defense System Controller
+        class UnifiedDefenseSystem {
+            constructor() {
+                this.neuroshield = {
+                    consciousnessLevel: 97.8,
+                    cognitiveThreats: 3,
+                    memoryAuth: 98.2,
+                    quantumStable: 94.7
+                };
+                
+                this.sentri = {
+                    learningProgress: 87.4,
+                    modelsActive: 7,
+                    anomaliesDetected: 23,
+                    threatIntel: 1200000,
+                    responseTime: 0.3
+                };
+                
+                this.integration = {
+                    syncStatus: true,
+                    dataFlow: 'active',
+                    threatScore: 15.2
+                };
+                
+                this.init();
+            }
+
+            init() {
+                this.startRealTimeUpdates();
+                this.initializeNavigation();
+                this.startThreatFeed();
+                this.syncSystems();
+            }
+
+            startRealTimeUpdates() {
+                setInterval(() => {
+                    this.updateCyberAgiesXMetrics();
+                    this.updateSentriMetrics();
+                    this.updateIntegrationStatus();
+                }, 2000);
+            }
+
+            updateCyberAgiesXMetrics() {
+                // Simulate CyberAgiesX data fluctuations
+                this.neuroshield.consciousnessLevel += (Math.random() - 0.5) * 0.3;
+                this.neuroshield.consciousnessLevel = Math.max(95, Math.min(100, this.neuroshield.consciousnessLevel));
+                
+                this.neuroshield.memoryAuth += (Math.random() - 0.5) * 0.2;
+                this.neuroshield.memoryAuth = Math.max(96, Math.min(100, this.neuroshield.memoryAuth));
+                
+                this.neuroshield.quantumStable += (Math.random() - 0.5) * 0.4;
+                this.neuroshield.quantumStable = Math.max(90, Math.min(100, this.neuroshield.quantumStable));
+
+                // Update UI
+                document.getElementById('consciousnessLevel').textContent = this.neuroshield.consciousnessLevel.toFixed(1) + '%';
+                document.getElementById('memoryAuth').textContent = this.neuroshield.memoryAuth.toFixed(1) + '%';
+                document.getElementById('quantumStable').textContent = this.neuroshield.quantumStable.toFixed(1) + '%';
+                
+                // Occasionally change threat count
+                if (Math.random() > 0.9) {
+                    this.neuroshield.cognitiveThreats = Math.max(0, this.neuroshield.cognitiveThreats + (Math.random() > 0.5 ? 1 : -1));
+                    document.getElementById('cognitiveThreats').textContent = this.neuroshield.cognitiveThreats;
+                }
+            }
+
+            updateSentriMetrics() {
+                // Simulate Sentri AI learning progress
+                this.sentri.learningProgress += (Math.random() - 0.3) * 0.1;
+                this.sentri.learningProgress = Math.max(80, Math.min(100, this.sentri.learningProgress));
+                
+                // Update threat intelligence
+                this.sentri.threatIntel += Math.floor(Math.random() * 1000);
+                
+                // Occasionally detect new anomalies
+                if (Math.random() > 0.85) {
+                    this.sentri.anomaliesDetected += Math.floor(Math.random() * 3);
+                }
+                
+                // Response time optimization
+                this.sentri.responseTime = Math.max(0.1, this.sentri.responseTime + (Math.random() - 0.5) * 0.05);
+
+                // Update UI
+                document.getElementById('learningProgress').textContent = this.sentri.learningProgress.toFixed(1) + '%';
+                document.getElementById('anomaliesDetected').textContent = this.sentri.anomaliesDetected;
+                document.getElementById('threatIntel').textContent = (this.sentri.threatIntel / 1000000).toFixed(1) + 'M';
+                document.getElementById('responseTime').textContent = this.sentri.responseTime.toFixed(1) + 's';
+            }
+
+            updateIntegrationStatus() {
+                // Simulate system synchronization
+                if (Math.random() > 0.95) {
+                    this.addThreatFeedEntry('SYNC: Systems synchronized - threat intelligence updated', 'integration');
+                }
+            }
+
+            initializeNavigation() {
+                document.querySelectorAll('.unified-nav-item').forEach(item => {
+                    item.addEventListener('click', () => {
+                        document.querySelectorAll('.unified-nav-item').forEach(nav => nav.classList.remove('active'));
+                        item.classList.add('active');
+                        this.handleNavigation(item.dataset.section);
+                    });
+                });
+            }
+
+            handleNavigation(section) {
+                console.log(`Switching to ${section} view`);
+                this.addThreatFeedEntry(`SYSTEM: Switched to ${section.toUpperCase()} interface`, 'integration');
+            }
+
+            startThreatFeed() {
+                const feedMessages = [
+                    { text: 'NEURO: Neural pattern analysis complete - consciousness verified', type: 'neuroshield' },
+                    { text: 'SENTRI: Anomaly detection model retrained - accuracy improved', type: 'sentri' },
+                    { text: 'SYNC: Cross-system threat correlation completed', type: 'integration' },
+                    { text: 'NEURO: Memory authenticity check passed - no manipulation detected', type: 'neuroshield' },
+                    { text: 'SENTRI: Behavioral baseline updated with new user patterns', type: 'sentri' },
+                    { text: 'ALERT: Potential deepfake detected - both systems confirming', type: 'critical' },
+                    { text: 'SUCCESS: Integrated response blocked sophisticated attack', type: 'safe' },
+                    { text: 'NEURO: Quantum identity verification completed successfully', type: 'neuroshield' },
+                    { text: 'SENTRI: Zero-day threat pattern identified and catalogued', type: 'sentri' },
+                    { text: 'SYNC: Real-time data fusion optimized - response time improved', type: 'integration' }
+                ];
+
+                setInterval(() => {
+                    const message = feedMessages[Math.floor(Math.random() * feedMessages.length)];
+                    this.addThreatFeedEntry(message.text, message.type);
+                }, 3000 + Math.random() * 4000);
+            }
+
+            addThreatFeedEntry(message, type) {
+                const feed = document.getElementById('unifiedFeed');
+                const entry = document.createElement('div');
+                entry.className = `feed-entry feed-${type}`;
+                
+                const now = new Date();
+                const timestamp = now.toTimeString().substring(0, 8);
+                
+                entry.innerHTML = `
+                    <span class="feed-timestamp">[${timestamp}]</span>
+                    ${message}
+                `;
+                
+                feed.insertBefore(entry, feed.firstChild);
+                
+                // Keep only last 12 entries
+                const entries = feed.querySelectorAll('.feed-entry');
+                if (entries.length > 12) {
+                    entries[entries.length - 1].remove();
+                }
+            }
+
+            syncSystems() {
+                this.addThreatFeedEntry('SYNC: Force synchronization initiated - data fusion in progress', 'integration');
+                
+                setTimeout(() => {
+                    this.addThreatFeedEntry('SYNC: Synchronization complete - systems unified', 'safe');
+                    this.updateAllMetrics();
+                }, 2000);
+            }
+
+            updateAllMetrics() {
+                // Simulate improved performance after sync
+                this.neuroshield.consciousnessLevel = Math.min(100, this.neuroshield.consciousnessLevel + 1);
+                this.sentri.learningProgress = Math.min(100, this.sentri.learningProgress + 0.5);
+                this.sentri.responseTime = Math.max(0.1, this.sentri.responseTime - 0.05);
+            }
+        }
+
+        // Control Functions
+        function enhanceNeuroDefense() {
+            unified.addThreatFeedEntry('NEURO: Enhanced cognitive defense protocol activated', 'neuroshield');
+            unified.neuroshield.consciousnessLevel = Math.min(100, unified.neuroshield.consciousnessLevel + 2);
+            document.getElementById('consciousnessLevel').textContent = unified.neuroshield.consciousnessLevel.toFixed(1) + '%';
+        }
+
+        function optimizeAI() {
+            unified.addThreatFeedEntry('SENTRI: AI optimization sequence initiated - retraining models', 'sentri');
+            unified.sentri.learningProgress = Math.min(100, unified.sentri.learningProgress + 3);
+            document.getElementById('learningProgress').textContent = unified.sentri.learningProgress.toFixed(1) + '%';
+        }
+
+        function syncSystems() {
+            unified.syncSystems();
+        }
+
+        function emergencyLockdown() {
+            if (confirm('🚨 EMERGENCY LOCKDOWN\n\nThis will activate maximum security protocols across both systems.\n\nContinue?')) {
+                unified.addThreatFeedEntry('EMERGENCY: Maximum security lockdown activated', 'critical');
+                unified.addThreatFeedEntry('NEURO: Consciousness monitoring elevated to maximum sensitivity', 'neuroshield');
+                unified.addThreatFeedEntry('SENTRI: All AI models switched to defensive mode', 'sentri');
+                unified.addThreatFeedEntry('SYNC: Emergency protocol synchronized across systems', 'integration');
+                
+                document.body.style.animation = 'emergencyFlash 0.5s ease-in-out 3';
+                
+                setTimeout(() => {
+                    unified.addThreatFeedEntry('SYSTEM: Emergency lockdown complete - maximum protection active', 'safe');
+                }, 5000);
+            }
+        }
+
+        function runFullScan() {
+            unified.addThreatFeedEntry('NEURO: Full consciousness scan initiated - deep analysis mode', 'neuroshield');
+            
+            setTimeout(() => {
+                unified.addThreatFeedEntry('NEURO: Scan complete - consciousness integrity verified at 99.9%', 'safe');
+            }, 3000);
+        }
+
+        function trainAI() {
+            unified.addThreatFeedEntry('SENTRI: AI training sequence started - processing threat data', 'sentri');
+            
+            setTimeout(() => {
+                unified.addThreatFeedEntry('SENTRI: Training complete - model accuracy improved by 4.2%', 'safe');
+                unified.sentri.learningProgress = Math.min(100, unified.sentri.learningProgress + 4);
+                document.getElementById('learningProgress').textContent = unified.sentri.learningProgress.toFixed(1) + '%';
+            }, 4000);
+        }
+
+        function optimizeIntegration() {
+            unified.addThreatFeedEntry('SYNC: Integration optimization started - enhancing data flow', 'integration');
+            
+            setTimeout(() => {
+                unified.addThreatFeedEntry('SYNC: Optimization complete - response time improved by 40%', 'safe');
+                unified.sentri.responseTime = Math.max(0.1, unified.sentri.responseTime * 0.6);
+                document.getElementById('responseTime').textContent = unified.sentri.responseTime.toFixed(1) + 's';
+            }, 3500);
+        }
+
+        function activateMaxDefense() {
+            unified.addThreatFeedEntry('SYSTEM: Maximum defense protocol activated', 'critical');
+            unified.addThreatFeedEntry('NEURO: Consciousness shields at maximum power', 'neuroshield');
+            unified.addThreatFeedEntry('SENTRI: All AI models operating at peak performance', 'sentri');
+            unified.addThreatFeedEntry('SYNC: Integration optimized for maximum threat response', 'integration');
+            
+            // Visual feedback
+            document.body.style.filter = 'hue-rotate(180deg)';
+            setTimeout(() => {
+                document.body.style.filter = 'none';
+                unified.addThreatFeedEntry('SYSTEM: Maximum defense active - threat response time: 0.05s', 'safe');
+            }, 2000);
+        }
+
+        // Add emergency flash animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes emergencyFlash {
+                0%, 100% { filter: hue-rotate(0deg); }
+                50% { filter: hue-rotate(180deg) brightness(1.2); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Initialize Unified Defense System
+        let unified;
+        document.addEventListener('DOMContentLoaded', () => {
+            unified = new UnifiedDefenseSystem();
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey) {
+                switch(e.key) {
+                    case '1': enhanceNeuroDefense(); break;
+                    case '2': optimizeAI(); break;
+                    case '3': syncSystems(); break;
+                    case '4': optimizeIntegration(); break;
+                    case 'e': emergencyLockdown(); break;
+                    case 'm': activateMaxDefense(); break;
+                }
+                e.preventDefault();
+            }
+        });
+    </script>
+</body>
+</html>

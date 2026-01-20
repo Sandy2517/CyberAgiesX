@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberAgiesX - BlueShield SOC AI Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0F0F23;
+            color: #FFFFFF;
+            overflow-x: hidden;
+        }
+
+        .soc-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .soc-header {
+            background: linear-gradient(135deg, #1A1D23 0%, #0A1628 100%);
+            padding: 20px 40px;
+            border-bottom: 2px solid #00D9FF;
+            box-shadow: 0 4px 20px rgba(0, 217, 255, 0.2);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .soc-logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .soc-icon {
+            font-size: 32px;
+            color: #00D9FF;
+            text-shadow: 0 0 20px rgba(0, 217, 255, 0.5);
+        }
+
+        .ai-badge {
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-left: 10px;
+        }
+
+        .threat-level {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .threat-low {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4CAF50;
+            border: 1px solid #4CAF50;
+        }
+
+        .threat-medium {
+            background: rgba(255, 193, 7, 0.2);
+            color: #FFC107;
+            border: 1px solid #FFC107;
+        }
+
+        .threat-high {
+            background: rgba(255, 152, 0, 0.2);
+            color: #FF9800;
+            border: 1px solid #FF9800;
+        }
+
+        .threat-critical {
+            background: rgba(244, 67, 54, 0.2);
+            color: #F44336;
+            border: 1px solid #F44336;
+        }
+
+        /* Main Content */
+        .soc-main {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding: 20px;
+            max-width: 1600px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Left Panel - Chat Interface */
+        .chat-panel {
+            background: linear-gradient(135deg, #1A1D23 0%, #2A2D33 100%);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(0, 217, 255, 0.3);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(0, 217, 255, 0.2);
+        }
+
+        .chat-icon {
+            font-size: 24px;
+            color: #00D9FF;
+        }
+
+        .chat-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            max-height: 500px;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 12px;
+            border-radius: 10px;
+            max-width: 80%;
+        }
+
+        .message.user {
+            background: rgba(0, 217, 255, 0.2);
+            margin-left: auto;
+            border: 1px solid rgba(0, 217, 255, 0.3);
+        }
+
+        .message.assistant {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .message.system {
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+            text-align: center;
+            font-size: 12px;
+            color: #4CAF50;
+        }
+
+        .chat-input {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input-field {
+            flex: 1;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: #FFFFFF;
+            font-size: 14px;
+        }
+
+        .chat-input-field:focus {
+            outline: none;
+            border-color: #00D9FF;
+        }
+
+        .send-btn {
+            padding: 12px 20px;
+            background: linear-gradient(45deg, #00D9FF, #0099CC);
+            border: none;
+            border-radius: 8px;
+            color: #FFFFFF;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .send-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 217, 255, 0.3);
+        }
+
+        /* Right Panel - Analysis Dashboard */
+        .analysis-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .log-ingestion {
+            background: linear-gradient(135deg, #1A1D23 0%, #2A2D33 100%);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(0, 217, 255, 0.3);
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .panel-icon {
+            font-size: 20px;
+            color: #00D9FF;
+        }
+
+        .panel-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .log-input {
+            width: 100%;
+            min-height: 120px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: #FFFFFF;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            resize: vertical;
+        }
+
+        .log-input:focus {
+            outline: none;
+            border-color: #00D9FF;
+        }
+
+        .analyze-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(45deg, #00D9FF, #0099CC);
+            border: none;
+            border-radius: 8px;
+            color: #FFFFFF;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .analyze-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 217, 255, 0.3);
+        }
+
+        .threat-analysis {
+            background: linear-gradient(135deg, #1A1D23 0%, #2A2D33 100%);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(0, 217, 255, 0.3);
+        }
+
+        .threat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .threat-name {
+            font-size: 14px;
+        }
+
+        .threat-score {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .score-low { background: rgba(76, 175, 80, 0.3); color: #4CAF50; }
+        .score-medium { background: rgba(255, 193, 7, 0.3); color: #FFC107; }
+        .score-high { background: rgba(255, 152, 0, 0.3); color: #FF9800; }
+        .score-critical { background: rgba(244, 67, 54, 0.3); color: #F44336; }
+
+        .mitre-mapping {
+            background: linear-gradient(135deg, #1A1D23 0%, #2A2D33 100%);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(0, 217, 255, 0.3);
+        }
+
+        .mitre-item {
+            padding: 8px 12px;
+            background: rgba(0, 217, 255, 0.1);
+            border-radius: 6px;
+            margin-bottom: 5px;
+            font-size: 12px;
+            border-left: 3px solid #00D9FF;
+        }
+
+        .ioc-analysis {
+            background: linear-gradient(135deg, #1A1D23 0%, #2A2D33 100%);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(0, 217, 255, 0.3);
+        }
+
+        .ioc-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 6px;
+            margin-bottom: 5px;
+            font-size: 12px;
+        }
+
+        .ioc-value {
+            font-family: 'Courier New', monospace;
+            color: #00D9FF;
+        }
+
+        .ioc-reputation {
+            padding: 2px 6px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .reputation-clean { background: rgba(76, 175, 80, 0.3); color: #4CAF50; }
+        .reputation-suspicious { background: rgba(255, 193, 7, 0.3); color: #FFC107; }
+        .reputation-malicious { background: rgba(244, 67, 54, 0.3); color: #F44336; }
+
+        /* Scan Type Buttons */
+        .scan-type-btn {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: #FFFFFF;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .scan-type-btn:hover {
+            background: rgba(0, 217, 255, 0.2);
+            border-color: #00D9FF;
+        }
+
+        .scan-type-btn.active {
+            background: linear-gradient(45deg, #00D9FF, #0099CC);
+            border-color: #00D9FF;
+            color: #FFFFFF;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .soc-main {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .soc-main {
+                padding: 10px;
+            }
+            
+            .soc-header {
+                padding: 15px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="soc-container">
+        <!-- Header -->
+        <header class="soc-header">
+            <div class="header-content">
+                <div class="soc-logo">
+                    <div class="soc-icon">🛡️</div>
+                    <div>
+                        <div>BlueShield SOC AI</div>
+                        <div style="font-size: 14px; color: #B0B0B0;">AI-Powered Security Operations Center Assistant</div>
+                    </div>
+                    <div class="ai-badge">AI Enhanced</div>
+                </div>
+                <div class="threat-level" id="threatLevel">
+                    <span>🟢</span>
+                    <span>Threat Level: Low</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="soc-main">
+            <!-- Left Panel - Chat Interface -->
+            <div class="chat-panel">
+                <div class="chat-header">
+                    <div class="chat-icon">🤖</div>
+                    <div class="chat-title">SOC AI Assistant</div>
+                </div>
+                
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message system">
+                        🛡️ BlueShield SOC AI is ready to assist with threat analysis, log investigation, and incident response.
+                    </div>
+                    <div class="message assistant">
+                        Hello! I'm your AI SOC assistant. I can help you:
+                        <br>• Analyze security logs and alerts
+                        <br>• Map threats to MITRE ATT&CK framework
+                        <br>• Check IOC reputation and threat intelligence
+                        <br>• Suggest remediation steps
+                        <br><br>Try asking: "Analyze this alert" or paste some logs for investigation.
+                    </div>
+                </div>
+                
+                <div class="chat-input">
+                    <input type="text" class="chat-input-field" id="chatInput" placeholder="Ask me about threats, paste logs, or request analysis..." onkeypress="handleKeyPress(event)">
+                    <button class="send-btn" onclick="sendMessage()">Send</button>
+                </div>
+            </div>
+
+            <!-- Right Panel - Analysis Dashboard -->
+            <div class="analysis-panel">
+                <!-- Log Ingestion -->
+                <div class="log-ingestion">
+                    <div class="panel-header">
+                        <div class="panel-icon">📋</div>
+                        <div class="panel-title">Log Ingestion & Analysis</div>
+                    </div>
+                    <textarea class="log-input" id="logInput" placeholder="Paste security logs, alerts, or events here for analysis...
+
+Example:
+2024-01-15 10:30:45 WARNING [192.168.1.100] Failed login attempt for user 'admin'
+2024-01-15 10:30:47 ALERT [192.168.1.100] Multiple failed login attempts detected
+2024-01-15 10:31:02 CRITICAL [192.168.1.100] Unauthorized access attempt from external IP 203.0.113.42"></textarea>
+                    <button class="analyze-btn" onclick="analyzeLogs()">🔍 Analyze Logs with AI</button>
+                </div>
+
+                <!-- Content Scanner -->
+                <div class="log-ingestion">
+                    <div class="panel-header">
+                        <div class="panel-icon">🛡️</div>
+                        <div class="panel-title">Content Security Scanner</div>
+                    </div>
+                    
+                    <!-- Scan Type Selector -->
+                    <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                        <button class="scan-type-btn active" id="textScanBtn" onclick="setScanType('text')">📝 Text</button>
+                        <button class="scan-type-btn" id="urlScanBtn" onclick="setScanType('url')">🔗 URL</button>
+                        <button class="scan-type-btn" id="fileScanBtn" onclick="setScanType('file')">📁 File</button>
+                    </div>
+
+                    <!-- Text Input -->
+                    <div id="textScanGroup">
+                        <textarea class="log-input" id="textScanInput" placeholder="Paste suspicious text, email, or message here...
+
+Example:
+Dear Customer,
+Your bank account has been temporarily locked due to suspicious activity. To restore access immediately, please verify your account information by clicking the link below:
+http://secure-bank-login.fake.com
+This is urgent - your account will be permanently closed if you don't respond within 24 hours."></textarea>
+                    </div>
+
+                    <!-- URL Input -->
+                    <div id="urlScanGroup" style="display: none;">
+                        <input type="url" class="log-input" id="urlScanInput" placeholder="https://suspicious-website.com or http://phishing-site.net" style="height: 40px;">
+                    </div>
+
+                    <!-- File Input -->
+                    <div id="fileScanGroup" style="display: none;">
+                        <input type="file" id="fileScanInput" style="width: 100%; padding: 10px; background: rgba(0, 0, 0, 0.3); border: 2px solid rgba(255, 255, 255, 0.2); border-radius: 8px; color: #FFFFFF;">
+                    </div>
+
+                    <button class="analyze-btn" onclick="analyzeContent()">🛡️ Scan Content with AI</button>
+                </div>
+
+                <!-- Threat Analysis -->
+                <div class="threat-analysis">
+                    <div class="panel-header">
+                        <div class="panel-icon">⚠️</div>
+                        <div class="panel-title">Threat Analysis</div>
+                    </div>
+                    <div id="threatAnalysis">
+                        <div style="text-align: center; color: #B0B0B0; padding: 20px;">
+                            <div style="font-size: 24px; margin-bottom: 10px;">🔍</div>
+                            <p>Paste logs or ask questions to see threat analysis</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MITRE ATT&CK Mapping -->
+                <div class="mitre-mapping">
+                    <div class="panel-header">
+                        <div class="panel-icon">🎯</div>
+                        <div class="panel-title">MITRE ATT&CK Mapping</div>
+                    </div>
+                    <div id="mitreMapping">
+                        <div style="text-align: center; color: #B0B0B0; padding: 20px;">
+                            <div style="font-size: 24px; margin-bottom: 10px;">🎯</div>
+                            <p>Attack techniques will be mapped here</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- IOC Analysis -->
+                <div class="ioc-analysis">
+                    <div class="panel-header">
+                        <div class="panel-icon">🔍</div>
+                        <div class="panel-title">IOC Analysis & Reputation</div>
+                    </div>
+                    <div id="iocAnalysis">
+                        <div style="text-align: center; color: #B0B0B0; padding: 20px;">
+                            <div style="font-size: 24px; margin-bottom: 10px;">🔍</div>
+                            <p>Indicators of Compromise will be analyzed here</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // BlueShield SOC AI Assistant
+        class BlueShieldAI {
+            constructor() {
+                this.chatHistory = [];
+                this.currentAnalysis = null;
+                this.threatLevel = 'low';
+            }
+
+            async analyzeLogs() {
+                const logInput = document.getElementById('logInput').value.trim();
+                if (!logInput) {
+                    this.addMessage('assistant', 'Please paste some logs to analyze.');
+                    return;
+                }
+
+                this.addMessage('user', 'Analyze these logs:');
+                this.addMessage('user', logInput);
+
+                try {
+                    // Try to use backend API first
+                    const response = await fetch('http://localhost:3000/api/soc/analyze-logs', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            logs: logInput,
+                            logType: 'syslog'
+                        })
+                    });
+
+                    if (response.ok) {
+                        const analysis = await response.json();
+                        this.currentAnalysis = analysis;
+                        this.addMessage('assistant', `AI Analysis complete! Found ${analysis.threats.length} potential threats with ${analysis.riskScore}% risk score.`);
+                    } else {
+                        throw new Error('Backend API not available');
+                    }
+                } catch (error) {
+                    console.log('Backend API not available, using local analysis');
+                    // Fallback to local analysis
+                    const analysis = this.performLogAnalysis(logInput);
+                    this.currentAnalysis = analysis;
+                    this.addMessage('assistant', `Local analysis complete! Found ${analysis.threats.length} potential threats.`);
+                }
+                
+                this.updateThreatAnalysis(this.currentAnalysis);
+                this.updateMitreMapping(this.currentAnalysis);
+                this.updateIOCAnalysis(this.currentAnalysis);
+                this.updateThreatLevel(this.currentAnalysis);
+            }
+
+            performLogAnalysis(logs) {
+                const analysis = {
+                    threats: [],
+                    mitreTechniques: [],
+                    iocs: {
+                        ips: [],
+                        domains: [],
+                        hashes: [],
+                        urls: []
+                    },
+                    riskScore: 0
+                };
+
+                const logLines = logs.split('\n');
+                
+                // Analyze each log line
+                logLines.forEach(line => {
+                    if (line.toLowerCase().includes('failed login')) {
+                        analysis.threats.push({
+                            type: 'Brute Force Attack',
+                            severity: 'high',
+                            description: 'Multiple failed login attempts detected',
+                            confidence: 85
+                        });
+                        analysis.mitreTechniques.push('T1110 - Brute Force');
+                        analysis.riskScore += 30;
+                    }
+
+                    if (line.toLowerCase().includes('unauthorized access')) {
+                        analysis.threats.push({
+                            type: 'Unauthorized Access',
+                            severity: 'critical',
+                            description: 'Unauthorized access attempt detected',
+                            confidence: 95
+                        });
+                        analysis.mitreTechniques.push('T1078 - Valid Accounts');
+                        analysis.riskScore += 50;
+                    }
+
+                    if (line.toLowerCase().includes('malware')) {
+                        analysis.threats.push({
+                            type: 'Malware Detection',
+                            severity: 'critical',
+                            description: 'Malware signature detected',
+                            confidence: 90
+                        });
+                        analysis.mitreTechniques.push('T1059 - Command and Scripting Interpreter');
+                        analysis.riskScore += 60;
+                    }
+
+                    // Extract IPs
+                    const ipMatches = line.match(/\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b/g);
+                    if (ipMatches) {
+                        ipMatches.forEach(ip => {
+                            if (!analysis.iocs.ips.includes(ip)) {
+                                analysis.iocs.ips.push(ip);
+                            }
+                        });
+                    }
+
+                    // Extract domains
+                    const domainMatches = line.match(/\b[a-zA-Z0-9-]+\.(?:com|org|net|edu|gov|mil|int|co|uk|de|fr|jp|au|ca|us)\b/g);
+                    if (domainMatches) {
+                        domainMatches.forEach(domain => {
+                            if (!analysis.iocs.domains.includes(domain)) {
+                                analysis.iocs.domains.push(domain);
+                            }
+                        });
+                    }
+
+                    // Extract hashes
+                    const hashMatches = line.match(/\b[a-fA-F0-9]{32,64}\b/g);
+                    if (hashMatches) {
+                        hashMatches.forEach(hash => {
+                            if (!analysis.iocs.hashes.includes(hash)) {
+                                analysis.iocs.hashes.push(hash);
+                            }
+                        });
+                    }
+                });
+
+                            return analysis;
+        }
+
+        performContentAnalysis(content, type) {
+            const analysis = {
+                threats: [],
+                riskScore: 0,
+                iocs: { ips: [], domains: [], hashes: [] }
+            };
+
+            if (type === 'text') {
+                // Use the same text analysis logic from original scanner
+                const lowerText = content.toLowerCase();
+                
+                // Phishing patterns
+                const phishingPatterns = [
+                    {
+                        pattern: /urgent.{0,30}(action|response|attention|immediate)/gi,
+                        threat: 'Urgency manipulation detected',
+                        score: 45,
+                        explanation: 'Legitimate organizations rarely use urgent language to pressure immediate action. This is a common phishing tactic to bypass rational thinking.'
+                    },
+                    {
+                        pattern: /(click here|verify now|act now|limited time)/gi,
+                        threat: 'High-pressure tactics detected',
+                        score: 40,
+                        explanation: 'Phishing emails often use high-pressure language to rush victims into making mistakes without thinking.'
+                    },
+                    {
+                        pattern: /(bank|paypal|amazon|microsoft|apple).*suspended/gi,
+                        threat: 'Account suspension scam detected',
+                        score: 60,
+                        explanation: 'Scammers impersonate legitimate companies claiming account suspension to steal credentials.'
+                    }
+                ];
+
+                phishingPatterns.forEach(item => {
+                    const matches = content.match(item.pattern);
+                    if (matches) {
+                        analysis.threats.push({
+                            type: item.threat,
+                            severity: item.score > 50 ? 'high' : 'medium',
+                            description: item.explanation,
+                            confidence: item.score,
+                            matchedText: matches[0]
+                        });
+                        analysis.riskScore += item.score;
+                    }
+                });
+
+            } else if (type === 'url') {
+                // URL analysis
+                const lowerUrl = content.toLowerCase();
+                
+                if (lowerUrl.includes('http://') && !lowerUrl.includes('localhost')) {
+                    analysis.threats.push({
+                        type: 'Insecure HTTP connection',
+                        severity: 'medium',
+                        description: 'HTTP connections are not encrypted and can be intercepted',
+                        confidence: 30
+                    });
+                    analysis.riskScore += 30;
+                }
+
+                if (lowerUrl.includes('bit.ly') || lowerUrl.includes('tinyurl')) {
+                    analysis.threats.push({
+                        type: 'URL shortener detected',
+                        severity: 'medium',
+                        description: 'URL shorteners can hide malicious destinations',
+                        confidence: 25
+                    });
+                    analysis.riskScore += 25;
+                }
+
+                // Extract domain for analysis
+                try {
+                    const url = new URL(content);
+                    const domain = url.hostname;
+                    
+                    if (domain.includes('fake') || domain.includes('phishing')) {
+                        analysis.threats.push({
+                            type: 'Suspicious domain detected',
+                            severity: 'high',
+                            description: 'Domain name suggests potential phishing or malicious activity',
+                            confidence: 70
+                        });
+                        analysis.riskScore += 70;
+                    }
+                } catch (e) {
+                    // Invalid URL
+                    analysis.threats.push({
+                        type: 'Invalid URL format',
+                        severity: 'low',
+                        description: 'URL format appears to be invalid or malformed',
+                        confidence: 20
+                    });
+                    analysis.riskScore += 20;
+                }
+            }
+
+            analysis.riskScore = Math.min(100, analysis.riskScore);
+            return analysis;
+        }
+
+        updateThreatAnalysis(analysis) {
+                const container = document.getElementById('threatAnalysis');
+                let html = '';
+
+                if (analysis.threats.length === 0) {
+                    html = `
+                        <div style="text-align: center; color: #4CAF50; padding: 20px;">
+                            <div style="font-size: 24px; margin-bottom: 10px;">✅</div>
+                            <p>No threats detected in the logs</p>
+                        </div>
+                    `;
+                } else {
+                    analysis.threats.forEach(threat => {
+                        const scoreClass = this.getScoreClass(threat.confidence);
+                        html += `
+                            <div class="threat-item">
+                                <div>
+                                    <div class="threat-name">${threat.type}</div>
+                                    <div style="font-size: 12px; color: #B0B0B0;">${threat.description}</div>
+                                </div>
+                                <span class="threat-score score-${scoreClass}">${threat.confidence}%</span>
+                            </div>
+                        `;
+                    });
+                }
+
+                container.innerHTML = html;
+            }
+
+            updateMitreMapping(analysis) {
+                const container = document.getElementById('mitreMapping');
+                let html = '';
+
+                if (analysis.mitreTechniques.length === 0) {
+                    html = `
+                        <div style="text-align: center; color: #B0B0B0; padding: 20px;">
+                            <div style="font-size: 24px; margin-bottom: 10px;">🎯</div>
+                            <p>No MITRE ATT&CK techniques identified</p>
+                        </div>
+                    `;
+                } else {
+                    const uniqueTechniques = [...new Set(analysis.mitreTechniques)];
+                    uniqueTechniques.forEach(technique => {
+                        html += `<div class="mitre-item">${technique}</div>`;
+                    });
+                }
+
+                container.innerHTML = html;
+            }
+
+            updateIOCAnalysis(analysis) {
+                const container = document.getElementById('iocAnalysis');
+                let html = '';
+
+                const allIOCs = [
+                    ...analysis.iocs.ips.map(ip => ({ type: 'IP', value: ip, reputation: this.getIPReputation(ip) })),
+                    ...analysis.iocs.domains.map(domain => ({ type: 'Domain', value: domain, reputation: this.getDomainReputation(domain) })),
+                    ...analysis.iocs.hashes.map(hash => ({ type: 'Hash', value: hash, reputation: this.getHashReputation(hash) }))
+                ];
+
+                if (allIOCs.length === 0) {
+                    html = `
+                        <div style="text-align: center; color: #B0B0B0; padding: 20px;">
+                            <div style="font-size: 24px; margin-bottom: 10px;">🔍</div>
+                            <p>No IOCs found in the logs</p>
+                        </div>
+                    `;
+                } else {
+                    allIOCs.forEach(ioc => {
+                        const repClass = this.getReputationClass(ioc.reputation);
+                        html += `
+                            <div class="ioc-item">
+                                <div>
+                                    <div style="font-size: 10px; color: #B0B0B0;">${ioc.type}</div>
+                                    <div class="ioc-value">${ioc.value}</div>
+                                </div>
+                                <span class="ioc-reputation reputation-${repClass}">${ioc.reputation}</span>
+                            </div>
+                        `;
+                    });
+                }
+
+                container.innerHTML = html;
+            }
+
+            updateThreatLevel(analysis) {
+                const threatLevelEl = document.getElementById('threatLevel');
+                let level, icon, color;
+
+                if (analysis.riskScore >= 80) {
+                    level = 'Critical';
+                    icon = '🔴';
+                    color = 'threat-critical';
+                } else if (analysis.riskScore >= 60) {
+                    level = 'High';
+                    icon = '🟠';
+                    color = 'threat-high';
+                } else if (analysis.riskScore >= 30) {
+                    level = 'Medium';
+                    icon = '🟡';
+                    color = 'threat-medium';
+                } else {
+                    level = 'Low';
+                    icon = '🟢';
+                    color = 'threat-low';
+                }
+
+                threatLevelEl.className = `threat-level ${color}`;
+                threatLevelEl.innerHTML = `<span>${icon}</span><span>Threat Level: ${level}</span>`;
+            }
+
+            getScoreClass(score) {
+                if (score >= 80) return 'critical';
+                if (score >= 60) return 'high';
+                if (score >= 30) return 'medium';
+                return 'low';
+            }
+
+            getReputationClass(reputation) {
+                if (reputation === 'Clean') return 'clean';
+                if (reputation === 'Suspicious') return 'suspicious';
+                return 'malicious';
+            }
+
+            getIPReputation(ip) {
+                // Simulate reputation check
+                const suspiciousIPs = ['203.0.113.42', '198.51.100.1', '192.0.2.1'];
+                const maliciousIPs = ['10.0.0.1', '172.16.0.1'];
+                
+                if (maliciousIPs.includes(ip)) return 'Malicious';
+                if (suspiciousIPs.includes(ip)) return 'Suspicious';
+                return 'Clean';
+            }
+
+            getDomainReputation(domain) {
+                // Simulate reputation check
+                const suspiciousDomains = ['example.com', 'test.org', 'cloud-sync-update.com', 'drive-file-share.com'];
+                const maliciousDomains = ['malware.com', 'phishing.net'];
+                
+                if (maliciousDomains.includes(domain)) return 'Malicious';
+                if (suspiciousDomains.includes(domain)) return 'Suspicious';
+                return 'Clean';
+            }
+
+            getHashReputation(hash) {
+                // Simulate reputation check
+                const maliciousHashes = ['a1b2c3d4e5f6', '1234567890ab'];
+                
+                if (maliciousHashes.includes(hash.toLowerCase())) return 'Malicious';
+                return 'Clean';
+            }
+
+            addMessage(type, content) {
+                const chatMessages = document.getElementById('chatMessages');
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${type}`;
+                messageDiv.textContent = content;
+                chatMessages.appendChild(messageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+            async handleChatMessage(message) {
+                const lowerMessage = message.toLowerCase();
+                
+                try {
+                    // Try to use backend SOC chat API
+                    const response = await fetch('http://localhost:3000/api/soc/soc-chat', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            message: message,
+                            context: this.currentAnalysis
+                        })
+                    });
+
+                    if (response.ok) {
+                        const chatResponse = await response.json();
+                        this.addMessage('assistant', chatResponse.answer);
+                        
+                        if (chatResponse.suggestions && chatResponse.suggestions.length > 0) {
+                            this.addMessage('assistant', `Suggestions: ${chatResponse.suggestions.join(', ')}`);
+                        }
+                    } else {
+                        throw new Error('Backend API not available');
+                    }
+                } catch (error) {
+                    console.log('Backend API not available, using local responses');
+                    // Fallback to local responses
+                    if (lowerMessage.includes('analyze') || lowerMessage.includes('investigate')) {
+                        this.addMessage('assistant', 'I can analyze logs, alerts, and security events. Please paste the data you want me to investigate, or use the log ingestion panel on the right.');
+                    } else if (lowerMessage.includes('mitre') || lowerMessage.includes('attack')) {
+                        this.addMessage('assistant', 'I can map threats to MITRE ATT&CK techniques. When you analyze logs, I\'ll automatically identify and map any attack techniques found.');
+                    } else if (lowerMessage.includes('ioc') || lowerMessage.includes('reputation')) {
+                        this.addMessage('assistant', 'I can check IOC reputation using threat intelligence feeds. I\'ll automatically extract and analyze IPs, domains, and hashes from your logs.');
+                    } else if (lowerMessage.includes('help') || lowerMessage.includes('what can you do')) {
+                        this.addMessage('assistant', `I'm your AI SOC assistant! I can help with:
+
+🔍 **Log Analysis**: Paste security logs for automated threat detection
+🎯 **MITRE ATT&CK Mapping**: Identify attack techniques and tactics
+🔍 **IOC Analysis**: Check reputation of IPs, domains, and hashes
+📊 **Risk Assessment**: Calculate threat scores and severity levels
+🛡️ **Incident Response**: Suggest remediation steps and next actions
+
+Try pasting some logs or asking specific questions about threats!`);
+                    } else {
+                        this.addMessage('assistant', 'I can help analyze security logs, map threats to MITRE ATT&CK, check IOC reputation, and provide incident response guidance. What would you like me to investigate?');
+                    }
+                }
+            }
+        }
+
+        // Initialize BlueShield AI
+        const blueShield = new BlueShieldAI();
+
+        // Chat functions
+        function sendMessage() {
+            const chatInput = document.getElementById('chatInput');
+            const message = chatInput.value.trim();
+            
+            if (message) {
+                blueShield.addMessage('user', message);
+                blueShield.handleChatMessage(message);
+                chatInput.value = '';
+            }
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function analyzeLogs() {
+            blueShield.analyzeLogs();
+        }
+
+        // Content scanning functions
+        let currentScanType = 'text';
+
+        function setScanType(type) {
+            currentScanType = type;
+            
+            // Update button states
+            document.querySelectorAll('.scan-type-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(type + 'ScanBtn').classList.add('active');
+            
+            // Show/hide input groups
+            document.getElementById('textScanGroup').style.display = type === 'text' ? 'block' : 'none';
+            document.getElementById('urlScanGroup').style.display = type === 'url' ? 'block' : 'none';
+            document.getElementById('fileScanGroup').style.display = type === 'file' ? 'block' : 'none';
+        }
+
+        async function analyzeContent() {
+            let content = '';
+            
+            if (currentScanType === 'text') {
+                content = document.getElementById('textScanInput').value.trim();
+            } else if (currentScanType === 'url') {
+                content = document.getElementById('urlScanInput').value.trim();
+            } else if (currentScanType === 'file') {
+                const fileInput = document.getElementById('fileScanInput');
+                if (fileInput.files.length === 0) {
+                    blueShield.addMessage('assistant', 'Please select a file to analyze.');
+                    return;
+                }
+                content = fileInput.files[0].name; // For now, just analyze filename
+            }
+
+            if (!content) {
+                blueShield.addMessage('assistant', `Please enter ${currentScanType} content to analyze.`);
+                return;
+            }
+
+            blueShield.addMessage('user', `Analyze this ${currentScanType}:`);
+            blueShield.addMessage('user', content);
+
+            try {
+                // Try to use backend API first
+                const endpoint = currentScanType === 'text' ? '/api/analyze/text' : '/api/analyze/url';
+                const response = await fetch(`http://localhost:3000${endpoint}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        [currentScanType]: content
+                    })
+                });
+
+                if (response.ok) {
+                    const analysis = await response.json();
+                    blueShield.addMessage('assistant', `AI Analysis complete! Threat score: ${analysis.threatScore}%`);
+                    
+                    // Update analysis panels
+                    blueShield.currentAnalysis = {
+                        threats: analysis.detections || [],
+                        riskScore: analysis.threatScore,
+                        iocs: { ips: [], domains: [], hashes: [] }
+                    };
+                    blueShield.updateThreatAnalysis(blueShield.currentAnalysis);
+                    blueShield.updateThreatLevel(blueShield.currentAnalysis);
+                } else {
+                    throw new Error('Backend API not available');
+                }
+            } catch (error) {
+                console.log('Backend API not available, using local analysis');
+                // Fallback to local analysis
+                const analysis = blueShield.performContentAnalysis(content, currentScanType);
+                blueShield.currentAnalysis = analysis;
+                blueShield.addMessage('assistant', `Local analysis complete! Threat score: ${analysis.riskScore}%`);
+                blueShield.updateThreatAnalysis(analysis);
+                blueShield.updateThreatLevel(analysis);
+            }
+        }
+
+        // Initialize with sample data
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add some sample log data
+            document.getElementById('logInput').value = `2024-01-15 10:30:45 WARNING [192.168.1.100] Failed login attempt for user 'admin'
+2024-01-15 10:30:47 ALERT [192.168.1.100] Multiple failed login attempts detected
+2024-01-15 10:31:02 CRITICAL [192.168.1.100] Unauthorized access attempt from external IP 203.0.113.42
+2024-01-15 10:31:15 INFO [192.168.1.100] Connection established to suspicious domain malware.com
+2024-01-15 10:31:30 WARNING [192.168.1.100] File hash a1b2c3d4e5f6 detected as malicious`;
+        });
+    </script>
+</body>
+</html>

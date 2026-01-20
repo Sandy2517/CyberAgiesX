@@ -1,0 +1,11 @@
+{
+  "CallSid": "CA1234567890abcdef1234567890abcdef",
+  "From": "+15551234567",
+  "To": "+15559876543",
+  "CallStatus": "completed",
+  "RecordingUrl": "https://api.twilio.com/2010-04-01/Accounts/ACxxxx/Recordings/RE123456",
+  "RecordingSid": "RE1234567890abcdef1234567890abcdef",
+  "RecordingDuration": "45",
+  "Timestamp": "2025-10-29T10:41:23Z"
+}
+

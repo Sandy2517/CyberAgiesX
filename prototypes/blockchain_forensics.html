@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberAgiesX - Blockchain Forensics & Audit System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0F0F23;
+            color: #FFFFFF;
+            overflow-x: hidden;
+        }
+
+        .forensics-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .forensics-header {
+            background: linear-gradient(135deg, #1A1D23 0%, #0A1628 100%);
+            padding: 20px 40px;
+            border-bottom: 2px solid #00D9FF;
+            box-shadow: 0 4px 20px rgba(0, 217, 255, 0.2);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .forensics-logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .blockchain-icon {
+            font-size: 32px;
+            color: #00D9FF;
+            text-shadow: 0 0 20px rgba(0, 217, 255, 0.5);
+        }
+
+        .chain-status {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: #00FF88;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            background: #00FF88;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        /* Navigation */
+        .forensics-nav {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px 40px;
+            display: flex;
+            gap: 30px;
+            border-bottom: 1px solid rgba(0, 217, 255, 0.2);
+        }
+
+        .nav-item {
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #A1A8B0;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: rgba(0, 217, 255, 0.1);
+            color: #00D9FF;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 30px 40px;
+            display: flex;
+            gap: 30px;
+        }
+
+        .primary-panel {
+            flex: 2;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 30px;
+            border: 1px solid rgba(0, 217, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .secondary-panel {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 30px;
+            border: 1px solid rgba(0, 217, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        /* Blockchain Explorer */
+        .block-chain {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .block {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(0, 217, 255, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .block:hover {
+            background: rgba(0, 217, 255, 0.1);
+            border-color: #00D9FF;
+            transform: translateX(5px);
+        }
+
+        .block::after {
+            content: '⬇️';
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 20px;
+            color: #00D9FF;
+        }
+
+        .block:last-child::after {
+            display: none;
+        }
+
+        .block-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .block-number {
+            color: #00D9FF;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .block-hash {
+            font-family: 'Courier New', monospace;
+            color: #A1A8B0;
+            font-size: 12px;
+        }
+
+        .block-timestamp {
+            color: #A1A8B0;
+            font-size: 12px;
+        }
+
+        .block-content {
+            color: #FFFFFF;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .incident-severity {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .severity-critical { background: rgba(255, 87, 87, 0.2); color: #FF5757; }
+        .severity-high { background: rgba(255, 170, 0, 0.2); color: #FFAA00; }
+        .severity-medium { background: rgba(0, 217, 255, 0.2); color: #00D9FF; }
+        .severity-low { background: rgba(0, 255, 136, 0.2); color: #00FF88; }
+
+        /* Evidence Viewer */
+        .evidence-item {
+            background: rgba(255, 255, 255, 0.02);
+            border-left: 4px solid #00D9FF;
+            border-radius: 0 8px 8px 0;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .evidence-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .evidence-type {
+            color: #00D9FF;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .evidence-verified {
+            background: rgba(0, 255, 136, 0.2);
+            color: #00FF88;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .evidence-details {
+            color: #A1A8B0;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .evidence-hash {
+            font-family: 'Courier New', monospace;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            word-break: break-all;
+            font-size: 12px;
+        }
+
+        /* Verification Tools */
+        .verification-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .verification-title {
+            color: #00D9FF;
+            font-weight: bold;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .hash-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(0, 217, 255, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            color: #FFFFFF;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .hash-input:focus {
+            outline: none;
+            border-color: #00D9FF;
+            box-shadow: 0 0 20px rgba(0, 217, 255, 0.3);
+        }
+
+        .verify-btn {
+            background: linear-gradient(135deg, #00D9FF, #00FF88);
+            color: #0F0F23;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .verify-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 217, 255, 0.3);
+        }
+
+        .verification-result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .result-valid {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid #00FF88;
+            color: #00FF88;
+        }
+
+        .result-invalid {
+            background: rgba(255, 87, 87, 0.1);
+            border: 1px solid #FF5757;
+            color: #FF5757;
+        }
+
+        /* Analytics Dashboard */
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .analytics-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(0, 217, 255, 0.3);
+        }
+
+        .analytics-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #FFFFFF;
+            margin-bottom: 8px;
+        }
+
+        .analytics-label {
+            color: #A1A8B0;
+            font-size: 12px;
+        }
+
+        .analytics-trend {
+            color: #00FF88;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        /* Export Tools */
+        .export-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 25px;
+        }
+
+        .export-title {
+            color: #00D9FF;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .export-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .export-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(0, 217, 255, 0.3);
+            border-radius: 8px;
+            padding: 15px 20px;
+            color: #FFFFFF;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .export-btn:hover {
+            background: rgba(0, 217, 255, 0.1);
+            border-color: #00D9FF;
+        }
+
+        .export-btn-icon {
+            margin-right: 10px;
+            font-size: 16px;
+        }
+
+        /* Real-time Monitor */
+        .live-feed {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+
+        .feed-line {
+            margin-bottom: 5px;
+            opacity: 0;
+            animation: fadeInFeed 0.5s ease-in-out forwards;
+        }
+
+        @keyframes fadeInFeed {
+            to { opacity: 1; }
+        }
+
+        .feed-timestamp {
+            color: #A1A8B0;
+        }
+
+        .feed-event {
+            color: #00D9FF;
+        }
+
+        .feed-critical {
+            color: #FF5757;
+            font-weight: bold;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+                padding: 20px;
+            }
+            
+            .forensics-header {
+                padding: 15px 20px;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .analytics-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+    <div class="forensics-container">
+        <!-- Header -->
+        <div class="forensics-header">
+            <div class="header-content">
+                <div class="forensics-logo">
+                    <span class="blockchain-icon">⛓️</span>
+                    <span>CyberAgiesX Blockchain Forensics</span>
+                </div>
+                <div class="chain-status">
+                    <div class="status-indicator"></div>
+                    <span>Blockchain Connected</span>
+                    <span style="color: #A1A8B0;">|</span>
+                    <span style="color: #A1A8B0;">Block Height: <span id="blockHeight">2,847,392</span></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="forensics-nav">
+            <div class="nav-item active" data-section="explorer">Blockchain Explorer</div>
+            <div class="nav-item" data-section="evidence">Evidence Vault</div>
+            <div class="nav-item" data-section="verification">Hash Verification</div>
+            <div class="nav-item" data-section="analytics">Chain Analytics</div>
+            <div class="nav-item" data-section="live">Live Monitor</div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Blockchain Explorer -->
+            <div id="explorer" class="primary-panel">
+                <h3 style="color: #00D9FF; margin-bottom: 25px;">🔍 Blockchain Transaction Explorer</h3>
+                
+                <div class="block-chain">
+                    <div class="block">
+                        <div class="block-header">
+                            <div class="block-number">Block #2,847,392</div>
+                            <div class="block-timestamp">2024-01-15 15:47:23 UTC</div>
+                        </div>
+                        <div class="block-hash">Hash: 0x7f8a9b2c4d1e6f3a8b5c9d2e7f4a1b8c5d9e2f7a4b1c8d5e9f2a7b4c1d8e5f9a2</div>
+                        <div class="block-content">
+                            <div class="incident-severity severity-critical">🚨 CRITICAL INCIDENT</div>
+                            <strong>Deepfake Attack Blocked</strong><br>
+                            Target: CEO Impersonation (Video Call)<br>
+                            Trust Score: 23/100<br>
+                            Evidence: Voice synthesis 82%, Temporal artifacts detected<br>
+                            Action: Communication blocked, security alerted<br>
+                            Affected User: finance.director@company.com
+                        </div>
+                    </div>
+
+                    <div class="block">
+                        <div class="block-header">
+                            <div class="block-number">Block #2,847,391</div>
+                            <div class="block-timestamp">2024-01-15 15:32:17 UTC</div>
+                        </div>
+                        <div class="block-hash">Hash: 0x3d2f1a8e9b4c7d0f2a5e8b1c4d7f0a3e6b9c2d5f8a1e4b7c0d3f6a9c2e5f8b1d</div>
+                        <div class="block-content">
+                            <div class="incident-severity severity-high">⚠️ HIGH RISK</div>
+                            <strong>AI Phishing Email Detected</strong><br>
+                            Pattern: Executive impersonation<br>
+                            Trust Score: 45/100<br>
+                            Evidence: AI-generated content 89%, Style inconsistency<br>
+                            Action: Email quarantined<br>
+                            Affected User: hr.manager@company.com
+                        </div>
+                    </div>
+
+                    <div class="block">
+                        <div class="block-header">
+                            <div class="block-number">Block #2,847,390</div>
+                            <div class="block-timestamp">2024-01-15 15:18:45 UTC</div>
+                        </div>
+                        <div class="block-hash">Hash: 0x9e4c8b1f5a2d6e3c0b7f4a9d2e5c8b1f4a7d0e3c6b9f2a5d8e1c4b7f0a3d6e9c</div>
+                        <div class="block-content">
+                            <div class="incident-severity severity-medium">ℹ️ MEDIUM RISK</div>
+                            <strong>Voice Authentication Failed</strong><br>
+                            User: john.smith@company.com<br>
+                            Attempts: 3 consecutive failures<br>
+                            Evidence: Voice pattern mismatch 67%<br>
+                            Action: Account temporarily locked<br>
+                            Resolution: Manual verification required
+                        </div>
+                    </div>
+
+                    <div class="block">
+                        <div class="block-header">
+                            <div class="block-number">Block #2,847,389</div>
+                            <div class="block-timestamp">2024-01-15 15:05:32 UTC</div>
+                        </div>
+                        <div class="block-hash">Hash: 0x2c5f8a1b4e7d0c3f6a9b2e5d8c1f4a7b0e3d6c9f2a5b8e1d4c7f0a3b6e9c2f5d</div>
+                        <div class="block-content">
+                            <div class="incident-severity severity-low">✅ SUCCESSFUL</div>
+                            <strong>Wire Transfer Authorized</strong><br>
+                            Amount: $50,000 USD<br>
+                            Trust Score: 94/100<br>
+                            Evidence: Voice biometrics verified, Behavioral consistency confirmed<br>
+                            Action: Transaction approved<br>
+                            Authorized by: finance.director@company.com
+                        </div>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 20px;">
+                    <button class="verify-btn" onclick="loadMoreBlocks()">📄 Load More Blocks</button>
+                </div>
+            </div>
+
+            <!-- Evidence Vault -->
+            <div id="evidence" class="primary-panel hidden">
+                <h3 style="color: #00D9FF; margin-bottom: 25px;">🗃️ Tamper-Proof Evidence Vault</h3>
+                
+                <div class="evidence-item">
+                    <div class="evidence-header">
+                        <div class="evidence-type">
+                            🎤 Voice Analysis Evidence
+                        </div>
+                        <div class="evidence-verified">✅ VERIFIED</div>
+                    </div>
+                    <div class="evidence-details">
+                        <strong>Incident:</strong> CEO Impersonation Voice Clone<br>
+                        <strong>Timestamp:</strong> 2024-01-15 15:47:23 UTC<br>
+                        <strong>Analysis Results:</strong><br>
+                        • Voice synthesis probability: 82.3%<br>
+                        • Vocal biometric mismatch: 66.1%<br>
+                        • Emotional consistency score: 67.4%<br>
+                        • Audio artifacts detected: 15 instances<br>
+                        <strong>Chain of Custody:</strong> CyberAgiesX AI Engine → Blockchain Logger → Evidence Vault
+                    </div>
+                    <div class="evidence-hash">
+                        Evidence Hash: 0x4a7d3f8e2b9c5a1f6d4e8b2c7f5a9d3e6b1c8f4a7d2e9b5c8f1a4d7e3b9c6f2a5d8e
+                    </div>
+                </div>
+
+                <div class="evidence-item">
+                    <div class="evidence-header">
+                        <div class="evidence-type">
+                            📹 Video Analysis Evidence
+                        </div>
+                        <div class="evidence-verified">✅ VERIFIED</div>
+                    </div>
+                    <div class="evidence-details">
+                        <strong>Incident:</strong> Deepfake Video Detection<br>
+                        <strong>Timestamp:</strong> 2024-01-15 15:47:18 UTC<br>
+                        <strong>Analysis Results:</strong><br>
+                        • Deepfake probability: 91.2%<br>
+                        • Temporal artifacts: 15 detected<br>
+                        • Facial consistency: 72.8% match<br>
+                        • Frame-by-frame analysis: 847 frames processed<br>
+                        <strong>Resolution:</strong> 1920x1080, 30fps, 2.3MB evidence file
+                    </div>
+                    <div class="evidence-hash">
+                        Evidence Hash: 0x8c3f6a9d2e7b4f1a5c8d0e3b6f9c2a5d8e1b4f7a0c3d6e9b2f5a8c1e4b7d0f3a6e9c
+                    </div>
+                </div>
+
+                <div class="evidence-item">
+                    <div class="evidence-header">
+                        <div class="evidence-type">
+                            📧 Email Content Evidence
+                        </div>
+                        <div class="evidence-verified">✅ VERIFIED</div>
+                    </div>
+                    <div class="evidence-details">
+                        <strong>Incident:</strong> AI-Generated Phishing Email<br>
+                        <strong>Timestamp:</strong> 2024-01-15 15:32:17 UTC<br>
+                        <strong>Analysis Results:</strong><br>
+                        • AI text detection: 89.4% confidence<br>
+                        • Style analysis: 67.2% inconsistency<br>
+                        • Urgency manipulation: High risk detected<br>
+                        • Metadata analysis: 12 suspicious indicators<br>
+                        <strong>Full Email Content:</strong> Preserved with headers and metadata
+                    </div>
+                    <div class="evidence-hash">
+                        Evidence Hash: 0x1e4b7c0d3f6a9c2e5f8b1d4c7f0a3e6b9c2d5f8a1e4b7c0d3f6a9c2e5f8b1d4c7f0a
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 20px;">
+                    <button class="verify-btn" onclick="exportEvidence()">📊 Export Court-Admissible Report</button>
+                </div>
+            </div>
+
+            <!-- Hash Verification -->
+            <div id="verification" class="primary-panel hidden">
+                <h3 style="color: #00D9FF; margin-bottom: 25px;">🔐 Blockchain Hash Verification</h3>
+                
+                <div class="verification-section">
+                    <div class="verification-title">
+                        ✅ Verify Evidence Integrity
+                    </div>
+                    <p style="color: #A1A8B0; margin-bottom: 20px; line-height: 1.6;">
+                        Enter any evidence hash to verify its integrity and authenticity against the blockchain record. 
+                        This ensures that evidence has not been tampered with since its creation.
+                    </p>
+                    <input type="text" class="hash-input" id="hashInput" 
+                           placeholder="0x7f8a9b2c4d1e6f3a8b5c9d2e7f4a1b8c5d9e2f7a4b1c8d5e9f2a7b4c1d8e5f9a2"
+                           maxlength="66">
+                    <button class="verify-btn" onclick="verifyHash()">🔍 Verify Hash</button>
+                    
+                    <div id="verificationResult" class="verification-result">
+                        <strong>Verification Result:</strong><br>
+                        <span id="resultText"></span>
+                    </div>
+                </div>
+
+                <div class="verification-section">
+                    <div class="verification-title">
+                        🕒 Timestamp Verification
+                    </div>
+                    <p style="color: #A1A8B0; margin-bottom: 20px; line-height: 1.6;">
+                        Verify when evidence was recorded and confirm the chronological order of events.
+                    </p>
+                    <input type="text" class="hash-input" id="timestampInput" 
+                           placeholder="2024-01-15 15:47:23 UTC"
+                           maxlength="23">
+                    <button class="verify-btn" onclick="verifyTimestamp()">⏰ Verify Timestamp</button>
+                    
+                    <div id="timestampResult" class="verification-result">
+                        <strong>Timestamp Verification:</strong><br>
+                        <span id="timestampText"></span>
+                    </div>
+                </div>
+
+                <div class="verification-section">
+                    <div class="verification-title">
+                        📋 Bulk Verification
+                    </div>
+                    <p style="color: #A1A8B0; margin-bottom: 20px; line-height: 1.6;">
+                        Upload a CSV file containing multiple hashes for batch verification.
+                    </p>
+                    <input type="file" accept=".csv" style="margin-bottom: 15px; color: #FFFFFF;">
+                    <button class="verify-btn" onclick="bulkVerify()">📊 Bulk Verify</button>
+                </div>
+            </div>
+
+            <!-- Chain Analytics -->
+            <div id="analytics" class="primary-panel hidden">
+                <h3 style="color: #00D9FF; margin-bottom: 25px;">📈 Blockchain Analytics & Insights</h3>
+                
+                <div class="analytics-grid">
+                    <div class="analytics-card">
+                        <div class="analytics-value" style="color: #FF5757;">2,847,392</div>
+                        <div class="analytics-label">Total Blocks</div>
+                        <div class="analytics-trend">↑ 847 today</div>
+                    </div>
+                    
+                    <div class="analytics-card">
+                        <div class="analytics-value" style="color: #FFAA00;">15,249</div>
+                        <div class="analytics-label">Evidence Records</div>
+                        <div class="analytics-trend">↑ 23 today</div>
+                    </div>
+                    
+                    <div class="analytics-card">
+                        <div class="analytics-value" style="color: #00FF88;">99.99%</div>
+                        <div class="analytics-label">Chain Integrity</div>
+                        <div class="analytics-trend">✅ Perfect</div>
+                    </div>
+                    
+                    <div class="analytics-card">
+                        <div class="analytics-value" style="color: #00D9FF;">342</div>
+                        <div class="analytics-label">Threats Logged</div>
+                        <div class="analytics-trend">↓ 12% vs yesterday</div>
+                    </div>
+                </div>
+
+                <div style="background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 25px; margin-bottom: 25px;">
+                    <h4 style="color: #00D9FF; margin-bottom: 20px;">📊 Threat Distribution (Last 30 Days)</h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                <span style="color: #A1A8B0;">Deepfake Attacks:</span>
+                                <span style="color: #FF5757; font-weight: bold;">47%</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                <span style="color: #A1A8B0;">Voice Cloning:</span>
+                                <span style="color: #FFAA00; font-weight: bold;">28%</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                <span style="color: #A1A8B0;">AI Phishing:</span>
+                                <span style="color: #00D9FF; font-weight: bold;">19%</span>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                <span style="color: #A1A8B0;">Behavioral Attacks:</span>
+                                <span style="color: #FF5757; font-weight: bold;">6%</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                <span style="color: #A1A8B0;">False Positives:</span>
+                                <span style="color: #00FF88; font-weight: bold;">2.1%</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                <span style="color: #A1A8B0;">Resolution Rate:</span>
+                                <span style="color: #00FF88; font-weight: bold;">97.9%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 25px;">
+                    <h4 style="color: #00D9FF; margin-bottom: 20px;">⛓️ Chain Health Metrics</h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; color: #A1A8B0; font-size: 14px;">
+                        <div>
+                            <strong style="color: #FFFFFF;">Block Time:</strong><br>
+                            2.3 seconds average<br><br>
+                            <strong style="color: #FFFFFF;">Hash Rate:</strong><br>
+                            847.2 TH/s<br><br>
+                            <strong style="color: #FFFFFF;">Network Nodes:</strong><br>
+                            15,247 active
+                        </div>
+                        <div>
+                            <strong style="color: #FFFFFF;">Consensus:</strong><br>
+                            100% agreement<br><br>
+                            <strong style="color: #FFFFFF;">Storage:</strong><br>
+                            2.4 TB total<br><br>
+                            <strong style="color: #FFFFFF;">Replication:</strong><br>
+                            5x redundancy
+                        </div>
+                        <div>
+                            <strong style="color: #FFFFFF;">Latency:</strong><br>
+                            12ms average<br><br>
+                            <strong style="color: #FFFFFF;">Uptime:</strong><br>
+                            99.99% (30 days)<br><br>
+                            <strong style="color: #FFFFFF;">Last Incident:</strong><br>
+                            None detected
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Live Monitor -->
+            <div id="live" class="primary-panel hidden">
+                <h3 style="color: #00D9FF; margin-bottom: 25px;">📡 Live Blockchain Monitor</h3>
+                
+                <div style="background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+                    <h4 style="color: #00D9FF; margin-bottom: 15px;">🔴 Real-Time Block Stream</h4>
+                    <div class="live-feed" id="liveFeed">
+                        <div class="feed-line">
+                            <span class="feed-timestamp">[15:47:23]</span> 
+                            <span class="feed-event">NEW BLOCK</span> 
+                            #2,847,392 mined with 1 transaction
+                        </div>
+                        <div class="feed-line">
+                            <span class="feed-timestamp">[15:47:18]</span> 
+                            <span class="feed-critical">CRITICAL INCIDENT</span> 
+                            Deepfake attack evidence logged
+                        </div>
+                        <div class="feed-line">
+                            <span class="feed-timestamp">[15:47:15]</span> 
+                            <span class="feed-event">ANALYSIS</span> 
+                            Video artifacts confirmed, trust score: 23/100
+                        </div>
+                        <div class="feed-line">
+                            <span class="feed-timestamp">[15:47:12]</span> 
+                            <span class="feed-event">DETECTION</span> 
+                            Suspicious video call initiated
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div style="background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 20px;">
+                        <h4 style="color: #00D9FF; margin-bottom: 15px;">⚡ Network Status</h4>
+                        <div style="color: #A1A8B0; font-size: 14px; line-height: 1.8;">
+                            <div style="display: flex; justify-content: space-between;">
+                                <span>Block Height:</span>
+                                <span style="color: #00FF88;" id="liveBlockHeight">2,847,392</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span>Pending Transactions:</span>
+                                <span style="color: #FFAA00;">7</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span>Active Nodes:</span>
+                                <span style="color: #00FF88;">15,247</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span>Network Latency:</span>
+                                <span style="color: #00FF88;">12ms</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 20px;">
+                        <h4 style="color: #00D9FF; margin-bottom: 15px;">🎯 Today's Activity</h4>
+                        <div style="color: #A1A8B0; font-size: 14px; line-height: 1.8;">
+                            <div style="display: flex; justify-content: space-between;">
+                                <span>Blocks Mined:</span>
+                                <span style="color: #00FF88;">847</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span>Evidence Logged:</span>
+                                <span style="color: #FFAA00;">23</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span>Threats Detected:</span>
+                                <span style="color: #FF5757;">12</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span>Verifications:</span>
+                                <span style="color: #00FF88;">1,247</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar Panel -->
+            <div class="secondary-panel">
+                <div class="export-section">
+                    <div class="export-title">📊 Evidence Export</div>
+                    <div class="export-options">
+                        <div class="export-btn" onclick="exportPDF()">
+                            <span class="export-btn-icon">📄</span>
+                            PDF Evidence Report
+                        </div>
+                        <div class="export-btn" onclick="exportCSV()">
+                            <span class="export-btn-icon">📊</span>
+                            CSV Data Export
+                        </div>
+                        <div class="export-btn" onclick="exportJSON()">
+                            <span class="export-btn-icon">🔧</span>
+                            JSON Technical Data
+                        </div>
+                        <div class="export-btn" onclick="exportBlockchain()">
+                            <span class="export-btn-icon">⛓️</span>
+                            Blockchain Backup
+                        </div>
+                    </div>
+                </div>
+
+                <div style="background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 20px; margin-top: 20px;">
+                    <h4 style="color: #00D9FF; margin-bottom: 15px;">🔐 Security Status</h4>
+                    <div style="color: #A1A8B0; font-size: 14px; line-height: 1.6;">
+                        <div style="color: #00FF88; margin-bottom: 8px;">
+                            ✅ Blockchain integrity verified
+                        </div>
+                        <div style="color: #00FF88; margin-bottom: 8px;">
+                            ✅ All nodes synchronized
+                        </div>
+                        <div style="color: #00FF88; margin-bottom: 8px;">
+                            ✅ Evidence encryption active
+                        </div>
+                        <div style="color: #00FF88; margin-bottom: 8px;">
+                            ✅ Consensus protocol stable
+                        </div>
+                        <div style="color: #00FF88;">
+                            ✅ Backup systems operational
+                        </div>
+                    </div>
+                </div>
+
+                <div style="background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 20px; margin-top: 20px;">
+                    <h4 style="color: #00D9FF; margin-bottom: 15px;">⚙️ Quick Actions</h4>
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <button class="verify-btn" style="width: 100%;" onclick="refreshChain()">
+                            🔄 Refresh Chain Data
+                        </button>
+                        <button class="verify-btn" style="width: 100%;" onclick="validateIntegrity()">
+                            🔍 Validate Chain Integrity
+                        </button>
+                        <button class="verify-btn" style="width: 100%;" onclick="syncNodes()">
+                            🌐 Sync All Nodes
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentSection = 'explorer';
+        let blockHeight = 2847392;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Navigation
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    switchSection(this.dataset.section);
+                });
+            });
+
+            // Start live updates
+            startLiveUpdates();
+
+            // Auto-populate sample hash for demo
+            setTimeout(() => {
+                document.getElementById('hashInput').value = '0x7f8a9b2c4d1e6f3a8b5c9d2e7f4a1b8c5d9e2f7a4b1c8d5e9f2a7b4c1d8e5f9a2';
+            }, 1000);
+        });
+
+        function switchSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.primary-panel').forEach(panel => {
+                panel.classList.add('hidden');
+            });
+
+            // Show selected section
+            document.getElementById(sectionId).classList.remove('hidden');
+
+            // Update nav
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector(`[data-section="${sectionId}"]`).classList.add('active');
+
+            currentSection = sectionId;
+        }
+
+        function verifyHash() {
+            const hash = document.getElementById('hashInput').value;
+            const result = document.getElementById('verificationResult');
+            const resultText = document.getElementById('resultText');
+
+            if (hash.length !== 66 || !hash.startsWith('0x')) {
+                result.className = 'verification-result result-invalid';
+                result.style.display = 'block';
+                resultText.innerHTML = '❌ Invalid hash format. Hash must be 66 characters starting with 0x.';
+                return;
+            }
+
+            // Simulate verification
+            setTimeout(() => {
+                const isValid = Math.random() > 0.2; // 80% chance of valid for demo
+                
+                if (isValid) {
+                    result.className = 'verification-result result-valid';
+                    resultText.innerHTML = `
+                        ✅ <strong>HASH VERIFIED</strong><br>
+                        • Block: #2,847,392<br>
+                        • Timestamp: 2024-01-15 15:47:23 UTC<br>
+                        • Evidence Type: Deepfake Detection<br>
+                        • Chain Position: Confirmed<br>
+                        • Integrity: 100% intact
+                    `;
+                } else {
+                    result.className = 'verification-result result-invalid';
+                    resultText.innerHTML = '❌ <strong>HASH NOT FOUND</strong><br>This hash does not exist in the blockchain or has been tampered with.';
+                }
+                
+                result.style.display = 'block';
+            }, 1500);
+        }
+
+        function verifyTimestamp() {
+            const timestamp = document.getElementById('timestampInput').value;
+            const result = document.getElementById('timestampResult');
+            const resultText = document.getElementById('timestampText');
+
+            // Simulate timestamp verification
+            setTimeout(() => {
+                result.className = 'verification-result result-valid';
+                result.style.display = 'block';
+                resultText.innerHTML = `
+                    ✅ <strong>TIMESTAMP VERIFIED</strong><br>
+                    • Blockchain time: ${timestamp}<br>
+                    • Local time: 2024-01-15 10:47:23 EST<br>
+                    • Time difference: 0ms (synchronized)<br>
+                    • Chronological order: Confirmed
+                `;
+            }, 1000);
+        }
+
+        function bulkVerify() {
+            alert('📊 Bulk verification initiated!\n\nProcessing 847 hashes...\n\n✅ 831 verified\n❌ 16 failed verification\n\nDetailed report exported to CSV.');
+        }
+
+        function startLiveUpdates() {
+            // Update block height every 3 seconds
+            setInterval(() => {
+                blockHeight++;
+                document.getElementById('blockHeight').textContent = blockHeight.toLocaleString();
+                document.getElementById('liveBlockHeight').textContent = blockHeight.toLocaleString();
+            }, 3000);
+
+            // Add new feed entries every 5-8 seconds
+            setInterval(() => {
+                addLiveFeedEntry();
+            }, Math.random() * 3000 + 5000);
+        }
+
+        function addLiveFeedEntry() {
+            const feed = document.getElementById('liveFeed');
+            const entries = [
+                { type: 'event', text: `NEW BLOCK #${blockHeight + 1} mined with ${Math.floor(Math.random() * 5) + 1} transactions` },
+                { type: 'event', text: 'Evidence integrity check completed' },
+                { type: 'event', text: 'Network consensus achieved' },
+                { type: 'critical', text: 'New threat detected and logged' },
+                { type: 'event', text: 'Backup synchronization completed' }
+            ];
+
+            const entry = entries[Math.floor(Math.random() * entries.length)];
+            const now = new Date();
+            const timeString = now.toTimeString().substring(0, 8);
+
+            const feedLine = document.createElement('div');
+            feedLine.className = 'feed-line';
+            feedLine.innerHTML = `
+                <span class="feed-timestamp">[${timeString}]</span> 
+                <span class="feed-${entry.type === 'critical' ? 'critical' : 'event'}">${entry.type.toUpperCase()}</span> 
+                ${entry.text}
+            `;
+
+            feed.insertBefore(feedLine, feed.firstChild);
+
+            // Keep only last 20 entries
+            const lines = feed.querySelectorAll('.feed-line');
+            if (lines.length > 20) {
+                lines[lines.length - 1].remove();
+            }
+        }
+
+        function loadMoreBlocks() {
+            alert('📄 Loading additional blockchain entries...\n\nRetrieved 50 more blocks from the chain.\nTotal evidence records: 15,249');
+        }
+
+        function exportEvidence() {
+            alert('📊 Court-admissible evidence report generated!\n\n• Cryptographic signatures verified\n• Chain of custody documented\n• Tamper-proof timestamps confirmed\n• Legal format compliance validated\n\nReport ready for download.');
+        }
+
+        function exportPDF() {
+            alert('📄 PDF evidence report generated!\n\nIncludes:\n• Complete blockchain audit trail\n• Evidence integrity proofs\n• Timestamp verifications\n• Digital signatures');
+        }
+
+        function exportCSV() {
+            alert('📊 CSV data export complete!\n\nExported:\n• 15,249 evidence records\n• Block headers and hashes\n• Verification timestamps\n• Threat classifications');
+        }
+
+        function exportJSON() {
+            alert('🔧 JSON technical data exported!\n\nIncludes:\n• Raw blockchain data\n• Evidence metadata\n• Hash verification results\n• API-compatible format');
+        }
+
+        function exportBlockchain() {
+            alert('⛓️ Blockchain backup initiated!\n\nCreating complete backup:\n• All blocks and transactions\n• Evidence vault contents\n• Node configuration data\n• Estimated completion: 15 minutes');
+        }
+
+        function refreshChain() {
+            alert('🔄 Blockchain data refreshed!\n\n• Synchronized with all nodes\n• Latest blocks retrieved\n• Evidence vault updated\n• Chain integrity confirmed');
+        }
+
+        function validateIntegrity() {
+            alert('🔍 Chain integrity validation complete!\n\n✅ All blocks verified\n✅ Hash chain unbroken\n✅ No tampering detected\n✅ Evidence records intact\n\nIntegrity: 100%');
+        }
+
+        function syncNodes() {
+            alert('🌐 Node synchronization complete!\n\n• 15,247 nodes synchronized\n• Consensus achieved\n• Latency optimized\n• Network stable');
+        }
+
+        // Auto-switch to live monitor for demo
+        setTimeout(() => {
+            if (currentSection === 'explorer') {
+                switchSection('live');
+                setTimeout(() => switchSection('explorer'), 5000);
+            }
+        }, 10000);
+    </script>
+</body>
+</html>

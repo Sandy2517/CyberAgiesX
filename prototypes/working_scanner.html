@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberAgiesX - Working Security Scanner</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0F0F23;
+            color: #FFFFFF;
+            overflow-x: hidden;
+        }
+
+        .scanner-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .scanner-header {
+            background: linear-gradient(135deg, #1A1D23 0%, #0A1628 100%);
+            padding: 20px 40px;
+            border-bottom: 2px solid #00D9FF;
+            box-shadow: 0 4px 20px rgba(0, 217, 255, 0.2);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .scanner-logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .scanner-icon {
+            font-size: 32px;
+            color: #00D9FF;
+        }
+
+        .connection-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .status-connected {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4CAF50;
+            border: 1px solid #4CAF50;
+        }
+
+        .status-disconnected {
+            background: rgba(244, 67, 54, 0.2);
+            color: #F44336;
+            border: 1px solid #F44336;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        /* Main Content */
+        .scanner-main {
+            flex: 1;
+            padding: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .scanner-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .scanner-card {
+            background: linear-gradient(135deg, #1A1D23 0%, #2A2D33 100%);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid #333;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .scanner-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 217, 255, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .card-icon {
+            font-size: 24px;
+            color: #00D9FF;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #B0B0B0;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 15px;
+            background: #0F0F23;
+            border: 2px solid #333;
+            border-radius: 10px;
+            color: #FFFFFF;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #00D9FF;
+        }
+
+        .textarea-field {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .analyze-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, #00D9FF, #0099CC);
+            border: none;
+            border-radius: 10px;
+            color: #FFFFFF;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .analyze-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 217, 255, 0.3);
+        }
+
+        .analyze-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ffffff;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Results */
+        .results-container {
+            grid-column: 1 / -1;
+            margin-top: 30px;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .risk-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+        }
+
+        .risk-low {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4CAF50;
+            border: 1px solid #4CAF50;
+        }
+
+        .risk-medium {
+            background: rgba(255, 193, 7, 0.2);
+            color: #FFC107;
+            border: 1px solid #FFC107;
+        }
+
+        .risk-high {
+            background: rgba(255, 152, 0, 0.2);
+            color: #FF9800;
+            border: 1px solid #FF9800;
+        }
+
+        .risk-critical {
+            background: rgba(244, 67, 54, 0.2);
+            color: #F44336;
+            border: 1px solid #F44336;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .result-card {
+            background: linear-gradient(135deg, #1A1D23 0%, #2A2D33 100%);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid #333;
+        }
+
+        .result-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #00D9FF;
+        }
+
+        .threat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .threat-name {
+            font-size: 14px;
+        }
+
+        .threat-score {
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        .score-low { background: rgba(76, 175, 80, 0.3); color: #4CAF50; }
+        .score-medium { background: rgba(255, 193, 7, 0.3); color: #FFC107; }
+        .score-high { background: rgba(255, 152, 0, 0.3); color: #FF9800; }
+        .score-critical { background: rgba(244, 67, 54, 0.3); color: #F44336; }
+
+        .recommendations {
+            grid-column: 1 / -1;
+            margin-top: 20px;
+        }
+
+        .recommendation-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 15px;
+            background: rgba(0, 217, 255, 0.1);
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border-left: 4px solid #00D9FF;
+        }
+
+        .recommendation-icon {
+            font-size: 20px;
+            color: #00D9FF;
+            margin-top: 2px;
+        }
+
+        .recommendation-content {
+            flex: 1;
+        }
+
+        .recommendation-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .recommendation-text {
+            font-size: 14px;
+            color: #B0B0B0;
+            line-height: 1.5;
+        }
+
+        .debug-info {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            font-family: monospace;
+            font-size: 12px;
+            color: #B0B0B0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .scanner-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .scanner-main {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="scanner-container">
+        <!-- Header -->
+        <header class="scanner-header">
+            <div class="header-content">
+                <div class="scanner-logo">
+                    <div class="scanner-icon">🛡️</div>
+                    <div>
+                        <div>CyberAgiesX</div>
+                        <div style="font-size: 14px; color: #B0B0B0;">Working Security Scanner</div>
+                    </div>
+                </div>
+                <div class="connection-status" id="connectionStatus">
+                    <div class="status-dot"></div>
+                    <span>Checking...</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="scanner-main">
+            <div class="scanner-grid">
+                <!-- Text Analysis -->
+                <div class="scanner-card">
+                    <div class="card-header">
+                        <div class="card-icon">📝</div>
+                        <div class="card-title">Text Analysis</div>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Paste suspicious text, email, or message:</label>
+                        <textarea class="input-field textarea-field" id="textInput" placeholder="Enter text to analyze for phishing, scams, or malicious content...">urgent action required click here immediately</textarea>
+                    </div>
+                    <button class="analyze-btn" onclick="analyzeText()">
+                        <span class="loading-spinner" id="textSpinner"></span>
+                        <span id="textBtnText">Analyze Text</span>
+                    </button>
+                </div>
+
+                <!-- URL Analysis -->
+                <div class="scanner-card">
+                    <div class="card-header">
+                        <div class="card-icon">🔗</div>
+                        <div class="card-title">URL Analysis</div>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Enter suspicious URL or domain:</label>
+                        <input type="url" class="input-field" id="urlInput" placeholder="https://example.com" value="http://paypa1-security.com">
+                    </div>
+                    <button class="analyze-btn" onclick="analyzeURL()">
+                        <span class="loading-spinner" id="urlSpinner"></span>
+                        <span id="urlBtnText">Analyze URL</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Results Container -->
+            <div class="results-container" id="resultsContainer" style="display: none;">
+                <div class="results-header">
+                    <h2>Analysis Results</h2>
+                    <div class="risk-indicator" id="riskIndicator">
+                        <span id="riskIcon">🟢</span>
+                        <span id="riskText">Low Risk</span>
+                    </div>
+                </div>
+
+                <div class="results-grid" id="resultsGrid">
+                    <!-- Results will be populated here -->
+                </div>
+
+                <div class="recommendations" id="recommendations">
+                    <!-- Recommendations will be populated here -->
+                </div>
+
+                <div class="debug-info" id="debugInfo">
+                    <!-- Debug info will be shown here -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3000/api';
+        let isConnected = false;
+
+        // Check connection status
+        async function checkConnection() {
+            try {
+                console.log('Checking connection to:', API_BASE);
+                const response = await fetch(`${API_BASE}/health`);
+                console.log('Health check response:', response);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('Health check data:', data);
+                    updateConnectionStatus(true);
+                } else {
+                    updateConnectionStatus(false);
+                }
+            } catch (error) {
+                console.error('Connection check failed:', error);
+                updateConnectionStatus(false);
+            }
+        }
+
+        function updateConnectionStatus(connected) {
+            isConnected = connected;
+            const statusEl = document.getElementById('connectionStatus');
+            if (connected) {
+                statusEl.className = 'connection-status status-connected';
+                statusEl.innerHTML = '<div class="status-dot"></div><span>Connected to Backend</span>';
+            } else {
+                statusEl.className = 'connection-status status-disconnected';
+                statusEl.innerHTML = '<div class="status-dot"></div><span>Offline Mode</span>';
+            }
+        }
+
+        async function analyzeText() {
+            const text = document.getElementById('textInput').value.trim();
+            if (!text) {
+                alert('Please enter text to analyze');
+                return;
+            }
+
+            const btn = document.querySelector('#textInput').nextElementSibling;
+            const spinner = document.getElementById('textSpinner');
+            const btnText = document.getElementById('textBtnText');
+
+            // Show loading
+            btn.disabled = true;
+            spinner.style.display = 'inline-block';
+            btnText.textContent = 'Analyzing...';
+
+            try {
+                console.log('Sending text analysis request:', text);
+                console.log('API Base URL:', API_BASE);
+                
+                const response = await fetch(`${API_BASE}/analyze/text`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ text: text })
+                });
+
+                console.log('Text analysis response status:', response.status);
+                console.log('Response headers:', response.headers);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('Error response:', errorText);
+                    throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
+                }
+
+                const result = await response.json();
+                console.log('Text analysis result:', result);
+                
+                // Ensure we have a valid result
+                if (!result) {
+                    throw new Error('No result received from server');
+                }
+                
+                displayResults(result, 'text');
+            } catch (error) {
+                console.error('Text analysis error:', error);
+                alert('Text Analysis failed: ' + error.message + '\n\nCheck the browser console for more details.');
+                
+                // Show error in results area
+                showError('Text Analysis Error', error.message);
+            } finally {
+                // Hide loading
+                btn.disabled = false;
+                spinner.style.display = 'none';
+                btnText.textContent = 'Analyze Text';
+            }
+        }
+
+        async function analyzeURL() {
+            const url = document.getElementById('urlInput').value.trim();
+            if (!url) {
+                alert('Please enter a URL to analyze');
+                return;
+            }
+
+            const btn = document.querySelector('#urlInput').nextElementSibling;
+            const spinner = document.getElementById('urlSpinner');
+            const btnText = document.getElementById('urlBtnText');
+
+            // Show loading
+            btn.disabled = true;
+            spinner.style.display = 'inline-block';
+            btnText.textContent = 'Analyzing...';
+
+            try {
+                console.log('Sending URL analysis request:', url);
+                console.log('API Base URL:', API_BASE);
+                
+                const response = await fetch(`${API_BASE}/analyze/url`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ url: url })
+                });
+
+                console.log('URL analysis response status:', response.status);
+                console.log('Response headers:', response.headers);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('Error response:', errorText);
+                    throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
+                }
+
+                const result = await response.json();
+                console.log('URL analysis result:', result);
+                
+                // Ensure we have a valid result
+                if (!result) {
+                    throw new Error('No result received from server');
+                }
+                
+                displayResults(result, 'url');
+            } catch (error) {
+                console.error('URL analysis error:', error);
+                alert('URL Analysis failed: ' + error.message + '\n\nCheck the browser console for more details.');
+                
+                // Show error in results area
+                showError('URL Analysis Error', error.message);
+            } finally {
+                // Hide loading
+                btn.disabled = false;
+                spinner.style.display = 'none';
+                btnText.textContent = 'Analyze URL';
+            }
+        }
+
+        function displayResults(result, type) {
+            console.log('Displaying results:', result, 'Type:', type);
+            
+            const container = document.getElementById('resultsContainer');
+            const riskIndicator = document.getElementById('riskIndicator');
+            const resultsGrid = document.getElementById('resultsGrid');
+            const recommendations = document.getElementById('recommendations');
+            const debugInfo = document.getElementById('debugInfo');
+
+            // Show results container
+            container.style.display = 'block';
+
+            // Update risk indicator
+            const riskLevel = result.riskLevel || 'low';
+            const riskScore = result.threatScore || result.anomalyScore || 0;
+            
+            console.log('Risk Level:', riskLevel, 'Risk Score:', riskScore);
+            updateRiskIndicator(riskLevel, riskScore);
+
+            // Display analysis results
+            let html = '';
+            
+            if (type === 'text') {
+                html += createTextAnalysisHTML(result);
+            } else if (type === 'url') {
+                html += createURLAnalysisHTML(result);
+            }
+
+            console.log('Generated HTML:', html);
+            resultsGrid.innerHTML = html;
+
+            // Display recommendations
+            if (result.recommendations && result.recommendations.length > 0) {
+                displayRecommendations(result.recommendations);
+            }
+
+            // Display debug info
+            debugInfo.innerHTML = `
+                <strong>Debug Info:</strong><br>
+                API Response: ${JSON.stringify(result, null, 2)}
+            `;
+        }
+
+        function showError(title, message) {
+            const container = document.getElementById('resultsContainer');
+            const resultsGrid = document.getElementById('resultsGrid');
+            const debugInfo = document.getElementById('debugInfo');
+
+            // Show results container
+            container.style.display = 'block';
+
+            // Show error in results
+            resultsGrid.innerHTML = `
+                <div class="result-card" style="grid-column: 1 / -1;">
+                    <div class="result-title" style="color: #F44336;">❌ ${title}</div>
+                    <div class="threat-item">
+                        <span class="threat-name">Error Message</span>
+                        <span class="threat-score" style="background: rgba(244, 67, 54, 0.3); color: #F44336;">Error</span>
+                    </div>
+                    <div style="padding: 10px; background: rgba(244, 67, 54, 0.1); border-radius: 8px; margin-top: 10px;">
+                        ${message}
+                    </div>
+                </div>
+            `;
+
+            // Clear recommendations
+            document.getElementById('recommendations').innerHTML = '';
+
+            // Show debug info
+            debugInfo.innerHTML = `
+                <strong>Error Debug Info:</strong><br>
+                Error: ${message}<br>
+                Time: ${new Date().toISOString()}<br>
+                API Base: ${API_BASE}
+            `;
+        }
+
+        function updateRiskIndicator(riskLevel, score) {
+            const indicator = document.getElementById('riskIndicator');
+            const icon = document.getElementById('riskIcon');
+            const text = document.getElementById('riskText');
+
+            indicator.className = `risk-indicator risk-${riskLevel}`;
+            
+            const riskConfig = {
+                low: { icon: '🟢', text: `Low Risk (${score}/100)` },
+                medium: { icon: '🟡', text: `Medium Risk (${score}/100)` },
+                high: { icon: '🟠', text: `High Risk (${score}/100)` },
+                critical: { icon: '🔴', text: `Critical Risk (${score}/100)` }
+            };
+
+            const config = riskConfig[riskLevel] || riskConfig.low;
+            icon.textContent = config.icon;
+            text.textContent = config.text;
+        }
+
+        function createTextAnalysisHTML(analysis) {
+            return `
+                <div class="result-card">
+                    <div class="result-title">Text Analysis Results</div>
+                    <div class="threat-item">
+                        <span class="threat-name">Overall Threat Score</span>
+                        <span class="threat-score score-${getScoreClass(analysis.threatScore)}">${analysis.threatScore}/100</span>
+                    </div>
+                    <div class="threat-item">
+                        <span class="threat-name">Risk Level</span>
+                        <span class="threat-score">${analysis.riskLevel}</span>
+                    </div>
+                </div>
+                <div class="result-card">
+                    <div class="result-title">Detected Threats</div>
+                    ${analysis.detectedThreats ? analysis.detectedThreats.map(threat => `
+                        <div class="threat-item">
+                            <span class="threat-name">${threat.threat}</span>
+                            <span class="threat-score score-${getScoreClass(threat.score)}">${threat.score}</span>
+                        </div>
+                    `).join('') : '<div class="threat-item"><span class="threat-name">No threats detected</span></div>'}
+                </div>
+            `;
+        }
+
+        function createURLAnalysisHTML(analysis) {
+            return `
+                <div class="result-card">
+                    <div class="result-title">URL Analysis Results</div>
+                    <div class="threat-item">
+                        <span class="threat-name">Anomaly Score</span>
+                        <span class="threat-score score-${getScoreClass(analysis.anomalyScore)}">${analysis.anomalyScore}/100</span>
+                    </div>
+                    <div class="threat-item">
+                        <span class="threat-name">Risk Level</span>
+                        <span class="threat-score">${analysis.riskLevel}</span>
+                    </div>
+                </div>
+                <div class="result-card">
+                    <div class="result-title">Detected Threats</div>
+                    ${analysis.detectedThreats ? analysis.detectedThreats.map(threat => `
+                        <div class="threat-item">
+                            <span class="threat-name">${threat.threat}</span>
+                            <span class="threat-score score-${getScoreClass(threat.score)}">${threat.score}</span>
+                        </div>
+                    `).join('') : '<div class="threat-item"><span class="threat-name">No threats detected</span></div>'}
+                </div>
+            `;
+        }
+
+        function getScoreClass(score) {
+            if (score >= 80) return 'critical';
+            if (score >= 60) return 'high';
+            if (score >= 30) return 'medium';
+            return 'low';
+        }
+
+        function displayRecommendations(recommendations) {
+            const container = document.getElementById('recommendations');
+            const html = `
+                <div class="result-title">Recommendations</div>
+                ${recommendations.map(rec => `
+                    <div class="recommendation-item">
+                        <div class="recommendation-icon">${getRecommendationIcon(rec.action)}</div>
+                        <div class="recommendation-content">
+                            <div class="recommendation-title">${rec.message}</div>
+                            ${rec.steps ? rec.steps.map(step => `<div class="recommendation-text">• ${step}</div>`).join('') : ''}
+                        </div>
+                    </div>
+                `).join('')}
+            `;
+            container.innerHTML = html;
+        }
+
+        function getRecommendationIcon(action) {
+            const icons = {
+                'BLOCK': '🚫',
+                'VERIFY': '✅',
+                'CAUTION': '⚠️',
+                'PROCEED': '✅'
+            };
+            return icons[action] || '💡';
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Page loaded, checking connection...');
+            checkConnection();
+            setInterval(checkConnection, 30000); // Check every 30 seconds
+        });
+    </script>
+</body>
+</html>
