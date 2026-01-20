@@ -1,5 +1,11 @@
 # CyberAgiesX: The Cognitive Firewall 🧠🛡️
 
+[![License](https://img.shields.io/github/license/Sandy2517/CyberAgiesX)](https://github.com/Sandy2517/CyberAgiesX/blob/main/LICENSE)
+![Repo Size](https://img.shields.io/github/repo-size/Sandy2517/CyberAgiesX)
+![Last Commit](https://img.shields.io/github/last-commit/Sandy2517/CyberAgiesX)
+![Issues](https://img.shields.io/github/issues/Sandy2517/CyberAgiesX)
+![Stars](https://img.shields.io/github/stars/Sandy2517/CyberAgiesX)
+
 **The World's First Universal AI-Resistant Communication Security Platform**
 
 > **🚀 Quick Start**: Just run `cd backend && npm install && npm start`, then open `http://localhost:3000/neuroshield_platform.html` - Everything works immediately! See [SIMPLE_START.md](./SIMPLE_START.md) for details.
